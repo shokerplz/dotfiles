@@ -1,0 +1,12 @@
+keys:
+  - &rpi5 age1tg9entt4k4uqsw3c4l0wrnvyky8uk5vvpjghrfvw2cd9rjamd44q2vr99v
+  - &media-server age1dr2c3lnx9g28a8fynk349ufuvz54t2a28mk7jfzhngn2r8fvc3fq2zw22g
+  - &ikovalev age1c0882dc0kj7mwdwud775xerlgk66p439xrlcktlmuv9ed0hfy95sycs699
+
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+        - *rpi5
+        - *media-server
+        - *ikovalev
