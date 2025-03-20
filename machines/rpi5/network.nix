@@ -18,13 +18,22 @@
     matchConfig.Name = "end0";
     networkConfig = {
       Address = [
-        "10.0.1.20/24"
-        "10.0.1.99/24"
+        "10.0.1.20/24" # MACHINE'S IP
+        "10.0.1.99/24" # PUBLIC FORWARDED IP
+        "10.0.1.98/24" # PRIVATE IP FOR GITLAB
       ];
       Gateway = "10.0.1.1";
       DNS = [ "10.0.1.1" ];
     };
   };
+
+  # Listen ONLY on machine's IP
+  services.openssh.listenAddresses = [
+    {
+      addr = "10.0.1.20";
+      port = 22;
+    }
+  ];
 
   # Disable caching DNS queries (needed for LB)
   services.resolved.extraConfig = ''

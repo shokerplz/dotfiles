@@ -1,21 +1,6 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
-let
-  cloudflareSecretFile = "/etc/nixos/secrets/cloudflare.yaml";
-in
 {
-  # Secrets needed for CF DDNS
-  sops = {
-    secrets = {
-      cloudflare_api_token = {
-        sopsFile = cloudflareSecretFile;
-        uid = 1000;
-      };
-      cloudflare_email = {
-        sopsFile = cloudflareSecretFile;
-      };
-    };
-  };
 
   # CF DDNS service
   virtualisation.oci-containers = {

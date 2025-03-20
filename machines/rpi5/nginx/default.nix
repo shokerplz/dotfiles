@@ -8,9 +8,11 @@
 {
 
   imports = [
+    ../../../secrets/cloudflare.nix
     ./files.nix
     ./kino.nix
     ./monitoring.nix
+    ./git.nix
   ];
 
   # Creating directories for static websites

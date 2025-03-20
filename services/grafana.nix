@@ -25,4 +25,12 @@
       };
     };
   };
+
+  # Grafana firewall
+  networking.firewall.extraCommands = ''
+    iptables -A nixos-fw -p tcp --dport 3000 -s 10.0.0.0/16 -j nixos-fw-accept
+  '';
+  networking.firewall.extraStopCommands = ''
+    iptables -D nixos-fw -p tcp --dport 3000 -s 10.0.0.0/16 -j nixos-fw-accept || true
+  '';
 }
