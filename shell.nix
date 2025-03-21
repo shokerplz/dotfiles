@@ -11,7 +11,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     sops
     nixfmt-rfc-style
-    nil
+    nixd
     nixfmt-tree
   ];
 }

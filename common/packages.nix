@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Default packages that should be installed everywhere
@@ -10,5 +10,9 @@
     curl
     acpi
     smartmontools
+    dig
+    inetutils
+    lshw
+    pciutils
   ];
 }

@@ -6,7 +6,6 @@
     wl-clipboard
     appimage-run
     google-chrome
-    steam
     vscode
     spotify
     bambu-studio
@@ -18,7 +17,5 @@
     obs-studio
     jellyfin-media-player
     libreoffice-qt6-fresh
-    mangohud
-    gamescope
   ];
 }

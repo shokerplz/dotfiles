@@ -31,6 +31,7 @@
             ./common/default.nix
             ./common/laptop.nix
             ./common/gui.nix
+            ./common/gaming.nix
             ./machines/pocket4/configuration.nix
             nixos-hardware.nixosModules.gpd-pocket-4
             auto-cpufreq.nixosModules.default

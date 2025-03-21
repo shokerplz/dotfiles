@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{ ... }:
 
 {
   # Virtual host for Gitlab
