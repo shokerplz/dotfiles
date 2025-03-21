@@ -35,6 +35,7 @@
             ./machines/pocket4/configuration.nix
             nixos-hardware.nixosModules.gpd-pocket-4
             auto-cpufreq.nixosModules.default
+            sops-nix.nixosModules.sops
           ];
         };
         rpi5 = nixpkgs.lib.nixosSystem rec {
