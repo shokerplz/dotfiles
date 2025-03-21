@@ -89,4 +89,9 @@
   # Enable firewall
   networking.firewall.enable = true;
 
+  # Enable WireGuard
+  networking.wireguard.enable = true;
+
+  # Disable RP Filter (Otherwise wireguard wouldn't work properly)
+  networking.firewall.checkReversePath = false;
 }
