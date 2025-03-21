@@ -16,6 +16,7 @@
   # Use systemd-resolve so DNS works fine with WireGuard VPN
   networking.networkmanager.dns = "systemd-resolved";
   services.resolved.enable = true;
+  networking.nameservers = [ "127.0.0.53" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
