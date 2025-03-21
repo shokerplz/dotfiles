@@ -10,7 +10,6 @@
     spotify
     bambu-studio
     code-cursor
-    gnomeExtensions.wireguard-vpn-extension
     gnomeExtensions.touch-x
     telegram-desktop
     vlc
