@@ -1,5 +1,6 @@
 {
   pkgs,
+  nix-rpi5,
   ...
 }:
 
@@ -26,7 +27,7 @@
   boot.loader.systemd-boot.enable = true;
 
   # Add the RPi kernel
-  boot.kernelPackages = pkgs.linuxPackages_rpi4;
+  boot.kernelPackages = pkgs.linuxPackagesFor nix-rpi5.legacyPackages.aarch64-linux.linux_rpi5;
 
   # Should never be changed!
   system.stateVersion = "24.11"; # Did you read the comment?

@@ -13,6 +13,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # Kernel for Raspberry Pi5
+    nix-rpi5.url = "gitlab:vriska/nix-rpi5";
   };
 
   outputs =
@@ -22,7 +24,26 @@
       sops-nix,
       nixos-hardware,
       auto-cpufreq,
+      nix-rpi5,
     }:
+    let
+      makeDevShell =
+        system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+        in
+        pkgs.mkShell {
+          name = "Nix Flake dev env";
+          packages = with pkgs; [
+            sops
+            nixfmt-rfc-style
+            nixd
+            nixfmt-tree
+          ];
+        };
+    in
     {
       nixosConfigurations = {
         pocket4 = nixpkgs.lib.nixosSystem rec {
@@ -66,6 +87,10 @@
             sops-nix.nixosModules.sops
           ];
         };
+      };
+      devShells = {
+        aarch64-darwin.default = makeDevShell "aarch64-darwin";
+        x86_64-linux.default = makeDevShell "x86_64-linux";
       };
     };
 }
