@@ -13,8 +13,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # Kernel for Raspberry Pi5
-    nix-rpi5.url = "gitlab:vriska/nix-rpi5";
   };
 
   outputs =
@@ -24,7 +22,6 @@
       sops-nix,
       nixos-hardware,
       auto-cpufreq,
-      nix-rpi5,
     }:
     let
       makeDevShell =

@@ -1,13 +1,12 @@
 {
   pkgs,
-  nix-rpi5,
   ...
 }:
 
 {
 
   imports = [
-    ../../hardware-configuration.nix
+    ./hardware-configuration.nix
     ./docker.nix
     ./network.nix
     ./nginx/default.nix
@@ -27,7 +26,7 @@
   boot.loader.systemd-boot.enable = true;
 
   # Add the RPi kernel
-  boot.kernelPackages = pkgs.linuxPackagesFor nix-rpi5.legacyPackages.aarch64-linux.linux_rpi5;
+  boot.kernelPackages = pkgs.linuxPackages_rpi4;
 
   # Should never be changed!
   system.stateVersion = "24.11"; # Did you read the comment?

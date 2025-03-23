@@ -6,7 +6,7 @@
 
   imports = [
     ./packages.nix
-    ../../hardware-configuration.nix
+    ./hardware-configuration.nix
     ../../services/promtail.nix
     ../../services/node-exporter.nix
     ../../services/kino.nix
