@@ -1,19 +1,17 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   # Node exporter service
-  virtualisation.oci-containers = {
-    containers = {
-      node-exporter = {
-        image = "quay.io/prometheus/node-exporter:latest";
-        cmd = [ "--path.rootfs=/host" ];
-        extraOptions = [
-          "--pid=host"
-        ];
-        ports = [ "9100:9100/tcp" ];
-        volumes = [ "/:/host:ro,rslave" ];
-      };
-    };
+  services.prometheus.exporters.node = {
+    enable = true;
+    port = 9100;
+    # https://github.com/prometheus/node_exporter?tab=readme-ov-file#collectors
+    enabledCollectors = [
+      "systemd"
+      "ethtool"
+      "softirqs"
+      "tcpstat"
+    ];
   };
 
   # Node exporter firewall

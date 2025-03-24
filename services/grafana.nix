@@ -6,7 +6,7 @@
 
 {
 
-  # Grafana service #UNTESTED
+  # Grafana service
   services.grafana = {
     enable = true;
     dataDir = "/var/data/grafana";
@@ -42,6 +42,7 @@
 
   # Fix permissions if directory already exists
   systemd.services.grafana.serviceConfig.ExecStartPre = [
+    "+${pkgs.coreutils-full.outPath}/bin/mkdir -p ${config.services.grafana.dataDir}"
     "+${pkgs.coreutils-full.outPath}/bin/chown -R grafana:grafana ${config.services.grafana.dataDir}"
   ];
 
