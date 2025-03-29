@@ -5,7 +5,7 @@
     git
     wl-clipboard
     appimage-run
-    google-chrome
+    firefox
     vscode
     spotify
     bambu-studio
