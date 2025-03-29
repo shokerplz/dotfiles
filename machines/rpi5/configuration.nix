@@ -8,6 +8,7 @@
   imports = [
     ./hardware-configuration.nix
     ./docker.nix
+    ./packages.nix
     ./network.nix
     ./nginx/default.nix
     ../../services/cloudflare-ddns.nix
