@@ -1,24 +1,21 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
+  imports = [
+    ../modules/cloudflare-ddns.nix
+  ];
 
-  # CF DDNS service
-  virtualisation.oci-containers = {
-    containers = {
-      cloudflare-ddns = {
-        image = "favonia/cloudflare-ddns:1.15.1";
-        autoStart = true;
-        user = "1000:1000";
-        environment = {
-          DOMAINS = "vpn.ikovalev.nl";
-          PROXIED = "false";
-          CLOUDFLARE_API_TOKEN_FILE = "/etc/secrets/cf_api_token";
-        };
-        extraOptions = [ "--network=host" ];
-        volumes = [
-          "${config.sops.secrets.cloudflare_api_token.path}:/etc/secrets/cf_api_token"
-        ];
-      };
-    };
+  # Cloudflare DDNS service to announce my public ip
+  config.services.cloudflare-ddns = {
+    enable = true;
+    credentialsFile = config.sops.templates."cloudflare-ddns_api_token".path;
+    domains = [ "vpn.ikovalev.nl" ];
+    proxied = "false";
   };
+
+  config.nixpkgs.overlays = [
+    (final: prev: {
+      cloudflare-ddns = final.callPackage ../packages/cloudflare-ddns.nix { };
+    })
+  ];
 }

@@ -42,7 +42,7 @@
         };
     in
     {
-      
+
       nixosConfigurations = {
         pocket4 = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
@@ -65,9 +65,6 @@
             ./machines/rpi5/configuration.nix
             nixos-hardware.nixosModules.raspberry-pi-5
             sops-nix.nixosModules.sops
-            {
-              nixpkgs.overlays = [ (final: prev: { cloudflare-ddns = final.callPackage ./packages/cloudflare-ddns.nix { }; }) ];
-            }
           ];
         };
         media-server = nixpkgs.lib.nixosSystem rec {

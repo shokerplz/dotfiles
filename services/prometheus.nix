@@ -45,7 +45,7 @@
         job_name = "speedtest";
         scrape_interval = "1h";
         scrape_timeout = "1m";
-        static_configs = [ { targets = [ "speedtest-exporter:9798" ]; } ];
+        static_configs = [ { targets = [ "rpi5.home:9798" ]; } ];
       }
     ];
   };

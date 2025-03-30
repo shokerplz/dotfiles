@@ -11,11 +11,11 @@
     ./packages.nix
     ./network.nix
     ./nginx/default.nix
-    ../../services/cloudflare-ddns.nix
     ../../services/grafana.nix
     ../../services/prometheus.nix
     ../../services/promtail.nix
     ../../services/speedtest-exporter.nix
+    ../../services/cloudflare-ddns.nix
     ../../services/node-exporter.nix
   ];
 
