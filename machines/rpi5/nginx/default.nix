@@ -17,11 +17,9 @@
 
   # Creating directories for static websites
   system.activationScripts.createWebsites = ''
-    mkdir -p /var/www/websites
-    chmod 0755 /var/www/websites/
-    mkdir -p /var/www/websites/kino.ikovalev.nl/
-    chmod o+x /var/www/websites/kino.ikovalev.nl/assets/
-    chmod 0644 -R /var/www/websites/kino.ikovalev.nl/*
+    mkdir -p /var/www/websites/kino.ikovalev.nl/assets
+    find /var/www/websites/kino.ikovalev.nl -type d -exec chmod 0755 {} \;
+    find /var/www/websites/kino.ikovalev.nl -type f -exec chmod 0644 {} \;
     chown -R nginx:nginx /var/www/websites
   '';
 
