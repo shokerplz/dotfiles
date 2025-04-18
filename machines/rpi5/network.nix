@@ -34,6 +34,11 @@
     }
   ];
 
+  # This is needed to allow sshd to bind on a specific address
+  # Without this option SSHD might fail to start because IP
+  # Address is not yet available
+  boot.kernel.sysctl."net.ipv4.ip_nonlocal_bind" = 1;
+
   # Disable caching DNS queries (needed for LB)
   services.resolved.extraConfig = ''
     Cache = no

@@ -16,5 +16,6 @@
     obs-studio
     jellyfin-media-player
     libreoffice-qt6-fresh
+    guvcview # Camera app for KVM
   ];
 }
