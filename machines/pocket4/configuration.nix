@@ -5,7 +5,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./packages.nix
-    ./libfprint-tod-pocket4.nix
+    ./fingerprint-scanner.nix
   ];
 
   # Bootloader.
