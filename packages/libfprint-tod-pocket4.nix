@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/ftfpteams/focaltech-linux-fingerprint-driver/raw/refs/heads/main/Fedora_Redhat/libfprint-2-2_1.94.4+tod1_redhat_all_x64_20250219.install";
-    sha256 = "0y7kb2mr7zd2irfgsmfgdpb0c7v33cb4hf3hfj7mndalma3xdhzn";  # Will help you fetch this in a sec
+    sha256 = "0y7kb2mr7zd2irfgsmfgdpb0c7v33cb4hf3hfj7mndalma3xdhzn";
   };
 
   nativeBuildInputs = [
@@ -51,14 +51,14 @@ stdenv.mkDerivation rec {
   ];
 
   unpackPhase = ''
-    runHook preUnpack
-  echo "Extracting embedded tar.gz using sed"
+      runHook preUnpack
+    echo "Extracting embedded tar.gz using sed"
 
-  sed '1,/^main \$@/d' $src > libfprint.tar.gz
+    sed '1,/^main \$@/d' $src > libfprint.tar.gz
 
-  mkdir extracted
-  tar -xzf libfprint.tar.gz -C .
-'';
+    mkdir extracted
+    tar -xzf libfprint.tar.gz -C .
+  '';
 
   # custom pkg-config based on libfprint's pkg-config
   pkgconfigItems = [
@@ -95,11 +95,10 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-
   meta = with lib; {
     description = "FocalTech libfprint driver (Fedora variant)";
     homepage = "https://github.com/ftfpteams/focaltech-linux-fingerprint-driver";
     platforms = platforms.linux;
-    license = licenses.unfree;  # Sadly
+    license = licenses.unfree; # Sadly
   };
 }

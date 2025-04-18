@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -36,14 +41,17 @@ in
 
     domains = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       description = mdDoc ''
         List of domain names (FQDNs) to manage. Wildcards like `*.example.com` are supported.
         These domains will be managed for both IPv4 and IPv6 unless overridden by
         `ip4Domains` or `ip6Domains`, or if the respective providers are disabled.
         This corresponds to the `DOMAINS` environment variable.
       '';
-      example = [ "home.example.com" "*.dynamic.example.org" ];
+      example = [
+        "home.example.com"
+        "*.dynamic.example.org"
+      ];
     };
 
     ip4Domains = mkOption {
@@ -68,7 +76,7 @@ in
 
     wafLists = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       description = mdDoc ''
         List of WAF IP Lists to manage, in the format `account-id/list-name`.
         (Experimental feature as of cloudflare-ddns 1.14.0).
@@ -193,7 +201,10 @@ in
       type = types.nullOr (types.listOf types.str);
       default = null;
       description = mdDoc "List of Shoutrrr notification service URLs (optional).";
-      example = [ "discord://token@id" "gotify://host/token" ];
+      example = [
+        "discord://token@id"
+        "gotify://host/token"
+      ];
     };
 
     user = mkOption {
@@ -210,23 +221,26 @@ in
 
   };
 
-
   config = mkIf cfg.enable {
     assertions = [
-      { assertion = cfg.ttl == 1 || (cfg.ttl >= 30 && cfg.ttl <= 86400);
+      {
+        assertion = cfg.ttl == 1 || (cfg.ttl >= 30 && cfg.ttl <= 86400);
         message = "services.cloudflare-ddns.ttl must be 1 or between 30 and 86400";
       }
-      { assertion = cfg.updateCron == "@once" -> !cfg.deleteOnStop;
+      {
+        assertion = cfg.updateCron == "@once" -> !cfg.deleteOnStop;
         message = "services.cloudflare-ddns.deleteOnStop cannot be true when updateCron is \"@once\"";
       }
-      { assertion = cfg.domains != [] || cfg.ip4Domains != null || cfg.ip6Domains != null || cfg.wafLists != [];
+      {
+        assertion =
+          cfg.domains != [ ] || cfg.ip4Domains != null || cfg.ip6Domains != null || cfg.wafLists != [ ];
         message = "services.cloudflare-ddns requires at least one domain (domains, ip4Domains, ip6Domains) or WAF list (wafLists) to be specified";
       }
-      { assertion = cfg.provider.ipv4 != "none" || cfg.provider.ipv6 != "none";
+      {
+        assertion = cfg.provider.ipv4 != "none" || cfg.provider.ipv6 != "none";
         message = "services.cloudflare-ddns requires at least one provider (ipv4 or ipv6) to be enabled (not 'none')";
       }
     ];
-
 
     users.users.${cfg.user} = {
       description = "Cloudflare DDNS service user";
@@ -234,12 +248,11 @@ in
       group = cfg.group;
       home = "/var/lib/${cfg.user}";
     };
-    users.groups.${cfg.group} = {};
+    users.groups.${cfg.group} = { };
 
     systemd.tmpfiles.rules = [
       "d /var/lib/${cfg.user} 0750 ${cfg.user} ${cfg.group} - -"
     ];
-
 
     systemd.services.cloudflare-ddns = {
       description = "Cloudflare Dynamic DNS Client Service (favonia)";
@@ -261,9 +274,14 @@ in
             toEnvList = name: value: "${name}=\"${formatList value}\"";
             toEnvDuration = name: value: "${name}=\"${formatDuration value}\"";
             toEnvBool = name: value: "${name}=\"${boolToString value}\"";
-            toEnvMaybe = pred: name: value: optionalString pred (toEnv name value);
-            toEnvMaybeList = pred: name: value: optionalString pred (toEnvList name value);
-          in lib.filter (envVar: envVar != "") [
+            toEnvMaybe =
+              pred: name: value:
+              optionalString pred (toEnv name value);
+            toEnvMaybeList =
+              pred: name: value:
+              optionalString pred (toEnvList name value);
+          in
+          lib.filter (envVar: envVar != "") [
             (toEnvList "DOMAINS" cfg.domains)
             (toEnvMaybeList (cfg.ip4Domains != null) "IP4_DOMAINS" cfg.ip4Domains)
             (toEnvMaybeList (cfg.ip6Domains != null) "IP6_DOMAINS" cfg.ip6Domains)
@@ -271,7 +289,7 @@ in
             (toEnv "IP4_PROVIDER" cfg.provider.ipv4)
             (toEnv "IP6_PROVIDER" cfg.provider.ipv6)
 
-            (toEnvMaybeList (cfg.wafLists != []) "WAF_LISTS" cfg.wafLists)
+            (toEnvMaybeList (cfg.wafLists != [ ]) "WAF_LISTS" cfg.wafLists)
             (toEnvMaybe (cfg.wafListDescription != "") "WAF_LIST_DESCRIPTION" cfg.wafListDescription)
 
             (toEnv "UPDATE_CRON" cfg.updateCron)
@@ -304,7 +322,10 @@ in
         ProtectKernelModules = true;
         ProtectControlGroups = true;
         NoNewPrivileges = true;
-        RestrictAddressFamilies = [ "AF_INET" "AF_INET6" ];
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_INET6"
+        ];
       };
     };
   };

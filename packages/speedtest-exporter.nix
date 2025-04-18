@@ -1,8 +1,9 @@
-{ lib
-, fetchFromGitHub
-, python3Packages
-, makeWrapper
-, ookla-speedtest
+{
+  lib,
+  fetchFromGitHub,
+  python3Packages,
+  makeWrapper,
+  ookla-speedtest,
 }:
 
 python3Packages.buildPythonApplication rec {

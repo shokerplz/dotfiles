@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -87,17 +92,18 @@ in
     };
   };
 
-
   ###### Implementation
   config = mkIf cfg.enable {
 
     # --- Assertions ---
     assertions = [
-      { # User MUST accept the terms
+      {
+        # User MUST accept the terms
         assertion = cfg.acceptOoklaTerms;
         message = "You must accept the Ookla Speedtest terms by setting services.speedtest-exporter.acceptOoklaTerms = true in your configuration.";
       }
-      { # Check serverID format if set (basic check)
+      {
+        # Check serverID format if set (basic check)
         assertion = cfg.serverID == null || builtins.match "[0-9]+" cfg.serverID != null;
         message = "services.speedtest-exporter.serverID must be a string containing only digits, if set.";
       }
@@ -110,7 +116,7 @@ in
       group = cfg.group;
       # No home directory needed unless the app writes files unexpectedly
     };
-    users.groups.${cfg.group} = {};
+    users.groups.${cfg.group} = { };
 
     # --- Systemd Service ---
     systemd.services.speedtest-exporter = {

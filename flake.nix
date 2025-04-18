@@ -11,6 +11,8 @@
     sops-nix.url = "github:Mic92/sops-nix";
     # Nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # NixPKGs nixos24.11
+    nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
@@ -19,6 +21,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-24-11,
       sops-nix,
       nixos-hardware,
       auto-cpufreq,
@@ -56,6 +59,12 @@
             auto-cpufreq.nixosModules.default
             sops-nix.nixosModules.sops
           ];
+          specialArgs = {
+            nixpkgs-24-11 = import nixpkgs-24-11 {
+              inherit system;
+              config.allowUnfree = true;
+            };
+          };
         };
         rpi5 = nixpkgs.lib.nixosSystem rec {
           system = "aarch64-linux";

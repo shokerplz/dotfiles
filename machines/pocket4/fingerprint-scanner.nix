@@ -1,20 +1,21 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  nixpkgs-24-11,
+  ...
+}:
 
 let
-  libfprint-focaltech = pkgs.callPackage ../../packages/libfprint-tod-pocket4.nix {};
-  pkgs = import (builtins.fetchTarball {
-      url = "https://github.com/NixOS/nixpkgs/archive/21808d22b1cda1898b71cf1a1beb524a97add2c4.tar.gz";
-  }) {};
+  libfprint-focaltech = pkgs.callPackage ../../packages/libfprint-tod-pocket4.nix { };
+in
+{
 
-  fprintd = pkgs.fprintd;
-in {
-
-  # Enable fprintd 
+  # Enable fprintd
   services.fprintd = {
     enable = true;
-    package = pkgs.fprintd.override {
+    package = nixpkgs-24-11.fprintd.override {
       libfprint = libfprint-focaltech;
-			fprintd = fprintd;
     };
   };
 }
