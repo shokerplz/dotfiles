@@ -19,6 +19,12 @@
 			chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin
     '';
 
+  # Add user to render and video group for hw transcoding
+  users.users.jellyfin.extraGroups = [
+    "video"
+    "render"
+  ];
+
 	# This is needed for skipper plugin
   nixpkgs.overlays = with pkgs; [
     (
