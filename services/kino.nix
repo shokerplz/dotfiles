@@ -22,8 +22,6 @@ in
       mkdir -p /mnt/ssd/kino/nzbget/queue
       mkdir -p /mnt/ssd/kino/nzbget/tmp
       mkdir -p /mnt/ssd/kino/nzbget/nzb
-      mkdir -p /mnt/zfs-pool0/kino/jellyfin/config
-      mkdir -p /mnt/zfs-pool0/kino/jellyfin/cache
       mkdir -p /mnt/zfs-pool0/kino/qbittorrent/config
       mkdir -p /mnt/zfs-pool0/kino/nzbget/config
       mkdir -p /mnt/zfs-pool0/kino/radarr/config
@@ -32,8 +30,8 @@ in
       mkdir -p /mnt/zfs-pool0/kino/prowlarr/config
       mkdir -p /mnt/zfs-pool0/kino/bazarr/config
       mkdir -p /mnt/zfs-pool0/kino/jellyseerr/config
-      chown -R 1000:1000 /mnt/zfs-pool0/kino/
-      chown -R 1000:1000 /mnt/ssd/kino/
+      #chown -R 1000:1000 /mnt/zfs-pool0/kino/
+      #chown -R 1000:1000 /mnt/ssd/kino/
 
       ${dockerBin} network inspect kino >/dev/null 2>&1 || ${dockerBin} network create kino
     '';
@@ -41,27 +39,6 @@ in
   # Jellyfin and arr stack services
   virtualisation.oci-containers = {
     containers = {
-      jellyfin = {
-        image = "lscr.io/linuxserver/jellyfin:${versions.jellyfin}";
-        hostname = "jellyfin";
-        extraOptions = [
-          "--device=/dev/dri/renderD128:/dev/dri/renderD128"
-          "--network=kino"
-        ];
-        environment = {
-          PUID = "1000";
-          PGID = "1000";
-          TZ = "UTC";
-          JELLYFIN_PublishedServerUrl = "https://kino.ikovalev.nl";
-        };
-        volumes = [
-          "/mnt/zfs-pool0/kino/jellyfin/config:/config"
-          "/mnt/zfs-pool0/kino/jellyfin/cache:/cache"
-          "/mnt/zfs-pool0/kino/data:/data/downloads"
-        ];
-        ports = [ "8096:8096/tcp" ];
-      };
-
       qbittorrent = {
         image = "lscr.io/linuxserver/qbittorrent:${versions.qbittorrent}";
         hostname = "qbittorrent";
@@ -186,7 +163,6 @@ in
 
   # Jellyfin and arr stack firewall
   networking.firewall.extraCommands = ''
-    iptables -A nixos-fw -p tcp --dport 8096 -s 10.0.0.0/16 -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 5080 -s 10.0.0.0/16 -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 7878 -s 10.0.0.0/16 -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 8989 -s 10.0.0.0/16 -j nixos-fw-accept
@@ -196,7 +172,6 @@ in
     iptables -A nixos-fw -p tcp --dport 5055 -s 10.0.0.0/16 -j nixos-fw-accept
   '';
   networking.firewall.extraStopCommands = ''
-    iptables -D nixos-fw -p tcp --dport 8096 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 5080 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 7878 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 8989 -s 10.0.0.0/16 -j nixos-fw-accept || true
