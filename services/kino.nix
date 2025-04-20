@@ -24,11 +24,6 @@ in
       mkdir -p /mnt/ssd/kino/nzbget/nzb
       mkdir -p /mnt/zfs-pool0/kino/qbittorrent/config
       mkdir -p /mnt/zfs-pool0/kino/nzbget/config
-      mkdir -p /mnt/zfs-pool0/kino/radarr/config
-      mkdir -p /mnt/zfs-pool0/kino/sonarr/config
-      mkdir -p /mnt/zfs-pool0/kino/readarr/config
-      mkdir -p /mnt/zfs-pool0/kino/prowlarr/config
-      mkdir -p /mnt/zfs-pool0/kino/bazarr/config
       mkdir -p /mnt/zfs-pool0/kino/jellyseerr/config
       #chown -R 1000:1000 /mnt/zfs-pool0/kino/
       #chown -R 1000:1000 /mnt/ssd/kino/
@@ -56,70 +51,6 @@ in
         ];
         volumes = [
           "/mnt/zfs-pool0/kino/qbittorrent/config:/config"
-          "/mnt/zfs-pool0/kino/data:/data/downloads"
-        ];
-      };
-
-      radarr = {
-        image = "lscr.io/linuxserver/radarr:${versions.radarr}";
-        hostname = "radarr";
-        extraOptions = [ "--network=kino" ];
-        environment = {
-          PUID = "1000";
-          PGID = "1000";
-          TZ = "UTC";
-        };
-        ports = [ "7878:7878" ];
-        volumes = [
-          "/mnt/zfs-pool0/kino/radarr/config:/config"
-          "/mnt/zfs-pool0/kino/data:/data/downloads"
-          "/mnt/ssd/kino/nzbget/completed:/downloads/completed"
-        ];
-      };
-
-      sonarr = {
-        image = "lscr.io/linuxserver/sonarr:${versions.sonarr}";
-        hostname = "sonarr";
-        extraOptions = [ "--network=kino" ];
-        environment = {
-          PUID = "1000";
-          PGID = "1000";
-          TZ = "UTC";
-        };
-        ports = [ "8989:8989" ];
-        volumes = [
-          "/mnt/zfs-pool0/kino/sonarr/config:/config"
-          "/mnt/zfs-pool0/kino/data:/data/downloads"
-          "/mnt/ssd/kino/nzbget/completed:/downloads/completed"
-
-        ];
-      };
-
-      prowlarr = {
-        image = "lscr.io/linuxserver/prowlarr:${versions.prowlarr}";
-        hostname = "prowlarr";
-        extraOptions = [ "--network=kino" ];
-        environment = {
-          PUID = "1000";
-          PGID = "1000";
-          TZ = "UTC";
-        };
-        ports = [ "9696:9696" ];
-        volumes = [ "/mnt/zfs-pool0/kino/prowlarr/config:/config" ];
-      };
-
-      bazarr = {
-        image = "lscr.io/linuxserver/bazarr:${versions.bazarr}";
-        hostname = "bazarr";
-        extraOptions = [ "--network=kino" ];
-        environment = {
-          PUID = "1000";
-          PGID = "1000";
-          TZ = "UTC";
-        };
-        ports = [ "6767:6767" ];
-        volumes = [
-          "/mnt/zfs-pool0/kino/bazarr/config:/config"
           "/mnt/zfs-pool0/kino/data:/data/downloads"
         ];
       };
@@ -164,19 +95,11 @@ in
   # Jellyfin and arr stack firewall
   networking.firewall.extraCommands = ''
     iptables -A nixos-fw -p tcp --dport 5080 -s 10.0.0.0/16 -j nixos-fw-accept
-    iptables -A nixos-fw -p tcp --dport 7878 -s 10.0.0.0/16 -j nixos-fw-accept
-    iptables -A nixos-fw -p tcp --dport 8989 -s 10.0.0.0/16 -j nixos-fw-accept
-    iptables -A nixos-fw -p tcp --dport 9696 -s 10.0.0.0/16 -j nixos-fw-accept
-    iptables -A nixos-fw -p tcp --dport 6767 -s 10.0.0.0/16 -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 6789 -s 10.0.0.0/16 -j nixos-fw-accept
     iptables -A nixos-fw -p tcp --dport 5055 -s 10.0.0.0/16 -j nixos-fw-accept
   '';
   networking.firewall.extraStopCommands = ''
     iptables -D nixos-fw -p tcp --dport 5080 -s 10.0.0.0/16 -j nixos-fw-accept || true
-    iptables -D nixos-fw -p tcp --dport 7878 -s 10.0.0.0/16 -j nixos-fw-accept || true
-    iptables -D nixos-fw -p tcp --dport 8989 -s 10.0.0.0/16 -j nixos-fw-accept || true
-    iptables -D nixos-fw -p tcp --dport 9696 -s 10.0.0.0/16 -j nixos-fw-accept || true
-    iptables -D nixos-fw -p tcp --dport 6767 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 6789 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 5055 -s 10.0.0.0/16 -j nixos-fw-accept || true
   '';
