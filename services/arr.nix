@@ -2,7 +2,7 @@
 
 let
   arrBaseDir = "/mnt/zfs-pool0/kino";
-  arrServices = ["radarr", "sonarr", "prowlarr", "bazarr"];
+  arrServices = ["radarr" "sonarr" "prowlarr" "bazarr"];
   mkArrService = name: {
     enable = true;
     group = "arr";
