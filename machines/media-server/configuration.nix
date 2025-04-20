@@ -16,6 +16,9 @@
     ../../services/jellyfin.nix
   ];
 
+  # This is needed for hardware video encoding
+  hardware.graphics.enable = true;
+
   # Mount ZFS data pool on boot
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
