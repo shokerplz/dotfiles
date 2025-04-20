@@ -13,6 +13,7 @@
     ../../services/loki.nix
     ../../services/nextcloud.nix
     ../../services/gitlab.nix
+    ../../services/jellyfin.nix
   ];
 
   # Mount ZFS data pool on boot
