@@ -5,7 +5,7 @@
   services.jellyfin = {
 		enable = true;
 		user = "jellyfin";
-    dataDir = "/mnt/zfs-pool0/kino/data";
+    dataDir = "/mnt/zfs-pool0/kino/jellyfin";
     configDir = "/mnt/zfs-pool0/kino/jellyfin/config";
     cacheDir = "/mnt/zfs-pool0/kino/jellyfin/cache";
 	};
