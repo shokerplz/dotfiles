@@ -16,8 +16,7 @@
 			mkdir -p /mnt/zfs-pool0/kino/jellyfin/config
 			mkdir -p /mnt/zfs-pool0/kino/jellyfin/cache
       chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/data
-			chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin/config
-			chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin/cache
+			chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin
     '';
 
 	# This is needed for skipper plugin
