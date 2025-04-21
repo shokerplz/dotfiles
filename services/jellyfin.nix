@@ -15,7 +15,7 @@
 			mkdir -p /mnt/zfs-pool0/kino/data
 			mkdir -p /mnt/zfs-pool0/kino/jellyfin/config
 			mkdir -p /mnt/zfs-pool0/kino/jellyfin/cache
-      chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/data
+      chown -R jellyfin /mnt/zfs-pool0/kino/data
 			chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin
     '';
 
