@@ -9,11 +9,11 @@
     ./hardware-configuration.nix
     ../../services/promtail.nix
     ../../services/node-exporter.nix
-    ../../services/kino.nix
     ../../services/loki.nix
     ../../services/nextcloud.nix
     ../../services/gitlab.nix
     ../../services/jellyfin.nix
+    ../../services/arr.nix
   ];
 
   # This is needed for hardware video encoding
