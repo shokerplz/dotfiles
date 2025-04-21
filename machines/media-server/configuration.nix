@@ -9,7 +9,6 @@
     ./hardware-configuration.nix
     ../../services/promtail.nix
     ../../services/node-exporter.nix
-    ../../services/kino.nix
     ../../services/loki.nix
     ../../services/nextcloud.nix
     ../../services/gitlab.nix
