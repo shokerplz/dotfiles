@@ -7,7 +7,6 @@
 
 {
   services.sunshine = {
-    package = sunshine;
     autoStart = true;
     enable = true;
     capSysAdmin = true;
@@ -20,8 +19,8 @@
         PATH = "$(PATH):$(HOME)/.local/bin";
         DISPLAY = ":0";
         GNOME_SETUP_DISPLAY = ":1";
-        USER = "${config.services.displayManager.autoLogin.user}";
-        USERNAME = "${config.services.displayManager.autoLogin.user}";
+#        USER = "${config.services.displayManager.autoLogin.user}";
+#        USERNAME = "${config.services.displayManager.autoLogin.user}";
         WAYLAND_DISPLAY = "wayland-0";
         XDG_CURRENT_DESKTOP = "GNOME";
       };

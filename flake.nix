@@ -15,6 +15,9 @@
     nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # Home Manager
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -25,6 +28,7 @@
       sops-nix,
       nixos-hardware,
       auto-cpufreq,
+      home-manager,
     }:
     let
       makeDevShell =
@@ -90,8 +94,15 @@
           modules = [
             ./common/default.nix
             ./common/ssh.nix
+            ./common/gaming.nix
+            ./common/gui.nix
             ./machines/main-pc/configuration.nix
             sops-nix.nixosModules.sops
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useUserPackages = true;
+              home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
+            }
           ];
         };
       };
