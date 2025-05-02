@@ -12,28 +12,18 @@
         keyboard.bindings = [
           {
             key = "C";
-            mods = "Control";
+            mods = "Control|Shift";
             action = "Copy";
           }
           {
             key = "V";
-            mods = "Control";
+            mods = "Control|Shift";
             action = "Paste";
           }
           {
             key = "C";
-            mods = "Control|Shift";
+            mods = "Control";
             chars = "\\u0003";
-          }
-          {
-            key = "D";
-            mods = "Control|Shift";
-            chars = "\\u0004";
-          }
-          {
-            key = "C";
-            mods = "Control|Shift";
-            action = "None";
           }
         ];
       };
