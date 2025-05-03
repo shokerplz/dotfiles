@@ -56,10 +56,10 @@
       };
       extraConfig."60-latency" = {
         "context.properties" = {
-          "default.clock.rate"         = 44100;
-          "default.clock.allowed-rates" = [ 44100 ];
-          "default.clock.quantum"      = 256;
-          "default.clock.min-quantum"  = 256;
+          "default.clock.rate"         = 48000;
+          "default.clock.allowed-rates" = [ 48000 ];
+          "default.clock.quantum"      = 512;
+          "default.clock.min-quantum"  = 512;
           "default.clock.max-quantum"  = 512;
         };
       };

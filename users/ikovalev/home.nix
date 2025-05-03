@@ -56,6 +56,7 @@
       XCURSOR_THEME = "Adwaita alacritty";
       EDITOR = "nvim";
     };
+    historyControl = [ "ignoredups" "ignorespace" ];
   };
 
   home.packages = with pkgs; [
