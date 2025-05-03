@@ -62,6 +62,11 @@
             nixos-hardware.nixosModules.gpd-pocket-4
             auto-cpufreq.nixosModules.default
             sops-nix.nixosModules.sops
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useUserPackages = true;
+              home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
+            }
           ];
           specialArgs = {
             nixpkgs-24-11 = import nixpkgs-24-11 {

@@ -28,5 +28,10 @@
         ];
       };
   };
+
+  home.sessionVariables = {
+    TERMINAL = "alacritty";
+  };
+
 }
 
