@@ -24,41 +24,41 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    wireplumber.configPackages = [
-      (pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/alsa.conf" ''
-        monitor.alsa.rules = [
-          {
-            matches = [
-              {
-                device.name = "~alsa_card.*"
-              }
-            ]
-            actions = {
-              update-props = {
-                # Device settings
-                api.alsa.use-acp = true
-              }
-            }
-          }
-          {
-            matches = [
-              {
-                node.name = "~alsa_input.*"
-              }
-              {
-                node.name = "~alsa_output.*"
-              }
-            ]
-            actions = {
-            # Node settings
-              update-props = {
-                session.suspend-timeout-seconds = 0
-              }
-            }
-          }
-        ]
-      '')
+    wireplumber = {
+      enable = true;
+      extraConfig."90-disable-suspend" = {
+    # ---- ALSA monitor rules (device + node) -------------------------
+    "monitor.alsa.rules" = [
+      # 1. device‑wide: keep every ALSA card alive forever
+      {
+        "matches" = [
+          { "device.name" = "~alsa_card.*"; }
+        ];
+        "actions" = {
+          "update-props" = {
+            "api.alsa.use-acp" = true;
+            "session.suspend-timeout-seconds" = 0;
+          };
+        };
+      }
+
+      # 2. node‑side extras (optional but nice)
+      {
+        "matches" = [
+          { "node.name" = "~alsa_output.*"; }
+          { "node.name" = "~alsa_input.*";  }
+        ];
+        "actions" = {
+          "update-props" = {
+            "node.pause-on-idle"              = false;
+            "node.suspend-on-idle"            = false;
+            "session.suspend-timeout-seconds" = 0;
+          };
+        };
+      }
     ];
+      };
+    };
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
 

@@ -9,6 +9,7 @@
     ./docker.nix
     ./ai.nix
     ./sunshine.nix
+    ./sound-fix.nix
   ];
 
   # Bootloader.
