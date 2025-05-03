@@ -5,7 +5,9 @@
     home.homeDirectory = "/home/ikovalev";
 
     home.stateVersion = "24.11";        # Do not change that!
-                                        
+    
+    programs.home-manager.enable = true;  # Home manager manages itself
+
     programs.alacritty = {
       enable = true;
       settings = {
@@ -32,6 +34,10 @@
   home.sessionVariables = {
     TERMINAL = "alacritty";
   };
+
+  home.packages = with pkgs; [
+    tmux
+  ];
 
 }
 
