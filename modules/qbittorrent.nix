@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.services.qbittorrent;
@@ -104,12 +109,15 @@ in
         group = cfg.group;
         home = cfg.dataDir;
         createHome = true;
-	isSystemUser = true;
+        isSystemUser = true;
         description = "qBittorrent Daemon user";
       };
     };
 
-    users.groups =
-      mkIf (cfg.group == "qbittorrent") { qbittorrent = { gid = null; }; };
+    users.groups = mkIf (cfg.group == "qbittorrent") {
+      qbittorrent = {
+        gid = null;
+      };
+    };
   };
 }
