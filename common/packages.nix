@@ -14,5 +14,6 @@
     inetutils
     lshw
     pciutils
+    iotop
   ];
 }
