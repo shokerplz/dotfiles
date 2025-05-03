@@ -14,6 +14,7 @@
     ../../services/gitlab.nix
     ../../services/jellyfin.nix
     ../../services/arr.nix
+    ../../services/samba.nix
   ];
 
   # This is needed for hardware video encoding
