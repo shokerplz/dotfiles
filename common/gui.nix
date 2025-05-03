@@ -27,9 +27,7 @@
     wireplumber = {
       enable = true;
       extraConfig."90-disable-suspend" = {
-        # ---- ALSA monitor rules (device + node) -------------------------
         "monitor.alsa.rules" = [
-          # 1. device‑wide: keep every ALSA card alive forever
           {
             "matches" = [
               { "device.name" = "~alsa_card.*"; }
@@ -41,8 +39,6 @@
               };
             };
           }
-
-          # 2. node‑side extras (optional but nice)
           {
             "matches" = [
               { "node.name" = "~alsa_output.*"; }
@@ -57,6 +53,15 @@
             };
           }
         ];
+      };
+      extraConfig."60-latency" = {
+        "context.properties" = {
+          "default.clock.rate"         = 44100;
+          "default.clock.allowed-rates" = [ 44100 ];
+          "default.clock.quantum"      = 256;
+          "default.clock.min-quantum"  = 256;
+          "default.clock.max-quantum"  = 512;
+        };
       };
     };
     # If you want to use JACK applications, uncomment this

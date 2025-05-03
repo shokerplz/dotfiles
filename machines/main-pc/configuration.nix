@@ -19,7 +19,7 @@
 
   # Fix sound delay
   boot.extraModprobeConfig = ''
-    options snd_hda_intel power_save=0 power_save_controller=N
+    options snd_hda_intel power_save=0 power_save_controller=N enable_msi=1
   '';
 
   swapDevices = [
