@@ -43,10 +43,10 @@
           {
             matches = [
               {
-                node.name = "~alsa_input.pci.*"
+                node.name = "~alsa_input.*"
               }
               {
-                node.name = "~alsa_output.pci.*"
+                node.name = "~alsa_output.*"
               }
             ]
             actions = {
