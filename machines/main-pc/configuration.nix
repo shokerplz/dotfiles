@@ -16,6 +16,11 @@
   boot.loader.grub.device = "/dev/nvme2n1";
   boot.loader.grub.useOSProber = true;
 
+  # Fix sound delay
+  boot.extraModprobeConfig = ''
+    options snd_hda_intel power_save=0 power_save_controller=N
+  '';
+
   swapDevices = [
     {
       device = "/swapfile";
