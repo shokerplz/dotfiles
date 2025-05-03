@@ -7,9 +7,7 @@
     ./packages.nix
     ./nvidia.nix
     ./docker.nix
-    ./ai.nix
     ./sunshine.nix
-    ./sound-fix.nix
   ];
 
   # Bootloader.

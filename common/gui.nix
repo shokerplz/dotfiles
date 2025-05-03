@@ -7,6 +7,9 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  # Disable gnome remote desktop (it doesn't work with pulseaudio)
+  services.gnome.gnome-remote-desktop.enable = false;
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -18,7 +21,6 @@
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -26,6 +28,37 @@
     pulse.enable = true;
     wireplumber = {
       enable = true;
+      extraConfig.bluetoothEnhancements = {
+        "monitor.bluez.properties" = {
+          "bluez5.enable-sbc-xq" = true;
+          "bluez5.enable-msbc" = true;
+          "bluez5.enable-hw-volume" = true;
+          "bluez5.roles" = [
+            "hsp_hs"
+            "hsp_ag"
+            "hfp_hf"
+            "hfp_ag"
+          ];
+        };
+      };
+      extraConfig.pipewire-pulse."92-low-latency" = {
+        context.modules = [
+          {
+            name = "libpipewire-module-protocol-pulse";
+            args = {
+              pulse.min.req = "32/48000";
+              pulse.default.req = "32/48000";
+              pulse.max.req = "32/48000";
+              pulse.min.quantum = "32/48000";
+              pulse.max.quantum = "32/48000";
+            };
+          }
+        ];
+        stream.properties = {
+          node.latency = "32/48000";
+          resample.quality = 1;
+        };
+      };
       extraConfig."90-disable-suspend" = {
         "monitor.alsa.rules" = [
           {
@@ -56,11 +89,11 @@
       };
       extraConfig."60-latency" = {
         "context.properties" = {
-          "default.clock.rate"         = 48000;
+          "default.clock.rate" = 48000;
           "default.clock.allowed-rates" = [ 48000 ];
-          "default.clock.quantum"      = 512;
-          "default.clock.min-quantum"  = 512;
-          "default.clock.max-quantum"  = 512;
+          "default.clock.quantum" = 512;
+          "default.clock.min-quantum" = 512;
+          "default.clock.max-quantum" = 512;
         };
       };
     };
