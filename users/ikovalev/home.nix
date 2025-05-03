@@ -32,9 +32,14 @@
   };
 
   programs.neovim.enable = true;
-
-  programs.ssh = {
+  programs.ssh.enable = true;
+  programs.tmux = {
     enable = true;
+    mouse = true;
+    clock24 = true;
+    extraConfig = ''
+      set -ga terminal-overrides ',*256color*:smcup@:rmcup@'
+    '';
   };
 
   programs.keychain = {
