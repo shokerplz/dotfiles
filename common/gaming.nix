@@ -5,11 +5,23 @@
   # Install some useful packages
   environment.systemPackages = with pkgs; [
     mangohud
-    protonup
+    protonup-qt
     lutris
+    heroic
     wine
     gamemode
   ];
+
+  programs = {
+    gamescope = {
+      enable = true;
+      capSysNice = true;
+    };
+    steam = {
+      enable = true;
+      gamescopeSession.enable = true;
+    };
+  };
 
   # Enable gamemode. Usage: in steam specify `gamemoderun %command%`
   programs.gamemode.enable = true;

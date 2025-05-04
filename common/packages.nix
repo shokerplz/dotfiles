@@ -15,5 +15,6 @@
     lshw
     pciutils
     iotop
+    lsof
   ];
 }
