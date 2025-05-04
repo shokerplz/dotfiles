@@ -32,6 +32,11 @@
     fsType = "xfs";
   };
 
+  fileSystems."/data" = {
+    device = "/dev/disk/by-uuid/2dd7bc19-1598-401c-902a-0cb26f2cfee8";
+    fsType = "xfs";
+  };
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/000A-9A71";
     fsType = "vfat";
