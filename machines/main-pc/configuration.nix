@@ -14,6 +14,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # installs the udev rules and the Solaar (tool for logitech devices)
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true;   # starts a tray icon
+
   # Fix sound delay
   boot.extraModprobeConfig = ''
     options snd_hda_intel power_save=0 power_save_controller=N enable_msi=1
