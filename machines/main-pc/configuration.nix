@@ -8,7 +8,6 @@
     ./nvidia.nix
     ./docker.nix
     ./sunshine.nix
-    ./sound-fix.nix
   ];
 
   # Bootloader.
@@ -17,7 +16,7 @@
 
   # installs the udev rules and the Solaar (tool for logitech devices)
   hardware.logitech.wireless.enable = true;
-  hardware.logitech.wireless.enableGraphical = true;   # starts a tray icon
+  hardware.logitech.wireless.enableGraphical = true; # starts a tray icon
 
   # Fix sound delay
   boot.extraModprobeConfig = ''

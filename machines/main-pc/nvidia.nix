@@ -50,10 +50,13 @@ in
   # This prevents random sound crashes (nvidia should just fix their drivers)
   systemd.services.nvidia-lock-memclk = {
     description = "Lock NVIDIA memory clock to prevent HDMI audio drop‑outs";
-    after       = [ "nvidia-persistenced.service" "display-manager.service" ];
-    wantedBy    = [ "multi-user.target" ];
+    after = [
+      "nvidia-persistenced.service"
+      "display-manager.service"
+    ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      Type      = "oneshot";
+      Type = "oneshot";
       ExecStart = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-memory-clocks=${toString gpuMemClk}";
     };
   };
