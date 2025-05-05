@@ -8,6 +8,7 @@
     ./nvidia.nix
     ./docker.nix
     ./sunshine.nix
+    ./sound-fix.nix
   ];
 
   # Bootloader.

@@ -16,5 +16,6 @@
     pciutils
     iotop
     lsof
+    jq
   ];
 }

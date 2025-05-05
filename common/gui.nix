@@ -69,7 +69,6 @@
             ];
             "actions" = {
               "update-props" = {
-                "api.alsa.use-acp" = true;
                 "session.suspend-timeout-seconds" = 0;
               };
             };

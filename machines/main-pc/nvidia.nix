@@ -4,6 +4,12 @@
   pkgs,
   ...
 }:
+
+let
+  # got this value from `nvidia‑smi --query-supported-clocks`
+  gpuMemClk = 9501;
+in
+
 {
 
   # Enable OpenGL
@@ -23,8 +29,8 @@
 
     # Modesetting is required.
     modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
+    powerManagement.enable = true;
+    powerManagement.finegrained = true;
     open = true;
 
     # Enable the Nvidia settings menu,
@@ -38,6 +44,17 @@
       offload.enable = true;
       amdgpuBusId = "PCI:5:0:0";
       nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+
+  # This prevents random sound crashes (nvidia should just fix their drivers)
+  systemd.services.nvidia-lock-memclk = {
+    description = "Lock NVIDIA memory clock to prevent HDMI audio drop‑outs";
+    after       = [ "nvidia-persistenced.service" "display-manager.service" ];
+    wantedBy    = [ "multi-user.target" ];
+    serviceConfig = {
+      Type      = "oneshot";
+      ExecStart = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-memory-clocks=${toString gpuMemClk}";
     };
   };
 
