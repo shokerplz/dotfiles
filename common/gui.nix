@@ -133,4 +133,12 @@
       totem # video player
     ]
   );
+
+  # Install some cool GNOME extensions
+  environment.systemPackages = with pkgs; [
+    gnomeExtensions.dash-to-dock
+    gnomeExtensions.appindicator
+    gnomeExtensions.clipboard-indicator
+    gnomeExtensions.system-monitor
+  ];
 }

@@ -17,5 +17,7 @@
     iotop
     lsof
     jq
+    btop
+    dmidecode
   ];
 }
