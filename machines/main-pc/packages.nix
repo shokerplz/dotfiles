@@ -20,5 +20,6 @@
     jellyfin-media-player
     libreoffice-qt6-fresh
     alacritty
+    discord
   ];
 }
