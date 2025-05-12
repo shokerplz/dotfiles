@@ -21,6 +21,12 @@
 
   security.rtkit.enable = true;
 
+  hardware.bluetooth.settings = {
+  	General = {
+  		Experimental = true;
+  	};
+  };
+
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   services.pipewire = {
@@ -30,19 +36,6 @@
     pulse.enable = true;
     wireplumber = {
       enable = true;
-      extraConfig.bluetoothEnhancements = {
-        "monitor.bluez.properties" = {
-          "bluez5.enable-sbc-xq" = true;
-          "bluez5.enable-msbc" = true;
-          "bluez5.enable-hw-volume" = true;
-          "bluez5.roles" = [
-            "hsp_hs"
-            "hsp_ag"
-            "hfp_hf"
-            "hfp_ag"
-          ];
-        };
-      };
       extraConfig.pipewire-pulse."92-low-latency" = {
         context.modules = [
           {
