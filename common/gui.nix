@@ -22,9 +22,9 @@
   security.rtkit.enable = true;
 
   hardware.bluetooth.settings = {
-  	General = {
-  		Experimental = true;
-  	};
+    General = {
+      Experimental = true;
+    };
   };
 
   # Enable sound with pipewire.

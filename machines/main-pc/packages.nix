@@ -21,5 +21,6 @@
     libreoffice-qt6-fresh
     alacritty
     discord
+    orca-slicer
   ];
 }
