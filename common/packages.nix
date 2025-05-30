@@ -19,5 +19,6 @@
     jq
     btop
     dmidecode
+    file
   ];
 }
