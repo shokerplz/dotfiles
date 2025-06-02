@@ -6,6 +6,8 @@
     ./hardware-configuration.nix
     ./packages.nix
     ./fingerprint-scanner.nix
+    ./overlays.nix
+    ./power.nix
   ];
 
   # Bootloader.

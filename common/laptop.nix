@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  powerManagement.enable = true;
   # Enabled IIO sensor (automatic rotation)
   hardware.sensor.iio.enable = true;
 
@@ -16,7 +17,7 @@
     };
     battery = {
       governor = "powersave";
-      turbo = "auto";
+      turbo = "never";
     };
   };
 }

@@ -5,15 +5,12 @@
     (final: prev: {
       # Overlay for orca-slicer. Without this package would fail to build
       orca-slicer = prev.orca-slicer.overrideAttrs (old: rec {
-        ## 1 – your original CUDA flag
         cmakeFlags = (old.cmakeFlags or [ ]) ++ [
           (prev.lib.cmakeFeature "CUDA_TOOLKIT_ROOT_DIR" "${prev.cudaPackages.cudatoolkit}")
         ];
 
-        ## 2 – we need makeWrapper for the wrapper script
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
 
-        ## 3 – wrap the real binary with env-var glue
         postFixup =
           (old.postFixup or "")
           + ''
