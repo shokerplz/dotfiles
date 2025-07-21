@@ -31,7 +31,6 @@
     };
   };
 
-  programs.neovim.enable = true;
   programs.ssh.enable = true;
   programs.tmux = {
     enable = true;
@@ -64,6 +63,7 @@
 
   home.packages = with pkgs; [
     # Additional packages here
+    gcc
   ];
 
 }

@@ -131,7 +131,8 @@
   environment.systemPackages = with pkgs; [
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator
-    gnomeExtensions.clipboard-indicator
+    gnomeExtensions.clipboard-history
     gnomeExtensions.system-monitor
+    video-trimmer
   ];
 }
