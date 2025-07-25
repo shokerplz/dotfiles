@@ -4,6 +4,7 @@
   services.prometheus.exporters.node-cert = {
     enable = true;
     port = 9141;
+    paths = [ "/var/lib/acme/" ];
     includeGlobs = [ "/var/lib/acme/*/*.pem" ];
   };
 
