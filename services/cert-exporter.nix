@@ -1,11 +1,9 @@
-{ ... }:
-{
+{...}: {
   # Cert exporter service
   services.prometheus.exporters.node-cert = {
     enable = true;
     port = 9141;
-    paths = [ "/var/lib/acme/" ];
-    includeGlobs = [ "/var/lib/acme/*/*.pem" ];
+    paths = ["/var/lib/acme/"];
   };
 
   # Cert exporter firewall
