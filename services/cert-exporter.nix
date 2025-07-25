@@ -4,6 +4,7 @@
     enable = true;
     port = 9141;
     paths = ["/var/lib/acme/"];
+    includeGlobs = ["/var/lib/acme/*/*.pem"];
   };
 
   # Cert exporter firewall
