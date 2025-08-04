@@ -19,17 +19,24 @@
   services.resolved.enable = true;
   networking.nameservers = ["127.0.0.53"];
 
+  hardware.opengl.enable = true;
+  hardware.amdgpu.opencl.enable = true;
+  users.users.ikovalev.extraGroups = [ "video" "render" ];
+
+  # Allow openssh, but disable it by default
   services.openssh = {
     enable = true;
     ports = [22];
+    openFirewall = true;
     settings = {
       PasswordAuthentication = false;
       AllowUsers = ["ikovalev"];
       PermitRootLogin = "no";
     };
   };
-
   systemd.services.sshd.wantedBy = lib.mkForce [];
+
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
