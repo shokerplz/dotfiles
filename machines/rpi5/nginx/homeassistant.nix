@@ -19,6 +19,7 @@
     '';
     locations."/" = {
       proxyPass = "http://homeassistant.home:8123";
+      proxyWebsockets = true;
     };
   };
 }
