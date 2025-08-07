@@ -14,6 +14,8 @@
       proxy_headers_hash_max_size 4096;
       proxy_headers_hash_bucket_size  128;
       proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_redirect http:// https://;
     '';
     locations."/" = {
       proxyPass = "http://homeassistant.home:8123";
