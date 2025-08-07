@@ -10,7 +10,7 @@
     ./kino.nix
     ./monitoring.nix
     ./git.nix
-    ./home.nix
+    ./homeassistant.nix
   ];
 
   # Creating directories for static websites
