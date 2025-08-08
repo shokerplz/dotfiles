@@ -1,7 +1,5 @@
 { ... }:
-
 {
-
   # Prometheus service
   services.prometheus = {
     enable = true;
@@ -39,6 +37,12 @@
               "gl-mt6000.home:9100"
             ];
           }
+        ];
+      }
+      {
+        job_name = "cert";
+        static_configs = [
+          { targets = [ "rpi5.home:9141" ]; }
         ];
       }
       {

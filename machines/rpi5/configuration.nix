@@ -1,10 +1,5 @@
+{ pkgs, ... }:
 {
-  pkgs,
-  ...
-}:
-
-{
-
   imports = [
     ./hardware-configuration.nix
     ./docker.nix
@@ -17,6 +12,7 @@
     ../../services/speedtest-exporter.nix
     ../../services/cloudflare-ddns.nix
     ../../services/node-exporter.nix
+    ../../services/cert-exporter.nix
   ];
 
   # Set hostname
