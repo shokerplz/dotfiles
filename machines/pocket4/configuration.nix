@@ -1,6 +1,4 @@
-{ ... }:
-
-{
+{lib, ...}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -19,7 +17,26 @@
   # Use systemd-resolve so DNS works fine with WireGuard VPN
   networking.networkmanager.dns = "systemd-resolved";
   services.resolved.enable = true;
-  networking.nameservers = [ "127.0.0.53" ];
+  networking.nameservers = ["127.0.0.53"];
+
+  hardware.opengl.enable = true;
+  hardware.amdgpu.opencl.enable = true;
+  users.users.ikovalev.extraGroups = [ "video" "render" ];
+
+  # Allow openssh, but disable it by default
+  services.openssh = {
+    enable = true;
+    ports = [22];
+    openFirewall = true;
+    settings = {
+      PasswordAuthentication = false;
+      AllowUsers = ["ikovalev"];
+      PermitRootLogin = "no";
+    };
+  };
+  systemd.services.sshd.wantedBy = lib.mkForce [];
+
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -28,5 +45,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
 }

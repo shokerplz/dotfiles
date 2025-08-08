@@ -1,5 +1,8 @@
-{ conifg, pkgs, ... }:
 {
+  conifg,
+  pkgs,
+  ...
+}: {
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -58,7 +61,7 @@
         "monitor.alsa.rules" = [
           {
             "matches" = [
-              { "device.name" = "~alsa_card.*"; }
+              {"device.name" = "~alsa_card.*";}
             ];
             "actions" = {
               "update-props" = {
@@ -68,8 +71,8 @@
           }
           {
             "matches" = [
-              { "node.name" = "~alsa_output.*"; }
-              { "node.name" = "~alsa_input.*"; }
+              {"node.name" = "~alsa_output.*";}
+              {"node.name" = "~alsa_input.*";}
             ];
             "actions" = {
               "update-props" = {
@@ -84,7 +87,7 @@
       extraConfig."60-latency" = {
         "context.properties" = {
           "default.clock.rate" = 48000;
-          "default.clock.allowed-rates" = [ 48000 ];
+          "default.clock.allowed-rates" = [48000];
           "default.clock.quantum" = 512;
           "default.clock.min-quantum" = 512;
           "default.clock.max-quantum" = 512;
@@ -109,8 +112,7 @@
 
   # Exclude some GNOME packages
   environment.gnome.excludePackages = (
-    with pkgs;
-    [
+    with pkgs; [
       atomix # puzzle game
       epiphany # web browser
       evince # document viewer
@@ -126,6 +128,21 @@
       totem # video player
     ]
   );
+
+  # KDE connect allows to share clipboard between devices
+  programs.kdeconnect = {
+    enable = true;
+    package = pkgs.gnomeExtensions.gsconnect;
+  };
+  networking.firewall = rec {
+    allowedTCPPortRanges = [
+      {
+        from = 1714;
+        to = 1764;
+      }
+    ];
+    allowedUDPPortRanges = allowedTCPPortRanges;
+  };
 
   # Install some cool GNOME extensions
   environment.systemPackages = with pkgs; [

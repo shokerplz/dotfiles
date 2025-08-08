@@ -3,16 +3,14 @@
   pkgs,
   lib,
   ...
-}:
-
-{
-
+}: {
   imports = [
     ../../../secrets/cloudflare.nix
     ./files.nix
     ./kino.nix
     ./monitoring.nix
     ./git.nix
+    ./homeassistant.nix
   ];
 
   # Creating directories for static websites
@@ -46,36 +44,34 @@
   services.nginx = {
     enable = true;
     resolver = {
-      addresses = [ "10.0.1.1" ];
+      addresses = ["10.0.1.1"];
       ipv6 = false;
     };
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
-    commonHttpConfig =
-      let
-        realIpsFromList = lib.strings.concatMapStringsSep "\n" (x: "set_real_ip_from  ${x};");
-        fileToList = x: lib.strings.splitString "\n" (builtins.readFile x);
-        cfipv4 = fileToList (
-          pkgs.fetchurl {
-            url = "https://www.cloudflare.com/ips-v4";
-            hash = "sha256-8Cxtg7wBqwroV3Fg4DbXAMdFU1m84FTfiE5dfZ5Onns=";
-          }
-        );
-        cfipv6 = fileToList (
-          pkgs.fetchurl {
-            url = "https://www.cloudflare.com/ips-v6";
-            hash = "sha256-np054+g7rQDE3sr9U8Y/piAp89ldto3pN9K+KCNMoKk=";
-          }
-        );
-      in
-      ''
-        ${realIpsFromList cfipv4}
-        ${realIpsFromList cfipv6}
-        real_ip_header CF-Connecting-IP;
-        sendfile            on;
-        tcp_nopush          on;
-        tcp_nodelay         on;
-        keepalive_timeout   65;
-      '';
+    commonHttpConfig = let
+      realIpsFromList = lib.strings.concatMapStringsSep "\n" (x: "set_real_ip_from  ${x};");
+      fileToList = x: lib.strings.splitString "\n" (builtins.readFile x);
+      cfipv4 = fileToList (
+        pkgs.fetchurl {
+          url = "https://www.cloudflare.com/ips-v4";
+          hash = "sha256-8Cxtg7wBqwroV3Fg4DbXAMdFU1m84FTfiE5dfZ5Onns=";
+        }
+      );
+      cfipv6 = fileToList (
+        pkgs.fetchurl {
+          url = "https://www.cloudflare.com/ips-v6";
+          hash = "sha256-np054+g7rQDE3sr9U8Y/piAp89ldto3pN9K+KCNMoKk=";
+        }
+      );
+    in ''
+      ${realIpsFromList cfipv4}
+      ${realIpsFromList cfipv6}
+      real_ip_header CF-Connecting-IP;
+      sendfile            on;
+      tcp_nopush          on;
+      tcp_nodelay         on;
+      keepalive_timeout   65;
+    '';
   };
 }
