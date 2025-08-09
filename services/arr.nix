@@ -16,9 +16,6 @@ let
 in
 
 {
-  imports = [
-    ../modules/qbittorrent.nix
-  ];
 
   system.activationScripts.createArrDirs = ''
     mkdir -p /mnt/zfs-pool0/kino/{${builtins.concatStringsSep "," arrServices}}/config
@@ -66,7 +63,7 @@ in
   services.qbittorrent = {
     enable = true;
     group = "arr";
-    port = 5080;
+    webuiPort = 5080;
   };
 
   # Arr stack firewall
