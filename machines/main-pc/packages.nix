@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     neovim
     git
@@ -21,6 +20,5 @@
     libreoffice-qt6-fresh
     alacritty
     discord
-    orca-slicer
   ];
 }
