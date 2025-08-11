@@ -50,7 +50,25 @@
         treesitter.enable = true;
       };
 
-      rust.enable = true;
+      rust = {
+        enable = true;
+        crates = {
+          enable = true;
+        };
+        lsp = {
+          enable = true;
+          opts = ''
+            ['rust-analyzer'] = {
+              cargo = {allFeature = true},
+              checkOnSave = true,
+              procMacro = {
+                enable = true,
+              },
+            },
+          '';
+        };
+        treesitter.enable = true;
+      };
       go.enable = true;
       python.enable = true;
       terraform.enable = true;
