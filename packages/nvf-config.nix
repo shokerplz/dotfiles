@@ -17,6 +17,8 @@
       };
     };
 
+    undoFile.enable = true;
+
     spellcheck = {
       enable = true;
     };
