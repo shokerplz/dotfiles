@@ -13,7 +13,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # NixPKGs nixos24.11
     nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpgs-25-05.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-25-05.url = "github:nixos/nixpkgs/nixos-25.05";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # Home Manager
