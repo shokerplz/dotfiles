@@ -5,31 +5,32 @@
     # AutoCPUFreq
     auto-cpufreq = {
       url = "github:AdnanHodzic/auto-cpufreq";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-current";
     };
     # Secret manager for Nix
     sops-nix.url = "github:Mic92/sops-nix";
     # Nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # NixPKGs nixos24.11
     nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-25-05.url = "github:nixos/nixpkgs/nixos-25.05";
+    # NixPKGs that I am currently using
+    nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.05";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # Home Manager
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs-current";
     nvf = {
       url = "github:notashelf/nvf";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-current";
     };
   };
 
   outputs = {
     self,
-    nixpkgs,
+    nixpkgs-unstable,
     nixpkgs-24-11,
-    nixpkgs-25-05,
+    nixpkgs-current,
     sops-nix,
     nixos-hardware,
     auto-cpufreq,
@@ -37,7 +38,7 @@
     nvf,
   }: let
     makeDevShell = system: let
-      pkgs = import nixpkgs {
+      pkgs = import nixpkgs-current {
         inherit system;
       };
     in
@@ -53,12 +54,12 @@
   in {
     packages."x86_64-linux".my-neovim =
       (nvf.lib.neovimConfiguration {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        pkgs = nixpkgs-current.legacyPackages."x86_64-linux";
         modules = [./packages/nvf-config.nix];
       }).neovim;
 
     nixosConfigurations = {
-      pocket4 = nixpkgs.lib.nixosSystem rec {
+      pocket4 = nixpkgs-current.lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
           ./common/default.nix
@@ -84,7 +85,7 @@
           };
         };
       };
-      rpi5 = nixpkgs-25-05.lib.nixosSystem rec {
+      rpi5 = nixpkgs-current.lib.nixosSystem rec {
         system = "aarch64-linux";
         modules = [
           ./common/default.nix
@@ -94,7 +95,7 @@
           sops-nix.nixosModules.sops
         ];
       };
-      media-server = nixpkgs-25-05.lib.nixosSystem rec {
+      media-server = nixpkgs-current.lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
           ./common/default.nix
@@ -103,7 +104,7 @@
           sops-nix.nixosModules.sops
         ];
       };
-      main-pc = nixpkgs.lib.nixosSystem rec {
+      main-pc = nixpkgs-current.lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
           ./common/default.nix
