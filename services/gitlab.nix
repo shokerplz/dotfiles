@@ -125,9 +125,9 @@ in {
       otpFile = config.sops.secrets."secrets/otp".path;
       dbFile = config.sops.secrets."secrets/db".path;
       jwsFile = pkgs.runCommand "oidcKeyBase" {} "${pkgs.openssl}/bin/openssl genrsa 2048 > $out";
-      activeRecordSalt = config.sops.secrets."secrets/activeRecordSalt".path;
-      activeRecordPrimaryKey = config.sops.secrets."secrets/activeRecordPrimaryKey".path;
-      activeRecordDeterministicKey = config.sops.secrets."secrets/activeRecordDeterministicKey".path;
+      activeRecordSaltFile = config.sops.secrets."secrets/activeRecordSalt".path;
+      activeRecordPrimaryKeyFile = config.sops.secrets."secrets/activeRecordPrimaryKey".path;
+      activeRecordDeterministicKeyFile = config.sops.secrets."secrets/activeRecordDeterministicKey".path;
     };
   };
 
