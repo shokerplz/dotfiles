@@ -1,27 +1,30 @@
-{ config, pkgs, ... }:
-
-let
-  gitlabSecretFile = "/etc/nixos/secrets/gitlab.yaml";
-in
-
 {
+  config,
+  pkgs,
+  ...
+}: let
+  gitlabSecretFile = ../secrets/gitlab.yaml;
+in {
   # Secrets needed for Gitlab
   sops.secrets =
     builtins.mapAttrs
-      (_: _: {
-        sopsFile = gitlabSecretFile;
-        uid = config.users.users.gitlab.uid;
-      })
-      {
-        databasePassword = { };
-        initialRootPassword = { };
-        "secrets/secret" = { };
-        "secrets/otp" = { };
-        "secrets/db" = { };
-        "ssh/rsa" = { };
-        "ssh/ecdsa" = { };
-        "ssh/ed25519" = { };
-      };
+    (_: _: {
+      sopsFile = gitlabSecretFile;
+      uid = config.users.users.gitlab.uid;
+    })
+    {
+      databasePassword = {};
+      initialRootPassword = {};
+      "secrets/secret" = {};
+      "secrets/otp" = {};
+      "secrets/db" = {};
+      "secrets/activeRecordSalt" = {};
+      "secrets/activeRecordPrimaryKey" = {};
+      "secrets/activeRecordDeterministicKey" = {};
+      "ssh/rsa" = {};
+      "ssh/ecdsa" = {};
+      "ssh/ed25519" = {};
+    };
 
   # User for Gitlab
   users.users.gitlab = {
@@ -30,7 +33,7 @@ in
   };
 
   # Generate cert for registry
-  security.pki.certificates = [ "/etc/ssl/certs/registry.ikovalev.nl.crt" ];
+  security.pki.certificates = ["/etc/ssl/certs/registry.ikovalev.nl.crt"];
 
   systemd.services."generate-registry-cert" = {
     script = ''
@@ -44,7 +47,7 @@ in
       chown gitlab:gitlab /etc/ssl/certs/registry.ikovalev.nl.crt
       chown gitlab:gitlab /etc/ssl/private/registry.ikovalev.nl.key
     '';
-    path = [ pkgs.openssl ];
+    path = [pkgs.openssl];
     serviceConfig = {
       Type = "oneshot";
     };
@@ -121,7 +124,10 @@ in
       secretFile = config.sops.secrets."secrets/secret".path;
       otpFile = config.sops.secrets."secrets/otp".path;
       dbFile = config.sops.secrets."secrets/db".path;
-      jwsFile = pkgs.runCommand "oidcKeyBase" { } "${pkgs.openssl}/bin/openssl genrsa 2048 > $out";
+      jwsFile = pkgs.runCommand "oidcKeyBase" {} "${pkgs.openssl}/bin/openssl genrsa 2048 > $out";
+      activeRecordSaltFile = config.sops.secrets."secrets/activeRecordSalt".path;
+      activeRecordPrimaryKeyFile = config.sops.secrets."secrets/activeRecordPrimaryKey".path;
+      activeRecordDeterministicKeyFile = config.sops.secrets."secrets/activeRecordDeterministicKey".path;
     };
   };
 
@@ -131,9 +137,9 @@ in
       "network.target"
       "gitlab.service"
     ];
-    bindsTo = [ "gitlab.service" ];
-    wantedBy = [ "gitlab.target" ];
-    partOf = [ "gitlab.target" ];
+    bindsTo = ["gitlab.service"];
+    wantedBy = ["gitlab.target"];
+    partOf = ["gitlab.target"];
 
     serviceConfig = {
       Type = "simple";

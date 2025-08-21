@@ -1,13 +1,6 @@
-{
-  config,
-  ...
-}:
-
-let
-  cloudflareSecretFile = "/etc/nixos/secrets/cloudflare.yaml";
-in
-
-{
+{config, ...}: let
+  cloudflareSecretFile = ./cloudflare.yaml;
+in {
   sops = {
     secrets = {
       cloudflare_api_token = {
