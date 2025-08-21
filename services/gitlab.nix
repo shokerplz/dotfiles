@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  gitlabSecretFile = "./secrets/gitlab.yaml";
+  gitlabSecretFile = ../secrets/gitlab.yaml;
 in {
   # Secrets needed for Gitlab
   sops.secrets =
