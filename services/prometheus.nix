@@ -1,10 +1,11 @@
-{ ... }:
-{
+{...}: {
   # Prometheus service
   services.prometheus = {
     enable = true;
     port = 9090;
     stateDir = "prometheus";
+
+    retentionTime = "90d";
 
     globalConfig = {
       scrape_interval = "15s";
@@ -25,7 +26,7 @@
         ];
         metrics_path = "/metrics";
         scheme = "http";
-        static_configs = [ { targets = [ "localhost:9090" ]; } ];
+        static_configs = [{targets = ["localhost:9090"];}];
       }
       {
         job_name = "node";
@@ -35,6 +36,8 @@
               "rpi5.home:9100"
               "media-server.home:9100"
               "gl-mt6000.home:9100"
+              "pocket4.home:9100"
+              "main-pc.home:9100"
             ];
           }
         ];
@@ -42,14 +45,14 @@
       {
         job_name = "cert";
         static_configs = [
-          { targets = [ "rpi5.home:9141" ]; }
+          {targets = ["rpi5.home:9141"];}
         ];
       }
       {
         job_name = "speedtest";
         scrape_interval = "1h";
         scrape_timeout = "1m";
-        static_configs = [ { targets = [ "rpi5.home:9798" ]; } ];
+        static_configs = [{targets = ["rpi5.home:9798"];}];
       }
     ];
   };

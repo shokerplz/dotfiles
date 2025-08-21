@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -9,6 +11,7 @@
     ./docker.nix
     ./sunshine.nix
     ./overlays.nix
+    ../../services/node-exporter.nix
   ];
 
   # Bootloader.
@@ -40,5 +43,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
 }

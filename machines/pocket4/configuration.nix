@@ -6,6 +6,7 @@
     ./fingerprint-scanner.nix
     ./overlays.nix
     ./power.nix
+    ../../services/node-exporter.nix
   ];
 
   # Bootloader.
@@ -21,7 +22,7 @@
 
   hardware.opengl.enable = true;
   hardware.amdgpu.opencl.enable = true;
-  users.users.ikovalev.extraGroups = [ "video" "render" ];
+  users.users.ikovalev.extraGroups = ["video" "render"];
 
   # Allow openssh, but disable it by default
   services.openssh = {
@@ -35,8 +36,6 @@
     };
   };
   systemd.services.sshd.wantedBy = lib.mkForce [];
-
-
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

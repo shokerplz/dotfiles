@@ -1,6 +1,4 @@
-{ ... }:
-
-{
+{...}: {
   # Node exporter service
   services.prometheus.exporters.node = {
     enable = true;
@@ -11,6 +9,7 @@
       "ethtool"
       "softirqs"
       "tcpstat"
+      "drm"
     ];
   };
 
