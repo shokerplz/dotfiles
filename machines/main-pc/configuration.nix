@@ -27,6 +27,23 @@
     options snd_hda_intel power_save=0 power_save_controller=N enable_msi=1
   '';
 
+  # Allow to build aarch64
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
+  nix = {
+    settings = {
+      extra-platforms = ["aarch64-linux"];
+    };
+  };
+
+  # Specify cache servers
+  nix.settings.substituters = [
+    "https://cache.nixos.org"
+    "https://nix-community.cachix.org"
+  ];
+  nix.settings.trusted-public-keys = [
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+  ];
+
   swapDevices = [
     {
       device = "/swapfile";
