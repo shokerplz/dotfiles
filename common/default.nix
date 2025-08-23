@@ -15,6 +15,9 @@
     binfmt = true;
   };
 
+  # Allow myself to rebuild nixos from main-pc
+  nix.settings.trusted-users = ["ikovalev"];
+
   # Garbage collection
   nix.optimise.automatic = true;
   nix.settings.auto-optimise-store = true;
