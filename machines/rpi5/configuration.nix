@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     ./hardware-configuration.nix
     ./docker.nix
@@ -13,6 +12,7 @@
     ../../services/cloudflare-ddns.nix
     ../../services/node-exporter.nix
     ../../services/cert-exporter.nix
+    ../../services/authentik.nix
   ];
 
   # Set hostname
