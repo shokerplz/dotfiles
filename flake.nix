@@ -99,6 +99,7 @@
           ./machines/rpi5/configuration.nix
           nixos-hardware.nixosModules.raspberry-pi-5
           sops-nix.nixosModules.sops
+          authentik-nix.nixosModules.default
         ];
       };
       media-server = nixpkgs-current.lib.nixosSystem rec {
