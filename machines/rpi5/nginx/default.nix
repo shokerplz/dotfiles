@@ -11,6 +11,7 @@
     ./monitoring.nix
     ./git.nix
     ./homeassistant.nix
+    ./authentik.nix
   ];
 
   # Creating directories for static websites
