@@ -17,6 +17,12 @@
     nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.05";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # Authentik
+    authentik-nix = {
+      url = "github:nix-community/authentik-nix";
+      inputs.nixpkgs.follows = "nixpkgs-current";
+    };
+
     # Home Manager
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-current";
@@ -35,6 +41,7 @@
     nixos-hardware,
     auto-cpufreq,
     home-manager,
+    authentik-nix,
     nvf,
   }: let
     makeDevShell = system: let
