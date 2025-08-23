@@ -1,5 +1,5 @@
 {config, ...}: let
-  authentikSecretFile = ./cloudflare.yaml;
+  authentikSecretFile = ./authentik.yaml;
 in {
   sops = {
     secrets = {
