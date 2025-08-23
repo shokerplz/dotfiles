@@ -6,6 +6,7 @@
 }: {
   imports = [
     ../secrets/authentik.nix
+    authentik-nix.nixosModules.default
   ];
   services.authentik = {
     enable = true;
