@@ -150,6 +150,8 @@
     gnomeExtensions.appindicator
     gnomeExtensions.clipboard-history
     gnomeExtensions.system-monitor
+    gnomeExtensions.easyeffects-preset-selector
+    easyeffects
     video-trimmer
   ];
 }
