@@ -1,13 +1,13 @@
-{ ... }:
-
-{
+{...}: {
   # Virtual host for Gitlab
   services.nginx.virtualHosts."git.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = [ "10.0.1.98" ];
+    listenAddresses = ["10.0.1.98"];
     extraConfig = ''
+      access_log /var/log/nginx/git.ikovalev.nl-access.log;
+      error_log /var/log/nginx/git.ikovalev.nl-error.log error;
       proxy_headers_hash_max_size 4096;
       proxy_headers_hash_bucket_size  128;
       proxy_set_header Host $host;
@@ -23,8 +23,10 @@
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = [ "10.0.1.98" ];
+    listenAddresses = ["10.0.1.98"];
     extraConfig = ''
+      access_log /var/log/nginx/registry.ikovalev.nl-access.log;
+      error_log /var/log/nginx/registry.ikovalev.nl-error.log error;
       proxy_headers_hash_max_size 4096;
       proxy_headers_hash_bucket_size  128;
       proxy_set_header Host $host;

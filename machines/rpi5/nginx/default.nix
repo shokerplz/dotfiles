@@ -41,6 +41,10 @@
     };
   };
 
+  # Save only last 5 weeks of logs
+  # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/nixos/modules/services/web-servers/nginx/default.nix#L1662C5-L1671
+  services.logrotate.settings.nginx.rotate = 5;
+
   # Base nginx LB config
   services.nginx = {
     enable = true;

@@ -22,6 +22,8 @@
     acmeRoot = null;
     listenAddresses = ["10.0.1.20"];
     extraConfig = ''
+      access_log /var/log/nginx/auth.ikovalev.nl-access.log;
+      error_log /var/log/nginx/auth.ikovalev.nl-error.log error;
       proxy_http_version 1.1;
       proxy_set_header Host $host;
       proxy_set_header X-Forwarded-Proto $scheme;
