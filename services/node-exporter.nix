@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   # Node exporter service
   services.prometheus.exporters.node = {
     enable = true;

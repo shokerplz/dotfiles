@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   imports = [
     ./users.nix
     ./packages.nix
@@ -16,7 +17,7 @@
   };
 
   # Allow myself to rebuild nixos from main-pc
-  nix.settings.trusted-users = ["ikovalev"];
+  nix.settings.trusted-users = [ "ikovalev" ];
 
   # Garbage collection
   nix.optimise.automatic = true;
@@ -75,12 +76,12 @@
         "Ubuntu"
         "Vazirmatn"
       ];
-      monospace = ["Ubuntu Mono"];
+      monospace = [ "Ubuntu Mono" ];
     };
   };
 
   # Install nerdfonts
-  fonts.packages = with pkgs; [nerd-fonts.hack];
+  fonts.packages = with pkgs; [ nerd-fonts.hack ];
 
   # Allow sudo without password for wheel group
   security.sudo = {
@@ -89,7 +90,7 @@
   };
 
   # Use ssh keys of the host by default
-  sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
   # Do not check for sops files in nixstate. Needed to fix `Cannot find path set in sops.secrets.*.sopsFile`
   sops.validateSopsFiles = false;

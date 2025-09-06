@@ -3,14 +3,15 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   services.nginx.upstreams = {
     authentik = {
       extraConfig = ''
         keepalive 10;
       '';
       servers = {
-        "127.0.0.1:9000" = {};
+        "127.0.0.1:9000" = { };
       };
     };
   };
@@ -20,7 +21,7 @@
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = ["10.0.1.20"];
+    listenAddresses = [ "10.0.1.20" ];
     extraConfig = ''
       access_log /var/log/nginx/auth.ikovalev.nl-access.log;
       error_log /var/log/nginx/auth.ikovalev.nl-error.log error;

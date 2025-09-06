@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   cloudflareSecretFile = ./cloudflare.yaml;
-in {
+in
+{
   sops = {
     secrets = {
       cloudflare_api_token = {

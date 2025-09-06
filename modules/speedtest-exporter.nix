@@ -136,7 +136,8 @@ in
           "SPEEDTEST_PORT=${toString cfg.port}"
           "SPEEDTEST_CACHE_FOR=${toString cfg.cacheSeconds}"
           "SPEEDTEST_TIMEOUT=${toString cfg.timeout}"
-        ] ++ lib.optional (cfg.serverID != null) "SPEEDTEST_SERVER=${cfg.serverID}";
+        ]
+        ++ lib.optional (cfg.serverID != null) "SPEEDTEST_SERVER=${cfg.serverID}";
 
         # Waitress in exporter.py binds to 0.0.0.0:${SPEEDTEST_PORT}
         ExecStart = "${cfg.package}/bin/speedtest-exporter";

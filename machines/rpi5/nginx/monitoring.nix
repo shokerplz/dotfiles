@@ -3,13 +3,14 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   # Virtual host for monitoring (Grafana + Prometheus + Loki)
   services.nginx.virtualHosts."mon.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = ["10.0.1.20"];
+    listenAddresses = [ "10.0.1.20" ];
     extraConfig = ''
       access_log /var/log/nginx/mon.ikovalev.nl-access.log;
       error_log /var/log/nginx/mon.ikovalev.nl-error.log error;

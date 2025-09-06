@@ -3,13 +3,14 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   # Virtual host for Home Assistant
   services.nginx.virtualHosts."home.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = ["10.0.1.20"];
+    listenAddresses = [ "10.0.1.20" ];
     extraConfig = ''
       access_log /var/log/nginx/home.ikovalev.nl-access.log;
       error_log /var/log/nginx/home.ikovalev.nl-error.log error;

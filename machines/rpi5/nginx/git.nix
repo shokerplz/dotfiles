@@ -1,10 +1,11 @@
-{...}: {
+{ ... }:
+{
   # Virtual host for Gitlab
   services.nginx.virtualHosts."git.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = ["10.0.1.98"];
+    listenAddresses = [ "10.0.1.98" ];
     extraConfig = ''
       access_log /var/log/nginx/git.ikovalev.nl-access.log;
       error_log /var/log/nginx/git.ikovalev.nl-error.log error;
@@ -23,7 +24,7 @@
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = ["10.0.1.98"];
+    listenAddresses = [ "10.0.1.98" ];
     extraConfig = ''
       access_log /var/log/nginx/registry.ikovalev.nl-access.log;
       error_log /var/log/nginx/registry.ikovalev.nl-error.log error;

@@ -7,6 +7,8 @@
       url = "github:AdnanHodzic/auto-cpufreq";
       inputs.nixpkgs.follows = "nixpkgs-current";
     };
+    # Install flatpacks
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     # Secret manager for Nix
     sops-nix.url = "github:Mic92/sops-nix";
     # Nixpkgs
@@ -31,113 +33,127 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs-unstable,
-    nixpkgs-24-11,
-    nixpkgs-current,
-    sops-nix,
-    nixos-hardware,
-    auto-cpufreq,
-    home-manager,
-    authentik-nix,
-    nvf,
-  }: let
-    makeDevShell = system: let
-      pkgs = import nixpkgs-current {
-        inherit system;
-      };
-    in
-      pkgs.mkShell {
-        name = "Nix Flake dev env";
-        packages = with pkgs; [
-          sops
-          nixfmt-rfc-style
-          nixd
-          nixfmt-tree
-        ];
-      };
-  in {
-    packages."x86_64-linux".my-neovim =
-      (nvf.lib.neovimConfiguration {
-        pkgs = nixpkgs-current.legacyPackages."x86_64-linux";
-        modules = [./packages/nvf-config.nix];
-      }).neovim;
-
-    nixosConfigurations = {
-      pocket4 = nixpkgs-current.lib.nixosSystem rec {
-        system = "x86_64-linux";
-        modules = [
-          ./common/default.nix
-          ./common/laptop.nix
-          ./common/gui.nix
-          ./common/gaming.nix
-          ./machines/pocket4/configuration.nix
-          nixos-hardware.nixosModules.gpd-pocket-4
-          auto-cpufreq.nixosModules.default
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
-            home-manager.sharedModules = [
-            ];
-          }
-        ];
-        specialArgs = {
-          nixpkgs-24-11 = import nixpkgs-24-11 {
+  outputs =
+    {
+      self,
+      nixpkgs-unstable,
+      nixpkgs-24-11,
+      nixpkgs-current,
+      sops-nix,
+      nixos-hardware,
+      auto-cpufreq,
+      home-manager,
+      authentik-nix,
+      nvf,
+      nix-flatpak,
+    }:
+    let
+      makeDevShell =
+        system:
+        let
+          pkgs = import nixpkgs-current {
             inherit system;
-            config.allowUnfree = true;
+          };
+        in
+        pkgs.mkShell {
+          name = "Nix Flake dev env";
+          packages = with pkgs; [
+            sops
+            nixfmt-rfc-style
+            nixd
+            nixfmt-tree
+          ];
+        };
+    in
+    {
+      packages."x86_64-linux".my-neovim =
+        (nvf.lib.neovimConfiguration {
+          pkgs = nixpkgs-current.legacyPackages."x86_64-linux";
+          modules = [ ./packages/nvf-config.nix ];
+        }).neovim;
+
+      nixosConfigurations = {
+        pocket4 = nixpkgs-current.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
+            ./common/default.nix
+            ./common/laptop.nix
+            ./common/gui.nix
+            ./common/gaming.nix
+            ./machines/pocket4/configuration.nix
+            nixos-hardware.nixosModules.gpd-pocket-4
+            auto-cpufreq.nixosModules.default
+            sops-nix.nixosModules.sops
+            nix-flatpak.nixosModules.nix-flatpak
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useUserPackages = true;
+              home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
+              home-manager.sharedModules = [
+              ];
+            }
+            (
+              { pkgs, ... }:
+              {
+                environment.systemPackages = [ self.packages.${pkgs.stdenv.system}.my-neovim ];
+              }
+            )
+          ];
+          specialArgs = {
+            nixpkgs-24-11 = import nixpkgs-24-11 {
+              inherit system;
+              config.allowUnfree = true;
+            };
           };
         };
-      };
-      rpi5 = nixpkgs-current.lib.nixosSystem rec {
-        system = "aarch64-linux";
-        modules = [
-          ./common/default.nix
-          ./common/ssh.nix
-          ./machines/rpi5/configuration.nix
-          nixos-hardware.nixosModules.raspberry-pi-5
-          sops-nix.nixosModules.sops
-          authentik-nix.nixosModules.default
-        ];
-      };
-      media-server = nixpkgs-current.lib.nixosSystem rec {
-        system = "x86_64-linux";
-        modules = [
-          ./common/default.nix
-          ./common/ssh.nix
-          ./machines/media-server/configuration.nix
-          sops-nix.nixosModules.sops
-        ];
-      };
-      main-pc = nixpkgs-current.lib.nixosSystem rec {
-        system = "x86_64-linux";
-        modules = [
-          ./common/default.nix
-          ./common/ssh.nix
-          ./common/gaming.nix
-          ./common/gui.nix
-          ./machines/main-pc/configuration.nix
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
-            home-manager.sharedModules = [
-            ];
-          }
-          (
-            {pkgs, ...}: {
-              environment.systemPackages = [self.packages.${pkgs.stdenv.system}.my-neovim];
+        rpi5 = nixpkgs-current.lib.nixosSystem rec {
+          system = "aarch64-linux";
+          modules = [
+            ./common/default.nix
+            ./common/ssh.nix
+            ./machines/rpi5/configuration.nix
+            nixos-hardware.nixosModules.raspberry-pi-5
+            sops-nix.nixosModules.sops
+            authentik-nix.nixosModules.default
+          ];
+        };
+        media-server = nixpkgs-current.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
+            ./common/default.nix
+            ./common/ssh.nix
+            ./machines/media-server/configuration.nix
+            sops-nix.nixosModules.sops
+          ];
+        };
+        main-pc = nixpkgs-current.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
+            ./common/default.nix
+            ./common/ssh.nix
+            ./common/gaming.nix
+            ./common/gui.nix
+            ./machines/main-pc/configuration.nix
+            sops-nix.nixosModules.sops
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useUserPackages = true;
+              home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
+              home-manager.sharedModules = [
+              ];
             }
-          )
-        ];
+            (
+              { pkgs, ... }:
+              {
+                environment.systemPackages = [ self.packages.${pkgs.stdenv.system}.my-neovim ];
+              }
+            )
+          ];
+        };
+      };
+      devShells = {
+        aarch64-darwin.default = makeDevShell "aarch64-darwin";
+        x86_64-linux.default = makeDevShell "x86_64-linux";
       };
     };
-    devShells = {
-      aarch64-darwin.default = makeDevShell "aarch64-darwin";
-      x86_64-linux.default = makeDevShell "x86_64-linux";
-    };
-  };
 }

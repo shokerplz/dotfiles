@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   authentikSecretFile = ./authentik.yaml;
-in {
+in
+{
   sops = {
     secrets = {
       authentikSecretKey = {

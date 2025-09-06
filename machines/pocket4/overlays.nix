@@ -12,6 +12,16 @@
         };
         version = "2025-05-09";
       });
+      gamescope =
+        let
+          oldPkgs = import (prev.fetchFromGitHub {
+            owner = "NixOS";
+            repo = "nixpkgs";
+            rev = "3e2cf88148e732abc1d259286123e06a9d8c964a";
+            hash = "sha256-gDcMJdnBJg7ncP+eqENwH9pOW0azcCOW5y50N+jKdL8=";
+          }) { inherit (prev) system; };
+        in
+        oldPkgs.gamescope;
     })
   ];
 
