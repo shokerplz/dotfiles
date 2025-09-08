@@ -22,6 +22,9 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  hardware.sane.enable = true;
+  users.users.ikovalev.extraGroups = ["scanner" "lp"];
+  services.printing.drivers = [pkgs.cnijfilter2];
 
   security.rtkit.enable = true;
 
