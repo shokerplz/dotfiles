@@ -2,8 +2,7 @@
   conifg,
   pkgs,
   ...
-}:
-{
+}: {
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -24,7 +23,7 @@
   services.printing.enable = true;
   hardware.sane.enable = true;
   users.users.ikovalev.extraGroups = ["scanner" "lp"];
-  services.printing.drivers = [pkgs.cnijfilter2];
+  services.printing.drivers = [pkgs.cnijfilter2 pkgs.gutenprint];
 
   security.rtkit.enable = true;
 
@@ -65,7 +64,7 @@
         "monitor.alsa.rules" = [
           {
             "matches" = [
-              { "device.name" = "~alsa_card.*"; }
+              {"device.name" = "~alsa_card.*";}
             ];
             "actions" = {
               "update-props" = {
@@ -75,8 +74,8 @@
           }
           {
             "matches" = [
-              { "node.name" = "~alsa_output.*"; }
-              { "node.name" = "~alsa_input.*"; }
+              {"node.name" = "~alsa_output.*";}
+              {"node.name" = "~alsa_input.*";}
             ];
             "actions" = {
               "update-props" = {
@@ -91,7 +90,7 @@
       extraConfig."60-latency" = {
         "context.properties" = {
           "default.clock.rate" = 48000;
-          "default.clock.allowed-rates" = [ 48000 ];
+          "default.clock.allowed-rates" = [48000];
           "default.clock.quantum" = 512;
           "default.clock.min-quantum" = 512;
           "default.clock.max-quantum" = 512;
@@ -116,8 +115,7 @@
 
   # Exclude some GNOME packages
   environment.gnome.excludePackages = (
-    with pkgs;
-    [
+    with pkgs; [
       atomix # puzzle game
       epiphany # web browser
       evince # document viewer

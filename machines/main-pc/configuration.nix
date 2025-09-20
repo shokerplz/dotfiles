@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -12,6 +11,7 @@
     ./docker.nix
     ./sunshine.nix
     ./overlays.nix
+    ./logitech-mouse.nix
     ../../services/node-exporter.nix
   ];
 
@@ -29,10 +29,10 @@
   '';
 
   # Allow to build aarch64
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
   nix = {
     settings = {
-      extra-platforms = [ "aarch64-linux" ];
+      extra-platforms = ["aarch64-linux"];
     };
   };
 

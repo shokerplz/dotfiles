@@ -20,5 +20,8 @@
     libreoffice-qt6-fresh
     alacritty
     discord
+    solaar
+    libnotify
+    adwaita-icon-theme
   ];
 }
