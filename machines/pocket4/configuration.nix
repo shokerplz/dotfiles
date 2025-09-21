@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -7,6 +10,7 @@
     ./fingerprint-scanner.nix
     ./overlays.nix
     ./power.nix
+    ./fix-screen-rotation-sleep.nix
     ../../services/node-exporter.nix
   ];
 
@@ -19,15 +23,15 @@
   # Use systemd-resolve so DNS works fine with WireGuard VPN
   networking.networkmanager.dns = "systemd-resolved";
   services.resolved.enable = true;
-  networking.nameservers = [ "127.0.0.53" ];
+  networking.nameservers = ["127.0.0.53"];
 
   hardware.graphics = {
     ## radv: an open-source Vulkan driver from freedesktop
     enable32Bit = true;
 
     ## amdvlk: an open-source Vulkan driver from AMD
-    extraPackages = [ pkgs.amdvlk ];
-    extraPackages32 = [ pkgs.driversi686Linux.amdvlk ];
+    extraPackages = [pkgs.amdvlk];
+    extraPackages32 = [pkgs.driversi686Linux.amdvlk];
   };
 
   hardware.amdgpu.opencl.enable = true;
@@ -39,15 +43,15 @@
   # Allow openssh, but disable it by default
   services.openssh = {
     enable = true;
-    ports = [ 22 ];
+    ports = [22];
     openFirewall = true;
     settings = {
       PasswordAuthentication = false;
-      AllowUsers = [ "ikovalev" ];
+      AllowUsers = ["ikovalev"];
       PermitRootLogin = "no";
     };
   };
-  systemd.services.sshd.wantedBy = lib.mkForce [ ];
+  systemd.services.sshd.wantedBy = lib.mkForce [];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

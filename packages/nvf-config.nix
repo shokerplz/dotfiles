@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   vim = {
     theme = {
       enable = true;
@@ -16,6 +15,11 @@
         package = tiny-inline-diagnostic-nvim;
         setup = "require('tiny-inline-diagnostic').setup({options = {multilines = {enabled = true, always_show = true, trim_whitespaces = true}}})";
       };
+    };
+
+    clipboard = {
+      enable = true;
+      #      providers.wl-copy.enable = true;
     };
 
     undoFile.enable = true;
