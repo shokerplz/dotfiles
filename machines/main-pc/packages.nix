@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     neovim
     git
@@ -23,5 +24,6 @@
     solaar
     libnotify
     adwaita-icon-theme
+    cinny-desktop
   ];
 }

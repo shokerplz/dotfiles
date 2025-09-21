@@ -2,13 +2,14 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   environment.systemPackages = with pkgs; [
     gnome-randr
   ];
   systemd.services.gnome-randr-wakeup = {
     description = "Run gnome-randr after waking up from sleep";
-    wantedBy = ["sleep.target"];
+    wantedBy = [ "sleep.target" ];
     unitConfig = {
       After = "systemd-suspend.service systemd-hybrid-sleep.service systemd-hibernate.service";
     };
