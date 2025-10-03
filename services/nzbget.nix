@@ -20,11 +20,11 @@ in
         InterDir = "${nzbBaseDir}/intermediate";
         ControlIP = "0.0.0.0";
         ControlPort = 6789;
-        WebDir = "''${AppDir}/webui";
+        WebDir = "\${AppDir}/webui";
         LockFile = "${nzbBaseDir}/nzbget.lock";
         LogFile = "${nzbBaseDir}/nzbget.log";
         CertStore = "/etc/ssl/certs/ca-bundle.crt";
-        ConfigTemplate = "''${AppDir}/webui/nzbget.conf.template";
+        ConfigTemplate = "\${AppDir}/webui/nzbget.conf.template";
         RequiredDir = "";
         Server1.Active = "yes";
         Server1.Name = "Eweka";
