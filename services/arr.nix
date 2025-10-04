@@ -17,15 +17,16 @@ in
 
 {
 
+  imports = [
+    ./qbittorrent.nix
+    ./nzbget.nix
+  ];
+
   system.activationScripts.createArrDirs = ''
     mkdir -p /mnt/zfs-pool0/kino/{${builtins.concatStringsSep "," arrServices}}/config
     chgrp -R arr /mnt/zfs-pool0/kino/{${builtins.concatStringsSep "," arrServices}}/config
     chgrp -R arr /mnt/zfs-pool0/kino/data
-    chgrp -R arr /mnt/ssd/kino/nzbget/completed/
     find /mnt/zfs-pool0/kino/data -type d -exec chmod g+wx {} +
-    find /mnt/ssd/kino/nzbget/completed -type d -exec chmod g+wx {} +
-    find /mnt/ssd/kino/nzbget/ -type d -exec chmod 755 {} +
-    chown -R nzbget:arr /mnt/ssd/kino/nzbget;
     chown sonarr /mnt/zfs-pool0/kino/sonarr/config
     chown radarr /mnt/zfs-pool0/kino/radarr/config
   '';
@@ -56,15 +57,8 @@ in
   };
 
   # Download clients
-  services.nzbget = {
-    enable = true;
-    group = "arr";
-  };
-  services.qbittorrent = {
-    enable = true;
-    group = "arr";
-    webuiPort = 5080;
-  };
+  services.nzbget.enable = true;
+  services.qbittorrent.enable = true;
 
   # Arr stack firewall
   networking.firewall.extraCommands = ''
