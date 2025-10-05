@@ -15,6 +15,7 @@
     ../../services/jellyfin.nix
     ../../services/arr.nix
     ../../services/samba.nix
+    ../../services/n8n.nix
   ];
 
   # This is needed for hardware video encoding

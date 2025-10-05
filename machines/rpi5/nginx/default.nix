@@ -13,6 +13,7 @@
     ./git.nix
     ./homeassistant.nix
     ./authentik.nix
+    ./n8n.nix
   ];
 
   # Creating directories for static websites
