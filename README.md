@@ -64,6 +64,40 @@ ln -s ~/.config/sops/age/keys.txt "/Users/admin/Library/Application Support/sops
 nix-shell -p nixfmt-rfc-style --run "nixfmt ."
 ```
 
+## Custom package selector
+
+Use `lib/custom-packages.nix` to pull packages from additional channels or
+pinned revisions without creating overlays.
+
+```
+{ pkgs, lib, nixpkgs-unstable, ... }:
+let
+  inherit (import ./lib { inherit lib; }) customPackages;
+  selector = customPackages.mkSelector {
+    inherit pkgs;
+    channels = {
+      unstable = nixpkgs-unstable;
+    };
+  };
+in {
+  environment.systemPackages = selector.resolveList [
+    "wget"
+    (selector.pkg "firefox" { channel = "unstable"; })
+    (selector.pkg "jellyfin" {
+      channel = "unstable";
+      source = { flake = "github:NixOS/nixpkgs/<rev>"; };
+    })
+  ];
+}
+```
+
+Spec options:
+
+- `channel`: channel name (or list) preferring that nixpkgs instance.
+- `source`: search a pinned flake or package set before configured channels.
+- `overrideArgs`, `overrideAttrs`, `postProcess`: optional hooks applied when
+  supported by the derivation.
+
 ## How to deploy to a remote machine?
 
 ```

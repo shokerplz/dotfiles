@@ -5,6 +5,7 @@
 }:
 {
   imports = [
+    ../modules/package-selector.nix
     ./users.nix
     ./packages.nix
     ./docker.nix

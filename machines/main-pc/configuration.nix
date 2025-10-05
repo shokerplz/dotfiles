@@ -1,6 +1,8 @@
 {
   config,
   pkgs,
+  lib,
+  nixpkgs-unstable,
   ...
 }:
 {
@@ -14,6 +16,14 @@
     ./overlays.nix
     ../../services/node-exporter.nix
   ];
+
+  environment.packageSelector =
+    (import ../../lib { inherit lib; }).customPackages.mkSelector {
+      inherit pkgs;
+      channels = {
+        unstable = nixpkgs-unstable;
+      };
+    };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
