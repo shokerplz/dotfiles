@@ -195,7 +195,7 @@ in
               candidateSets;
         in
         if resolved == null then
-          throw "customPackages: package '${attrPathStr}' not found in configured channels (${renderChannelList channelNames}).";
+          throw "customPackages: package '${attrPathStr}' not found in configured channels (${renderChannelList channelNames})."
         else
           applyOverrides {
             inherit spec attrPathStr;
@@ -225,8 +225,43 @@ in
     {
       inherit channelNames;
       channels = allChannels;
-      pkg = name: opts ? {}: resolveAttrSpec (opts // { inherit name; });
-      byAttrPath = attrPath: opts ? {}: resolveAttrSpec (opts // { inherit attrPath; });
+      pkg = name:
+        let
+          mk = opts:
+            let
+              extras =
+                if opts == null then
+                  {}
+                else if builtins.isAttrs opts then
+                  opts
+                else
+                  throw "customPackages: pkg options must be an attribute set.";
+            in
+            resolveAttrSpec (extras // { inherit name; });
+          base = mk {};
+        in
+        base // {
+          __functor = _: opts: mk opts;
+        };
+      byAttrPath = attrPath:
+        let
+          normalizedPath = ensureAttrPath attrPath;
+          mk = opts:
+            let
+              extras =
+                if opts == null then
+                  {}
+                else if builtins.isAttrs opts then
+                  opts
+                else
+                  throw "customPackages: byAttrPath options must be an attribute set.";
+            in
+            resolveAttrSpec (extras // { attrPath = normalizedPath; });
+          base = mk {};
+        in
+        base // {
+          __functor = _: opts: mk opts;
+        };
       resolve = resolveValue;
       resolveList = list: map resolveValue list;
     };

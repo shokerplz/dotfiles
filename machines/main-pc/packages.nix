@@ -4,9 +4,14 @@
   lib,
   ...
 }: let
-  selection =
-    config.environment.packageSelector
-    or (import ../../lib {inherit lib;}).customPackages.mkSelector {inherit pkgs;};
+  selection = let
+    fallback =
+      (import ../../lib {inherit lib;}).customPackages.mkSelector {inherit pkgs;};
+    configured = config.environment.packageSelector;
+  in
+    if configured != null
+    then configured
+    else fallback;
   pkgsList = selection.resolveList [
     "neovim"
     "git"
@@ -17,12 +22,8 @@
       name = "sunshine";
       channel = "unstable";
     }
-    {
-      name = "xorg.libXtst";
-    }
-    {
-      name = "xorg.libXi";
-    }
+    "xorg.libXtst"
+    "xorg.libXi"
     "firefox"
     "vscode"
     {
