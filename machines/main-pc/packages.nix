@@ -1,5 +1,8 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  nixpkgs-unstable,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     neovim
     git
@@ -25,5 +28,6 @@
     libnotify
     adwaita-icon-theme
     cinny-desktop
+    nixpkgs-unstable.codex
   ];
 }
