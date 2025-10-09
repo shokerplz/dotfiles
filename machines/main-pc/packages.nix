@@ -12,7 +12,7 @@
     sunshine
     xorg.libXtst
     xorg.libXi
-    firefox
+    firefox-bin
     vscode
     spotify
     code-cursor
