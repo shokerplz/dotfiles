@@ -29,5 +29,6 @@
     adwaita-icon-theme
     cinny-desktop
     nixpkgs-unstable.codex
+    nixpkgs-unstable.godot
   ];
 }
