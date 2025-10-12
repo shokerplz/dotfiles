@@ -1,6 +1,14 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    ../../secrets/homemanager.nix
+  ];
+
+  sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+
   home.username = "ikovalev";
   home.homeDirectory = "/home/ikovalev";
 
@@ -43,9 +51,9 @@
 
   programs.keychain = {
     enable = true;
-    agents = [ "ssh" ];
-    keys = [ "~/.ssh/do_key" ];
-    extraFlags = [ "--quiet" ];
+    agents = ["ssh"];
+    keys = ["~/.ssh/do_key"];
+    extraFlags = ["--quiet"];
   };
 
   programs.bash = {
@@ -54,6 +62,7 @@
       TERMINAL = "alacritty";
       XCURSOR_THEME = "Adwaita alacritty";
       EDITOR = "nvim";
+      OPENROUTER_API_KEY = "$(cat ${config.sops.secrets.openrouter_key.path})";
     };
     historyControl = [
       "ignoredups"
@@ -65,5 +74,4 @@
     # Additional packages here
     gcc
   ];
-
 }
