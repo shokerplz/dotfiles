@@ -26,7 +26,7 @@
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-current";
     nvf = {
-      url = "github:notashelf/nvf";
+      url = "github:notashelf/nvf/v0.8";
       inputs.nixpkgs.follows = "nixpkgs-current";
     };
   };
@@ -81,6 +81,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
             home-manager.sharedModules = [
+              sops-nix.homeManagerModules.sops
             ];
           }
           (
@@ -130,6 +131,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
             home-manager.sharedModules = [
+              sops-nix.homeManagerModules.sops
             ];
           }
           (
