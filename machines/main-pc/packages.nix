@@ -1,6 +1,7 @@
 {
   pkgs,
   nixpkgs-unstable,
+  lib,
   ...
 }: {
   environment.systemPackages = with pkgs; [
@@ -31,6 +32,14 @@
     nixpkgs-unstable.godot
     nodejs
     glow
-    nixpkgs-unstable.orca-slicer
+    (pkgs.symlinkJoin {
+      name = "orca-slicer-wrapped";
+      paths = [ nixpkgs-unstable.orca-slicer ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/orca-slicer \
+          --set GBM_BACKEND dri
+      '';
+    })
   ];
 }
