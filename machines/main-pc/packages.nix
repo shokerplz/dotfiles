@@ -15,7 +15,6 @@
     firefox-bin
     vscode
     spotify
-    code-cursor
     gnomeExtensions.touch-x
     telegram-desktop
     vlc
@@ -30,5 +29,8 @@
     cinny-desktop
     nixpkgs-unstable.codex
     nixpkgs-unstable.godot
+    nodejs
+    glow
+    nixpkgs-unstable.orca-slicer
   ];
 }
