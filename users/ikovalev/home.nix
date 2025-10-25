@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: {
   imports = [
@@ -68,6 +69,27 @@
       "ignoredups"
       "ignorespace"
     ];
+  };
+
+  # Enable and configure GNOME extensions
+  dconf.settings = {
+    "org/gnome/shell" = {
+      disable-user-extensions = false;
+      enabled-extensions = [
+        "dash-to-dock@micxgx.gmail.com"
+        "appindicatorsupport@rgcjonas.gmail.com"
+        "clipboard-history@alexsaveau.dev"
+        "system-monitor@parasuraman.gitlab.gnome-shell-extensions.gcampax.github.com"
+        "easyeffects-preset-selector@ulville.github.io"
+        "notification-timeout@chlumskyvaclav.gmail.com"
+        "window-is-ready-remover@nunofarruca@gmail.com"
+        "gsconnect@andyholmes.github.io"
+      ];
+    };
+    # Optional: Configure dash-to-dock position
+    "org/gnome/shell/extensions/dash-to-dock" = {
+      dock-position = "BOTTOM";
+    };
   };
 
   home.packages = with pkgs; [
