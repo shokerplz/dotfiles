@@ -160,6 +160,8 @@
     gnomeExtensions.clipboard-history
     gnomeExtensions.system-monitor
     gnomeExtensions.easyeffects-preset-selector
+    gnomeExtensions.notification-timeout
+    gnomeExtensions.window-is-ready-remover
     easyeffects
     video-trimmer
   ];
