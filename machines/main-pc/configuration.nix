@@ -1,9 +1,9 @@
 {
   config,
   pkgs,
+  nixpkgs-unstable,
   ...
-}:
-{
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -29,10 +29,10 @@
   '';
 
   # Allow to build aarch64
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
   nix = {
     settings = {
-      extra-platforms = [ "aarch64-linux" ];
+      extra-platforms = ["aarch64-linux"];
     };
   };
 
@@ -53,6 +53,12 @@
   ];
 
   networking.hostName = "main-pc"; # Define your hostname.
+
+  # VirtualBox
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.package = nixpkgs-unstable.virtualbox;
+  users.extraGroups.vboxusers.members = ["ikovalev"];
+  virtualisation.virtualbox.host.enableExtensionPack = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -29,13 +29,15 @@
     adwaita-icon-theme
     cinny-desktop
     nixpkgs-unstable.codex
+    nixpkgs-unstable.claude-code-router
+    nixpkgs-unstable.claude-code
     nixpkgs-unstable.godot
     nodejs
     glow
     (pkgs.symlinkJoin {
       name = "orca-slicer-wrapped";
-      paths = [ nixpkgs-unstable.orca-slicer ];
-      buildInputs = [ pkgs.makeWrapper ];
+      paths = [nixpkgs-unstable.orca-slicer];
+      buildInputs = [pkgs.makeWrapper];
       postBuild = ''
         wrapProgram $out/bin/orca-slicer \
           --set GBM_BACKEND dri
