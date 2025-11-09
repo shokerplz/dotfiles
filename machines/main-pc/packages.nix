@@ -32,6 +32,10 @@
     nixpkgs-unstable.claude-code-router
     nixpkgs-unstable.claude-code
     nixpkgs-unstable.godot
+    (pkgs.python312.withPackages (python-pkgs:
+      with python-pkgs; [
+        requests
+      ]))
     nodejs
     glow
     (pkgs.symlinkJoin {
