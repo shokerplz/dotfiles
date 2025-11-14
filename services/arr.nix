@@ -3,9 +3,7 @@
   pkgs,
   inputs,
   ...
-}:
-
-let
+}: let
   arrBaseDir = "/mnt/zfs-pool0/kino";
   arrServices = [
     "bazarr"
@@ -13,13 +11,11 @@ let
     "sonarr"
     "radarr"
   ];
-in
-
-{
-
+in {
   imports = [
     ./qbittorrent.nix
     ./nzbget.nix
+    ../secrets/arr.nix
   ];
 
   system.activationScripts.createArrDirs = ''
@@ -32,18 +28,24 @@ in
   '';
 
   # Create arr group
-  users.groups.arr = { };
+  users.groups.arr = {};
 
   # Arr services
   services.radarr = {
     enable = true;
     group = "arr";
     dataDir = "${arrBaseDir}/radarr/config";
+    environmentFiles = [
+      config.sops.templates."radarr_env".path
+    ];
   };
   services.sonarr = {
     enable = true;
     group = "arr";
     dataDir = "${arrBaseDir}/sonarr/config";
+    environmentFiles = [
+      config.sops.templates."sonarr_env".path
+    ];
   };
   services.prowlarr = {
     enable = true;
@@ -79,5 +81,4 @@ in
     iptables -D nixos-fw -p tcp --dport 6789 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 5055 -s 10.0.0.0/16 -j nixos-fw-accept || true
   '';
-
 }
