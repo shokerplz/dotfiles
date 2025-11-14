@@ -35,6 +35,7 @@
     (pkgs.python312.withPackages (python-pkgs:
       with python-pkgs; [
         requests
+        uv
       ]))
     nodejs
     glow
