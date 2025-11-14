@@ -3,9 +3,7 @@
   pkgs,
   inputs,
   ...
-}:
-
-let
+}: let
   arrBaseDir = "/mnt/zfs-pool0/kino";
   arrServices = [
     "bazarr"
@@ -13,13 +11,20 @@ let
     "sonarr"
     "radarr"
   ];
-in
-
-{
-
+  sonarrSearchScript = pkgs.writeShellScriptBin "sonarr-missing-search" ''
+    set -euo pipefail
+    API_KEY=$(cat ${config.sops.secrets.sonarrApiKey.path})
+    ${pkgs.curl}/bin/curl -s -X POST \
+      -H "X-Api-Key: $API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"name": "MissingEpisodeSearch"}' \
+      "http://127.0.0.1:8989/sonarr/api/v3/command" > /dev/null
+  '';
+in {
   imports = [
     ./qbittorrent.nix
     ./nzbget.nix
+    ../secrets/arr.nix
   ];
 
   system.activationScripts.createArrDirs = ''
@@ -32,18 +37,24 @@ in
   '';
 
   # Create arr group
-  users.groups.arr = { };
+  users.groups.arr = {};
 
   # Arr services
   services.radarr = {
     enable = true;
     group = "arr";
     dataDir = "${arrBaseDir}/radarr/config";
+    environmentFiles = [
+      config.sops.templates."radarr_env".path
+    ];
   };
   services.sonarr = {
     enable = true;
     group = "arr";
     dataDir = "${arrBaseDir}/sonarr/config";
+    environmentFiles = [
+      config.sops.templates."sonarr_env".path
+    ];
   };
   services.prowlarr = {
     enable = true;
@@ -59,6 +70,26 @@ in
   # Download clients
   services.nzbget.enable = true;
   services.qbittorrent.enable = true;
+
+  # Search missing episodes sonarr
+  systemd.services.sonarr-missing-search = {
+    description = "Trigger Sonarr Missing Episode Search";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${sonarrSearchScript}/bin/sonarr-missing-search";
+    };
+    wants = ["network-online.target"];
+    after = ["network-online.target"];
+  };
+
+  systemd.timers.sonarr-missing-search = {
+    description = "Run Sonarr Missing Episode Search every 30 minutes";
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnBootSec = "5m";
+      OnUnitActiveSec = "30m";
+    };
+  };
 
   # Arr stack firewall
   networking.firewall.extraCommands = ''
@@ -79,5 +110,4 @@ in
     iptables -D nixos-fw -p tcp --dport 6789 -s 10.0.0.0/16 -j nixos-fw-accept || true
     iptables -D nixos-fw -p tcp --dport 5055 -s 10.0.0.0/16 -j nixos-fw-accept || true
   '';
-
 }
