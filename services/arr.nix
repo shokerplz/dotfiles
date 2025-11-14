@@ -11,6 +11,15 @@
     "sonarr"
     "radarr"
   ];
+  sonarrSearchScript = pkgs.writeShellScriptBin "sonarr-missing-search" ''
+    set -euo pipefail
+    API_KEY=$(cat ${config.sops.secrets.sonarrApiKey.path})
+    ${pkgs.curl}/bin/curl -s -X POST \
+      -H "X-Api-Key: $API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"name": "MissingEpisodeSearch"}' \
+      "http://127.0.0.1:8989/sonarr/api/v3/command" > /dev/null
+  '';
 in {
   imports = [
     ./qbittorrent.nix
@@ -61,6 +70,26 @@ in {
   # Download clients
   services.nzbget.enable = true;
   services.qbittorrent.enable = true;
+
+  # Search missing episodes sonarr
+  systemd.services.sonarr-missing-search = {
+    description = "Trigger Sonarr Missing Episode Search";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${sonarrSearchScript}/bin/sonarr-missing-search";
+    };
+    wants = ["network-online.target"];
+    after = ["network-online.target"];
+  };
+
+  systemd.timers.sonarr-missing-search = {
+    description = "Run Sonarr Missing Episode Search every 30 minutes";
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnBootSec = "5m";
+      OnUnitActiveSec = "30m";
+    };
+  };
 
   # Arr stack firewall
   networking.firewall.extraCommands = ''
