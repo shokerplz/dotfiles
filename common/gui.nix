@@ -1,6 +1,7 @@
 {
   conifg,
   pkgs,
+  nixpkgs-unstable,
   ...
 }: {
   # Enable the X11 windowing system.
@@ -153,11 +154,17 @@
     allowedUDPPortRanges = allowedTCPPortRanges;
   };
 
+  services.ringboard = {
+    x11 = {
+      enable = true;
+      package = nixpkgs-unstable.ringboard;
+    };
+  };
+
   # Install some cool GNOME extensions
   environment.systemPackages = with pkgs; [
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator
-    gnomeExtensions.clipboard-history
     gnomeExtensions.system-monitor
     gnomeExtensions.easyeffects-preset-selector
     gnomeExtensions.notification-timeout

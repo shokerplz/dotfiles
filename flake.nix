@@ -27,7 +27,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs-current";
     nvf = {
       url = "github:notashelf/nvf/v0.8";
-      inputs.nixpkgs.follows = "nixpkgs-current";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
@@ -127,6 +127,7 @@
           ./machines/main-pc/configuration.nix
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
+          "${nixpkgs-unstable}/nixos/modules/services/misc/ringboard.nix"
           {
             home-manager.useUserPackages = true;
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
