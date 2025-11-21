@@ -5,7 +5,6 @@
   ...
 }: {
   environment.systemPackages = with pkgs; [
-    neovim
     git
     wl-clipboard
     appimage-run

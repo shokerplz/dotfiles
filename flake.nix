@@ -25,8 +25,8 @@
     # Home Manager
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-current";
-    nvf = {
-      url = "github:notashelf/nvf/v0.8";
+    nixvim = {
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
@@ -41,7 +41,7 @@
     auto-cpufreq,
     home-manager,
     authentik-nix,
-    nvf,
+    nixvim,
   }: let
     makeDevShell = system: let
       pkgs = import nixpkgs-current {
@@ -58,11 +58,10 @@
         ];
       };
   in {
-    packages."x86_64-linux".my-neovim =
-      (nvf.lib.neovimConfiguration {
-        pkgs = nixpkgs-current.legacyPackages."x86_64-linux";
-        modules = [./packages/nvf-config.nix];
-      }).neovim;
+    packages."x86_64-linux".my-neovim = nixvim.legacyPackages."x86_64-linux".makeNixvimWithModule {
+      pkgs = nixpkgs-current.legacyPackages."x86_64-linux";
+      module = ./packages/nixvim-config.nix;
+    };
 
     nixosConfigurations = {
       pocket4 = nixpkgs-current.lib.nixosSystem rec {
