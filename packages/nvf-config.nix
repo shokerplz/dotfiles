@@ -8,7 +8,6 @@
 
     statusline.lualine.enable = true;
     telescope.enable = true;
-    autocomplete.nvim-cmp.enable = true;
 
     extraPlugins = with pkgs.vimPlugins; {
       tiny-inline-diagnostics = {
@@ -59,7 +58,7 @@
 
       rust = {
         enable = true;
-        crates.enable = true;
+        extensions.crates-nvim.enable = true;
         lsp = {
           enable = true;
           opts = ''

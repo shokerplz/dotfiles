@@ -8,6 +8,7 @@
     ./users.nix
     ./packages.nix
     ./docker.nix
+    ./overlays.nix
   ];
 
   # Allows to run AppImage

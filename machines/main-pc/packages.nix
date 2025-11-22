@@ -34,6 +34,7 @@
     nixpkgs-unstable.gemini-cli
     nixpkgs-unstable.godot
 		direnv
+    gh
     (pkgs.python312.withPackages (python-pkgs:
       with python-pkgs; [
         requests

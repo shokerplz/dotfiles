@@ -157,7 +157,7 @@
   services.ringboard = {
     x11 = {
       enable = true;
-      package = nixpkgs-unstable.ringboard;
+      package = pkgs.ringboard-custom;
     };
   };
 
