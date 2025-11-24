@@ -39,6 +39,17 @@
       };
     };
 
+    autocomplete = {
+      nvim-cmp = {
+        enable = true;
+        setupOpts.completion.completeopt = "menu,menuone,noselect";
+        sources = {
+          buffer = "[Buffer]";
+          path = "[Path]";
+        };
+      };
+    };
+
     lsp = {
       enable = true;
       formatOnSave = true;
@@ -59,6 +70,7 @@
       rust = {
         enable = true;
         extensions.crates-nvim.enable = true;
+        format.enable = true;
         lsp = {
           enable = true;
           opts = ''
