@@ -33,7 +33,8 @@
     nixpkgs-unstable.claude-code
     nixpkgs-unstable.gemini-cli
     nixpkgs-unstable.godot
-		direnv
+    direnv
+    vagrant
     gh
     (pkgs.python312.withPackages (python-pkgs:
       with python-pkgs; [

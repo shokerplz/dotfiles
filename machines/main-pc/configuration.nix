@@ -59,6 +59,10 @@
   virtualisation.virtualbox.host.package = nixpkgs-unstable.virtualbox;
   users.extraGroups.vboxusers.members = ["ikovalev"];
   virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.libvirtd.enable = true;
+  boot.kernelModules = ["kvm-intel"];
+  users.extraGroups."qemu-libvirtd".members = ["ikovalev"];
+  users.extraGroups.libvirtd.members = ["ikovalev"];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
