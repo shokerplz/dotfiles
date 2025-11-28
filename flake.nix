@@ -95,6 +95,10 @@
             inherit system;
             config.allowUnfree = true;
           };
+          nixpkgs-unstable = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
         };
       };
       rpi5 = nixpkgs-current.lib.nixosSystem rec {
@@ -107,6 +111,12 @@
           sops-nix.nixosModules.sops
           authentik-nix.nixosModules.default
         ];
+        specialArgs = {
+          nixpkgs-unstable = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        };
       };
       media-server = nixpkgs-current.lib.nixosSystem rec {
         system = "x86_64-linux";
