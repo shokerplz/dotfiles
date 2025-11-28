@@ -1,9 +1,4 @@
-{
-  ...
-}:
-
-{
-
+{...}: {
   imports = [
     ./packages.nix
     ./hardware-configuration.nix
@@ -22,9 +17,17 @@
   hardware.graphics.enable = true;
 
   # Mount ZFS data pool on boot
-  boot.supportedFilesystems = [ "zfs" ];
+  boot.supportedFilesystems = ["zfs"];
   boot.zfs.forceImportRoot = false;
-  boot.zfs.extraPools = [ "pool0" ];
+  boot.zfs.extraPools = ["pool0"];
+
+  # Allow to build aarch64
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
+  nix = {
+    settings = {
+      extra-platforms = ["aarch64-linux"];
+    };
+  };
 
   # This is needed for ZFS to work properly! DO NOT REMOVE!
   networking.hostId = "8b2e179e";
@@ -44,5 +47,4 @@
 
   # Should never be changed!
   system.stateVersion = "24.11"; # Did you read the comment?
-
 }
