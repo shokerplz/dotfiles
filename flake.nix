@@ -2,11 +2,6 @@
   description = "NixOS configuration";
 
   inputs = {
-    # AutoCPUFreq
-    auto-cpufreq = {
-      url = "github:AdnanHodzic/auto-cpufreq";
-      inputs.nixpkgs.follows = "nixpkgs-current";
-    };
     # Secret manager for Nix
     sops-nix.url = "github:Mic92/sops-nix";
     # Nixpkgs
@@ -38,7 +33,6 @@
     nixpkgs-current,
     sops-nix,
     nixos-hardware,
-    auto-cpufreq,
     home-manager,
     authentik-nix,
     nvf,
@@ -74,7 +68,6 @@
           ./common/gaming.nix
           ./machines/pocket4/configuration.nix
           nixos-hardware.nixosModules.gpd-pocket-4
-          auto-cpufreq.nixosModules.default
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           "${nixpkgs-unstable}/nixos/modules/services/misc/ringboard.nix"
