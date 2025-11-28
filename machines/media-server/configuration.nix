@@ -43,6 +43,11 @@
     AllowSuspendThenHibernate=no
   '';
 
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 8192;
+  }];
+
   boot.loader.systemd-boot.enable = true;
 
   # Should never be changed!
