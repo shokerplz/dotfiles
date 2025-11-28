@@ -1,4 +1,4 @@
-{...}: {
+{nixpkgs-unstable, ...}: {
   imports = [
     ./packages.nix
     ./hardware-configuration.nix
