@@ -77,6 +77,7 @@
           auto-cpufreq.nixosModules.default
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
+          "${nixpkgs-unstable}/nixos/modules/services/misc/ringboard.nix"
           {
             home-manager.useUserPackages = true;
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
