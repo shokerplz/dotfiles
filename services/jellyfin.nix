@@ -1,21 +1,25 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  nixpkgs-unstable,
+  ...
+}: {
   # Jellyfin service
   services.jellyfin = {
     enable = true;
     user = "jellyfin";
+    package = nixpkgs-unstable.jellyfin;
     dataDir = "/mnt/zfs-pool0/kino/jellyfin";
     configDir = "/mnt/zfs-pool0/kino/jellyfin/config";
     cacheDir = "/mnt/zfs-pool0/kino/jellyfin/cache";
   };
 
   system.activationScripts.createJellyfinDir = ''
-    			mkdir -p /mnt/zfs-pool0/kino/data
-    			mkdir -p /mnt/zfs-pool0/kino/jellyfin/config
-    			mkdir -p /mnt/zfs-pool0/kino/jellyfin/cache
-          chown -R jellyfin /mnt/zfs-pool0/kino/data
-    			chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin
+    mkdir -p /mnt/zfs-pool0/kino/data
+    mkdir -p /mnt/zfs-pool0/kino/jellyfin/config
+    mkdir -p /mnt/zfs-pool0/kino/jellyfin/cache
+       chown -R jellyfin /mnt/zfs-pool0/kino/data
+    chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin
   '';
 
   # Add user to render and video group for hw transcoding
@@ -59,5 +63,4 @@
   networking.firewall.extraStopCommands = ''
     iptables -D nixos-fw -p tcp --dport 8096 -s 10.0.0.0/16 -j nixos-fw-accept || true
   '';
-
 }
