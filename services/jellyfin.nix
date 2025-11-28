@@ -51,9 +51,8 @@
 
   # Install necessary packages for Jellyfin
   environment.systemPackages = [
-    pkgs.jellyfin
-    pkgs.jellyfin-web
-    pkgs.jellyfin-ffmpeg
+    nixpkgs-unstable.jellyfin-web
+    nixpkgs-unstable.jellyfin-ffmpeg
   ];
 
   # Jellyfin firewall
