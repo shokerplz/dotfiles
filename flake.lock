@@ -44,26 +44,6 @@
         "type": "github"
       }
     },
-    "auto-cpufreq": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-current"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763546214,
-        "narHash": "sha256-vc9seqvw2ElF8jPetsCoCQ5lo9P3fmgiTle3HlOMezk=",
-        "owner": "AdnanHodzic",
-        "repo": "auto-cpufreq",
-        "rev": "76ccb66f8e4875671fd746fb6b50931454ab8cd8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "AdnanHodzic",
-        "repo": "auto-cpufreq",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -407,7 +387,6 @@
     "root": {
       "inputs": {
         "authentik-nix": "authentik-nix",
-        "auto-cpufreq": "auto-cpufreq",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs-24-11": "nixpkgs-24-11",
