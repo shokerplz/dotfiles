@@ -3,6 +3,7 @@ keys:
   - &media-server age1dr2c3lnx9g28a8fynk349ufuvz54t2a28mk7jfzhngn2r8fvc3fq2zw22g
   - &ikovalev age1c0882dc0kj7mwdwud775xerlgk66p439xrlcktlmuv9ed0hfy95sycs699
   - &main-pc age1k56jkzr3frfrlfzdv4uatqqzv8v9h95pgyen9j9v8n67vm7kvvwsd08ghj
+  - &pocket4 age1mculuz7alkk7k8at58pq3rf5ktgrutu8psgzmlu0rhycccyjs3nsdrfpec
 
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
@@ -12,3 +13,4 @@ creation_rules:
         - *media-server
         - *ikovalev
         - *main-pc
+        - *pocket4
