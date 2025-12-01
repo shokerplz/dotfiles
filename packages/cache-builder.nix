@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-
+{pkgs, ...}:
 pkgs.writeShellApplication {
   name = "cache-builder";
 
@@ -30,8 +29,8 @@ pkgs.writeShellApplication {
     ulimit -n 65535
 
     retry() {
-        local retries=5
-        local wait=10
+        local retries=15
+        local wait=30
         local count=0
         until "$@"; do
             exit_code=$?
@@ -67,7 +66,7 @@ pkgs.writeShellApplication {
         {
             echo "[$(date +%F_%H-%M-%S.%3N)] Building NixOS system for $host"
             build_args=()
-            
+
             arch=$(nix eval --raw "$FLAKE_PATH#nixosConfigurations.$host.config.nixpkgs.system")
             if [[ "$arch" == "aarch64-linux" ]]; then
                 build_args+=(--cores 1)
@@ -89,7 +88,7 @@ pkgs.writeShellApplication {
 
             for path in $requisites; do
                 input_hash=$(basename "$path" | cut -c1-32)
-                
+
                 if [[ ! -f "$CACHE_DIR/$input_hash.narinfo" ]]; then
                     echo "[$(date +%F_%H-%M-%S.%3N)] Caching input (drv/source): $path"
                     retry nix copy --to "file://$CACHE_DIR" "$path"
@@ -100,7 +99,7 @@ pkgs.writeShellApplication {
 
                     for out in $outputs; do
                         out_hash=$(basename "$out" | cut -c1-32)
-                        
+
                         if [[ -f "$CACHE_DIR/$out_hash.narinfo" ]]; then
                              url=$(grep '^URL:' "$CACHE_DIR/$out_hash.narinfo" | awk '{print $2}')
                              if [[ -f "$CACHE_DIR/$url" ]]; then
@@ -123,7 +122,7 @@ pkgs.writeShellApplication {
                 --arg host "$host" \
                 --arg ts "$(date +%F_%H-%M-%S.%3N)" \
                 --arg path "$store_path" \
-                '{ 
+                '{
                     host: $host,
                     timestamp: $ts,
                     storePath: $path
@@ -141,3 +140,4 @@ pkgs.writeShellApplication {
     echo "All builds complete."
   '';
 }
+
