@@ -14,6 +14,7 @@
     ./homeassistant.nix
     ./authentik.nix
     ./n8n.nix
+    ./nix-cache.nix
   ];
 
   # Creating directories for static websites

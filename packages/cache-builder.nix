@@ -21,6 +21,12 @@ pkgs.writeShellApplication {
     mkdir -p "$CACHE_DIR" "$LOG_DIR"
     touch "$META_FILE"
 
+    if [[ ! -f "$CACHE_DIR/nix-cache-info" ]]; then
+      echo "StoreDir: /nix/store" > "$CACHE_DIR/nix-cache-info"
+      echo "WantMassQuery: 1" >> "$CACHE_DIR/nix-cache-info"
+      echo "Priority: 40" >> "$CACHE_DIR/nix-cache-info"
+    fi
+
     hosts=$(nix eval --impure --raw --expr "
       let f = builtins.getFlake (toString $FLAKE_PATH);
       in builtins.concatStringsSep \" \" (builtins.attrNames f.nixosConfigurations)

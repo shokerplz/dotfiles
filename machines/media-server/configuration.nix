@@ -2,6 +2,7 @@
   imports = [
     ./packages.nix
     ./hardware-configuration.nix
+    ./nix-cache.nix
     ../../services/promtail.nix
     ../../services/node-exporter.nix
     ../../services/loki.nix
