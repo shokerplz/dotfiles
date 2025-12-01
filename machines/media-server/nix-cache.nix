@@ -1,10 +1,19 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   services.nginx = {
     enable = true;
     virtualHosts."cache" = {
-      listen = [ { addr = "0.0.0.0"; port = 20080; } ];
+      listen = [
+        {
+          addr = "0.0.0.0";
+          port = 20080;
+        }
+      ];
+      default = true;
+      serverName = "cache nix-cache.ikovalev.nl";
       root = "/mnt/zfs-pool0/nix-cache/cache";
       extraConfig = ''
         autoindex on;

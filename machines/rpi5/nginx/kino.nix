@@ -3,14 +3,13 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: {
   # Virtual host for Kino (Jellyfin + arr stack)
   services.nginx.virtualHosts."kino.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
     acmeRoot = null;
-    listenAddresses = [ "10.0.1.20" ];
+    listenAddresses = ["10.0.1.20"];
     extraConfig = ''
       access_log /var/log/nginx/kino.ikovalev.nl-access.log;
       error_log /var/log/nginx/kino.ikovalev.nl-error.log error;
