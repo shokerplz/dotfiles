@@ -22,8 +22,6 @@ pkgs.writeShellApplication {
     mkdir -p "$CACHE_DIR" "$LOG_DIR"
     touch "$META_FILE"
 
-    timestamp=$(date -Iseconds)
-
     hosts=$(nix eval --impure --raw --expr "
       let f = builtins.getFlake (toString $FLAKE_PATH);
       in builtins.concatStringsSep \" \" (builtins.attrNames f.nixosConfigurations)
@@ -68,14 +66,14 @@ pkgs.writeShellApplication {
 
         {
             echo "[$(date +%F_%H-%M-%S.%3N)] Building NixOS system for $host"
-            build_args=""
+            build_args=()
             
             arch=$(nix eval --raw "$FLAKE_PATH#nixosConfigurations.$host.config.nixpkgs.system")
             if [[ "$arch" == "aarch64-linux" ]]; then
-                build_args="--cores 1"
+                build_args+=(--cores 1)
             fi
 
-            result_path=$(retry nix build $build_args \
+            result_path=$(retry nix build "''${build_args[@]}" \
                 "$FLAKE_PATH#nixosConfigurations.$host.config.system.build.toplevel" \
                 --print-out-paths)
 
