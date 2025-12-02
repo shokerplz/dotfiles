@@ -8,6 +8,7 @@ pkgs.writeShellApplication {
     coreutils
     gnugrep
     gawk
+    git
   ];
 
   text = ''
@@ -17,6 +18,11 @@ pkgs.writeShellApplication {
     CACHE_DIR="/mnt/zfs-pool0/nix-cache/cache"
     LOG_DIR="/mnt/zfs-pool0/nix-cache/log"
     META_FILE="/mnt/zfs-pool0/nix-cache/metadata.json"
+
+    # Fix git safe.directory ownership issue
+    if ! git config --global --get-all safe.directory | grep -qF "$FLAKE_PATH"; then
+        git config --global --add safe.directory "$FLAKE_PATH"
+    fi
 
     mkdir -p "$CACHE_DIR" "$LOG_DIR"
     touch "$META_FILE"
