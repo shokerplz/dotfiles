@@ -1,4 +1,9 @@
-{nixpkgs-unstable, pkgs, lib, ...}: {
+{
+  nixpkgs-unstable,
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ./packages.nix
     ./hardware-configuration.nix
@@ -51,10 +56,12 @@
     AllowSuspendThenHibernate=no
   '';
 
-  swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 8192;
-  }];
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16384;
+    }
+  ];
 
   boot.loader.systemd-boot.enable = true;
 
