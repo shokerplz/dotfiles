@@ -18,20 +18,15 @@
     API_KEY=$(cat ${config.sops.secrets.sonarrApiKey.path})
     BASE_URL="http://127.0.0.1:8989/sonarr/api/v3"
 
-    # Check for missing episodes aired in the last 7 days
     CUTOFF_DATE=$(date -d "7 days ago" -u +"%Y-%m-%dT%H:%M:%SZ")
 
-    # Fetch currently queued episodes to avoid redundant searches
     QUEUE_RESPONSE=$(curl -s -H "X-Api-Key: $API_KEY" "$BASE_URL/queue")
     QUEUED_IDS=$(echo "$QUEUE_RESPONSE" | jq -c '[.records[].episodeId] | unique')
 
-    # Fetch missing episodes, sorted by air date descending
     RESPONSE=$(curl -s -H "X-Api-Key: $API_KEY" "$BASE_URL/wanted/missing?pageSize=100&sortKey=airDateUtc&sortDirection=descending")
 
-    # Filter IDs for episodes aired after cutoff AND not in queue
     EPISODE_IDS=$(echo "$RESPONSE" | jq -c --arg cutoff "$CUTOFF_DATE" --argjson queued "$QUEUED_IDS" '[.records[] | select(.airDateUtc >= $cutoff) | select(.id as $id | $queued | index($id) | not) | .id]')
 
-    # Trigger search if there are episodes
     if [ "$EPISODE_IDS" != "[]" ]; then
        echo "Triggering search for recent missing episodes..."
        curl -s -X POST \
