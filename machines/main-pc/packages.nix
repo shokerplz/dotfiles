@@ -25,7 +25,6 @@
     solaar
     libnotify
     adwaita-icon-theme
-    cinny-desktop
     nixpkgs-unstable.codex
     nixpkgs-unstable.claude-code-router
     nixpkgs-unstable.claude-code
