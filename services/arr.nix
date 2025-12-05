@@ -13,12 +13,28 @@
   ];
   sonarrSearchScript = pkgs.writeShellScriptBin "sonarr-missing-search" ''
     set -euo pipefail
+    export PATH="${pkgs.curl}/bin:${pkgs.jq}/bin:${pkgs.coreutils}/bin:$PATH"
+
     API_KEY=$(cat ${config.sops.secrets.sonarrApiKey.path})
-    ${pkgs.curl}/bin/curl -s -X POST \
-      -H "X-Api-Key: $API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"name": "MissingEpisodeSearch"}' \
-      "http://127.0.0.1:8989/sonarr/api/v3/command" > /dev/null
+    BASE_URL="http://127.0.0.1:8989/sonarr/api/v3"
+
+    CUTOFF_DATE=$(date -d "7 days ago" -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    QUEUE_RESPONSE=$(curl -s -H "X-Api-Key: $API_KEY" "$BASE_URL/queue")
+    QUEUED_IDS=$(echo "$QUEUE_RESPONSE" | jq -c '[.records[].episodeId] | unique')
+
+    RESPONSE=$(curl -s -H "X-Api-Key: $API_KEY" "$BASE_URL/wanted/missing?pageSize=100&sortKey=airDateUtc&sortDirection=descending")
+
+    EPISODE_IDS=$(echo "$RESPONSE" | jq -c --arg cutoff "$CUTOFF_DATE" --argjson queued "$QUEUED_IDS" '[.records[] | select(.airDateUtc >= $cutoff) | select(.id as $id | $queued | index($id) | not) | .id]')
+
+    if [ "$EPISODE_IDS" != "[]" ]; then
+       echo "Triggering search for recent missing episodes..."
+       curl -s -X POST \
+         -H "X-Api-Key: $API_KEY" \
+         -H "Content-Type: application/json" \
+         -d "{\"name\": \"EpisodeSearch\", \"episodeIds\": $EPISODE_IDS}" \
+         "$BASE_URL/command" > /dev/null
+    fi
   '';
 in {
   imports = [
