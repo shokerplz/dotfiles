@@ -11,6 +11,8 @@ pkgs.writeShellApplication {
     git
   ];
 
+  bashOptions = [];
+
   text = ''
     set -euo pipefail
 
@@ -152,4 +154,3 @@ pkgs.writeShellApplication {
     echo "All builds complete."
   '';
 }
-
