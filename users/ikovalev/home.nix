@@ -40,7 +40,10 @@
     };
   };
 
-  programs.ssh.enable = true;
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+  };
   programs.tmux = {
     enable = true;
     mouse = true;
@@ -52,7 +55,6 @@
 
   programs.keychain = {
     enable = true;
-    agents = ["ssh"];
     keys = ["~/.ssh/do_key"];
     extraFlags = ["--quiet"];
   };
