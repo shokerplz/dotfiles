@@ -48,7 +48,7 @@
   networking.hostName = "media-server";
 
   # Allows laptop to work with closed lid
-  services.logind.lidSwitchExternalPower = "ignore";
+  services.logind.settings.HandleLidSwitchExternalPower = "ignore";
   systemd.sleep.extraConfig = ''
     AllowSuspend=no
     AllowHibernation=no
