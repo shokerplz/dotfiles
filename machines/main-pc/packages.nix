@@ -16,7 +16,6 @@
     firefox-bin
     vscode
     spotify
-    gnomeExtensions.touch-x
     telegram-desktop
     vlc
     obs-studio
