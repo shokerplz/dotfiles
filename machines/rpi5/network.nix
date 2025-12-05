@@ -8,6 +8,7 @@
   # Disable networkmanager and dhcpd to allow 2 ips on one interface
   networking.networkmanager.enable = false;
   networking.dhcpcd.enable = false;
+  networking.useDHCP = false;
 
   # Enable systemd network
   systemd.network.enable = true;

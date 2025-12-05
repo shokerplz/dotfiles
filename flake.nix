@@ -9,7 +9,7 @@
     # NixPKGs nixos24.11
     nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
     # NixPKGs that I am currently using
-    nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.11";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # Authentik
@@ -18,7 +18,7 @@
     };
 
     # Home Manager
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-current";
     nvf = {
       url = "github:notashelf/nvf/v0.8";
@@ -70,7 +70,6 @@
           nixos-hardware.nixosModules.gpd-pocket-4
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
-          "${nixpkgs-unstable}/nixos/modules/services/misc/ringboard.nix"
           {
             home-manager.useUserPackages = true;
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
@@ -137,7 +136,6 @@
           ./machines/main-pc/configuration.nix
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
-          "${nixpkgs-unstable}/nixos/modules/services/misc/ringboard.nix"
           {
             home-manager.useUserPackages = true;
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;

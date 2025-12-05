@@ -4,11 +4,11 @@
 
   services.n8n = {
     enable = true;
-    settings = {
-      host = "0.0.0.0";
-      port = 5678;
+    environment = {
+      N8N_HOST = "0.0.0.0";
+      N8N_PORT = "5678";
+      WEBHOOK_URL = "https://n8n.ikovalev.nl/";
     };
-    webhookUrl = "https://n8n.ikovalev.nl/";
   };
 
   networking.firewall.extraCommands = ''

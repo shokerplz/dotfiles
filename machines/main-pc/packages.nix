@@ -16,18 +16,15 @@
     firefox-bin
     vscode
     spotify
-    gnomeExtensions.touch-x
     telegram-desktop
     vlc
     obs-studio
-    jellyfin-media-player
     libreoffice-qt6-fresh
     alacritty
     discord
     solaar
     libnotify
     adwaita-icon-theme
-    cinny-desktop
     nixpkgs-unstable.codex
     nixpkgs-unstable.claude-code-router
     nixpkgs-unstable.claude-code
