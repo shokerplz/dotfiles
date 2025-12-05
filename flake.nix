@@ -9,7 +9,7 @@
     # NixPKGs nixos24.11
     nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
     # NixPKGs that I am currently using
-    nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.11";
     # NixOS Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # Authentik
