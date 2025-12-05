@@ -10,7 +10,6 @@
     spotify
     bambu-studio
     code-cursor
-    gnomeExtensions.touch-x
     telegram-desktop
     vlc
     obs-studio
