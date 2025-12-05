@@ -1,10 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ../modules/cloudflare-ddns.nix
-  ];
-
   # Cloudflare DDNS service to announce my public ip
   config.services.cloudflare-ddns = {
     enable = true;
@@ -12,10 +8,4 @@
     domains = [ "vpn.ikovalev.nl" ];
     proxied = "false";
   };
-
-  config.nixpkgs.overlays = [
-    (final: prev: {
-      cloudflare-ddns = final.callPackage ../packages/cloudflare-ddns.nix { };
-    })
-  ];
 }
