@@ -9,6 +9,12 @@
     ../../secrets/git.nix
   ];
 
+  sops.secrets.git_key = {
+    owner = config.systemd.services.nix-local-cache-server.serviceConfig.User;
+    group = config.systemd.services.nix-local-cache-server.serviceConfig.Group;
+    mode = "0400";
+  };
+
   services.nginx = {
     enable = true;
     virtualHosts."cache" = {
