@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  nix-local-cache,
   ...
 }: {
   imports = [
@@ -27,6 +28,7 @@
 
   services.nix-local-cache-server = {
     enable = true;
+    package = nix-local-cache.packages.${pkgs.system}.server;
     port = 21080;
     workerThreads = 2;
     workingDir = "/mnt/zfs-pool0/nix-cache";
