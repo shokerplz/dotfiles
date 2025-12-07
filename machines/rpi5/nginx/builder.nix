@@ -3,7 +3,13 @@
   pkgs,
   nix-local-cache,
   ...
-}: {
+}: let
+  configJsPath = pkgs.writeText "config.js" ''
+    window.SERVER_CONFIG = {
+      apiUrl: "https://api.builder.ikovalev.nl"
+    };
+  '';
+in {
   services.nginx.virtualHosts."builder.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
@@ -13,10 +19,9 @@
       tryFiles = "$uri $uri/ /index.html";
     };
     locations."/config.js" = {
-      alias = pkgs.writeText "config.js" ''
-        window.SERVER_CONFIG = {
-          apiUrl: "https://api.builder.ikovalev.nl"
-        };
+      extraConfig = ''
+        default_type application/javascript;
+        return 200 "${configJsPath}";
       '';
     };
   };
