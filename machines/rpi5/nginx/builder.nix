@@ -12,6 +12,7 @@
 in {
   services.nginx.virtualHosts."builder.ikovalev.nl" = {
     enableACME = true;
+    acmeRoot = null;
     forceSSL = true;
     listenAddresses = ["10.0.1.20"];
     root = nix-local-cache.packages.${pkgs.system}.frontend;
@@ -28,6 +29,7 @@ in {
 
   services.nginx.virtualHosts."api.builder.ikovalev.nl" = {
     enableACME = true;
+    acmeRoot = null;
     forceSSL = true;
     listenAddresses = ["10.0.1.20"];
     locations."/" = {
