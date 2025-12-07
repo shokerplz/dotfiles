@@ -16,6 +16,7 @@
     authentik-nix = {
       url = "github:nix-community/authentik-nix";
     };
+    nix-local-cache.url = "git+ssh://gitlab@git.ikovalev.nl/nix/nix-local-cache.git";
 
     # Home Manager
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -36,6 +37,7 @@
     home-manager,
     authentik-nix,
     nvf,
+    nix-local-cache,
   }: let
     makeDevShell = system: let
       pkgs = import nixpkgs-current {
@@ -105,6 +107,7 @@
           authentik-nix.nixosModules.default
         ];
         specialArgs = {
+          inherit nix-local-cache;
           nixpkgs-unstable = import nixpkgs-unstable {
             inherit system;
             config.allowUnfree = true;
@@ -118,8 +121,10 @@
           ./common/ssh.nix
           ./machines/media-server/configuration.nix
           sops-nix.nixosModules.sops
+          nix-local-cache.nixosModules.server
         ];
         specialArgs = {
+          inherit nix-local-cache;
           nixpkgs-unstable = import nixpkgs-unstable {
             inherit system;
             config.allowUnfree = true;
