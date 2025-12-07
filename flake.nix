@@ -105,6 +105,7 @@
           nixos-hardware.nixosModules.raspberry-pi-5
           sops-nix.nixosModules.sops
           authentik-nix.nixosModules.default
+          nix-local-cache.nixosModules.frontend
         ];
         specialArgs = {
           inherit nix-local-cache;
