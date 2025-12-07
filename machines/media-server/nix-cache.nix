@@ -6,6 +6,7 @@
 }: {
   imports = [
     ../../secrets/nix-cache.nix
+    ../../secrets/git.nix
   ];
 
   services.nginx = {
