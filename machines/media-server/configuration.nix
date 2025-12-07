@@ -21,9 +21,6 @@
 
   services.cron = {
     enable = true;
-    systemCronJobs = [
-      "30 3 * * * root ${lib.getExe (pkgs.callPackage ../../packages/cache-builder.nix {})}"
-    ];
   };
 
   # This is needed for hardware video encoding

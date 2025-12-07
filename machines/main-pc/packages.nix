@@ -33,6 +33,7 @@
     direnv
     vagrant
     gh
+    devenv
     (pkgs.python312.withPackages (python-pkgs:
       with python-pkgs; [
         requests

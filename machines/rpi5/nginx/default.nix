@@ -14,6 +14,7 @@
     ./authentik.nix
     ./n8n.nix
     ./nix-cache.nix
+    ./builder.nix
   ];
 
   # Creating directories for static websites
