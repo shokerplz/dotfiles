@@ -239,11 +239,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1765139190,
-        "narHash": "sha256-ZGwbU7LMBJGeHvAPJnbe1PcMg2t5zDVixi4CDNzUaV4=",
+        "lastModified": 1765145388,
+        "narHash": "sha256-dlyUJ7Oem87oCA150N+uGoHPIoOv8HIcHYdnZbe5bqU=",
         "ref": "refs/heads/master",
-        "rev": "c2d277ad1004266ef2815a7ce9e932b68f0d0233",
-        "revCount": 19,
+        "rev": "254706ffd40a54f0bb6cbc64bde3ebe9327d1600",
+        "revCount": 20,
         "type": "git",
         "url": "ssh://gitlab@git.ikovalev.nl/nix/nix-local-cache.git"
       },
