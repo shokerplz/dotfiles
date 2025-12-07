@@ -8,6 +8,7 @@
     enable = true;
     domain = "builder.ikovalev.nl";
     apiUrl = "https://api.builder.ikovalev.nl";
+    package = nix-local-cache.packages.${pkgs.system}.frontend;
   };
 
   # Enable ACME/SSL for the domain (since the module only sets up the virtualHost, 
