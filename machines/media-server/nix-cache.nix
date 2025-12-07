@@ -3,6 +3,10 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ../../secrets/nix-cache.nix
+  ];
+
   services.nginx = {
     enable = true;
     virtualHosts."cache" = {
@@ -26,6 +30,7 @@
     port = 21080;
     workerThreads = 2;
     workingDir = "/mnt/zfs-pool0/nix-cache";
+    secretKeyFile = config.sops.secrets.nix_cache_private_key.path;
   };
 
   networking.firewall.extraCommands = ''
