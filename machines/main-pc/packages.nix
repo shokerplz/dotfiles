@@ -30,6 +30,7 @@
     nixpkgs-unstable.claude-code
     nixpkgs-unstable.gemini-cli
     nixpkgs-unstable.godot
+    nixpkgs-unstable.opencode
     direnv
     vagrant
     gh
