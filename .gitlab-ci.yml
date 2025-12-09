@@ -44,7 +44,7 @@ daily-update:
       git checkout daily
 
       # Update Flake
-      nix flake update
+      nix --extra-experimental-features 'nix-command flakes' flake update
 
       # Commit and Trigger Build
       if [[ -n \$(git status -s) ]]; then
