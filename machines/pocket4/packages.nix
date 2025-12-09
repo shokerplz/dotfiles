@@ -15,5 +15,6 @@
     obs-studio
     libreoffice-qt6-fresh
     guvcview # Camera app for KVM
+    virtio-win
   ];
 }
