@@ -8,30 +8,29 @@ daily-update:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "web"
   script:
-    # Install dependencies
-    - nix-env -iA nixpkgs.git nixpkgs.openssh nixpkgs.curl
-    
-    # Setup SSH for git push
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
-
-    # Configure Git
-    - git config --global user.email "ci-bot@ikovalev.nl"
-    - git config --global user.name "CI Bot"
-
-    # Checkout daily branch
-    - git fetch origin daily
-    - git checkout daily
-
-    # Update Flake
-    - nix flake update
-
-    # Commit and Trigger Build
     - |
-      if [[ -n $(git status -s) ]]; then
+      cat <<INNEREOF > update-script.sh
+      set -e
+      # Setup SSH for git push
+      eval \$(ssh-agent -s)
+      echo "\$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+      mkdir -p ~/.ssh
+      chmod 700 ~/.ssh
+      ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
+
+      # Configure Git
+      git config --global user.email "ci-bot@ikovalev.nl"
+      git config --global user.name "CI Bot"
+
+      # Checkout daily branch
+      git fetch origin daily
+      git checkout daily
+
+      # Update Flake
+      nix flake update
+
+      # Commit and Trigger Build
+      if [[ -n \$(git status -s) ]]; then
         git add flake.lock
         git commit -m "Update flake.lock [skip ci]"
         git push origin daily
@@ -43,3 +42,7 @@ daily-update:
       else
         echo "No changes in flake.lock. Skipping commit and build."
       fi
+      INNEREOF
+    
+    # Run the script inside a nix-shell with required dependencies
+    - nix-shell -p git openssh curl --run "bash update-script.sh"
