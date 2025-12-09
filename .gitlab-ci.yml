@@ -11,11 +11,28 @@ daily-update:
     - |
       cat <<INNEREOF > update-script.sh
       set -e
-      # Setup SSH for git push
-      eval \$(ssh-agent -s)
-      echo "\$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
       mkdir -p ~/.ssh
       chmod 700 ~/.ssh
+
+      # Handle SSH_PRIVATE_KEY whether it's a File or a Variable
+      if [ -f "\$SSH_PRIVATE_KEY" ]; then
+          echo "SSH_PRIVATE_KEY detected as file"
+          cp "\$SSH_PRIVATE_KEY" ~/.ssh/id_ed25519
+      else
+          echo "SSH_PRIVATE_KEY detected as variable"
+          echo "\$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+      fi
+
+      # Ensure permissions and fix potential missing newline at EOF
+      chmod 600 ~/.ssh/id_ed25519
+      if [ -n "\$(tail -c1 ~/.ssh/id_ed25519)" ]; then
+          echo "" >> ~/.ssh/id_ed25519
+      fi
+
+      # Start agent and add key
+      eval \$(ssh-agent -s)
+      ssh-add ~/.ssh/id_ed25519
+      
       ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
 
       # Configure Git
@@ -44,5 +61,4 @@ daily-update:
       fi
       INNEREOF
     
-    # Run the script inside a nix-shell with required dependencies
     - nix-shell -p git openssh curl --run "bash update-script.sh"
