@@ -1,0 +1,44 @@
+stages:
+  - maintenance
+
+daily-update:
+  stage: maintenance
+  image: nixos/nix:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    # Install dependencies
+    - nix-env -iA nixpkgs.git nixpkgs.openssh nixpkgs.curl
+    
+    # Setup SSH for git push
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
+
+    # Configure Git
+    - git config --global user.email "ci-bot@ikovalev.nl"
+    - git config --global user.name "CI Bot"
+
+    # Checkout daily branch
+    - git fetch origin daily
+    - git checkout daily
+
+    # Update Flake
+    - nix flake update
+
+    # Commit and Trigger Build
+    - |
+      if [[ -n $(git status -s) ]]; then
+        git add flake.lock
+        git commit -m "Update flake.lock [skip ci]"
+        git push origin daily
+        
+        echo "Changes pushed. Triggering build on nix-local-cache..."
+        curl -X POST http://media-server:21080/build \
+             -H "Content-Type: application/json" \
+             -d '{"flake_branch": "daily"}'
+      else
+        echo "No changes in flake.lock. Skipping commit and build."
+      fi
