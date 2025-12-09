@@ -50,19 +50,14 @@ daily-update:
         git commit -m "Update flake.lock [skip ci]"
         git push origin daily
         echo "Changes pushed."
+
+        echo "Triggering build on nix-local-cache..."
+        curl -v https://api.builder.ikovalev.nl/build \
+             -H "Content-Type: application/json" \
+             -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
       else
         echo "No changes in flake.lock."
       fi
-      
-      # ALWAYS Trigger Build (for testing purposes, or to ensure daily build happens even if only upstream inputs changed without lockfile changes - though flake update usually handles that)
-      # Actually, usually we only want to build if inputs changed.
-      # BUT, since you asked to TEST that it works, I'll move the curl outside the if block temporarily/permanently?
-      # Assuming you want to verify the integration now:
-      
-      echo "Triggering build on nix-local-cache..."
-      curl -v https://api.builder.ikovalev.nl/build \
-           -H "Content-Type: application/json" \
-           -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
       INNEREOF
     
     - nix-shell -p git openssh curl --run "bash update-script.sh"
