@@ -52,9 +52,11 @@ daily-update:
         git push origin daily
         
         echo "Changes pushed. Triggering build on nix-local-cache..."
+        # Note: nix-local-cache will handle the 'ref' parameter from flake_branch
+        # resolve_flake_ref in crates/server/src/nix.rs line 263: format!("{}?ref={}", url, branch)
         curl -X POST http://media-server:21080/build \
              -H "Content-Type: application/json" \
-             -d '{"flake_branch": "daily"}'
+             -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
       else
         echo "No changes in flake.lock. Skipping commit and build."
       fi
