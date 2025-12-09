@@ -1,4 +1,10 @@
 { pkgs, ... }:
+let
+  virtio-win-iso = pkgs.runCommand "virtio-win-iso" { } ''
+    mkdir -p $out/share/virtio-win
+    ln -s ${pkgs.virtio-win.src} $out/share/virtio-win/virtio-win.iso
+  '';
+in
 {
   environment.systemPackages = with pkgs; [
     neovim
@@ -15,6 +21,6 @@
     obs-studio
     libreoffice-qt6-fresh
     guvcview # Camera app for KVM
-    virtio-win
+    virtio-win-iso
   ];
 }
