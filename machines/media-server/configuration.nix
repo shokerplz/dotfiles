@@ -13,6 +13,7 @@
     ../../services/loki.nix
     ../../services/nextcloud.nix
     ../../services/gitlab.nix
+    ../../services/gitlab-runner.nix
     ../../services/jellyfin.nix
     ../../services/arr.nix
     ../../services/samba.nix
