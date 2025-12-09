@@ -22,7 +22,6 @@ daily-update:
       fi
 
       chmod 600 ~/.ssh/id_ed25519
-      # Ensure newline at EOF
       if [ -n "\$(tail -c1 ~/.ssh/id_ed25519)" ]; then
           echo "" >> ~/.ssh/id_ed25519
       fi
@@ -45,21 +44,25 @@ daily-update:
       # Update Flake
       nix --extra-experimental-features 'nix-command flakes' flake update
 
-      # Check for changes in flake.lock specifically
+      # Commit if changed
       if [[ -n \$(git status --porcelain flake.lock) ]]; then
         git add flake.lock
         git commit -m "Update flake.lock [skip ci]"
         git push origin daily
-        
-        echo "Changes pushed. Triggering build on nix-local-cache..."
-        # Note: nix-local-cache will handle the 'ref' parameter from flake_branch
-        # resolve_flake_ref in crates/server/src/nix.rs line 263: format!("{}?ref={}", url, branch)
-        curl -X POST http://media-server:21080/build \
-             -H "Content-Type: application/json" \
-             -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
+        echo "Changes pushed."
       else
-        echo "No changes in flake.lock. Skipping commit and build."
+        echo "No changes in flake.lock."
       fi
+      
+      # ALWAYS Trigger Build (for testing purposes, or to ensure daily build happens even if only upstream inputs changed without lockfile changes - though flake update usually handles that)
+      # Actually, usually we only want to build if inputs changed.
+      # BUT, since you asked to TEST that it works, I'll move the curl outside the if block temporarily/permanently?
+      # Assuming you want to verify the integration now:
+      
+      echo "Triggering build on nix-local-cache..."
+      curl -v -X POST http://media-server:21080/build \
+           -H "Content-Type: application/json" \
+           -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
       INNEREOF
     
     - nix-shell -p git openssh curl --run "bash update-script.sh"
