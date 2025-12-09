@@ -39,6 +39,9 @@ daily-update:
       git config --global user.email "ci-bot@ikovalev.nl"
       git config --global user.name "CI Bot"
 
+      # Switch to SSH remote to use the key for pushing
+      git remote set-url origin git@git.ikovalev.nl:nix/dotfiles.git
+
       # Checkout daily branch
       git fetch origin daily
       git checkout daily
