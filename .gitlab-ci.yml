@@ -60,7 +60,7 @@ daily-update:
       # Assuming you want to verify the integration now:
       
       echo "Triggering build on nix-local-cache..."
-      curl -v -X POST http://media-server:21080/build \
+      curl -v https://api.builder.ikovalev.nl/build \
            -H "Content-Type: application/json" \
            -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
       INNEREOF
