@@ -22,14 +22,15 @@ daily-update:
       fi
 
       chmod 600 ~/.ssh/id_ed25519
+      # Ensure newline at EOF
       if [ -n "\$(tail -c1 ~/.ssh/id_ed25519)" ]; then
           echo "" >> ~/.ssh/id_ed25519
       fi
 
-      echo "--- DEBUG INFO ---"
-      echo "Key Fingerprint:"
+      echo "--- DEBUG: KEY INFO ---"
+      ls -l ~/.ssh/id_ed25519
       ssh-keygen -lf ~/.ssh/id_ed25519
-      echo "------------------"
+      echo "-----------------------"
 
       ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
 
@@ -37,11 +38,15 @@ daily-update:
       git config --global user.email "ci-bot@ikovalev.nl"
       git config --global user.name "CI Bot"
 
+      # TEST CONNECTION
+      echo "--- DEBUG: TESTING SSH CONNECTION ---"
+      # We ignore exit code 1 here because ssh -T usually returns 1 even on success (Welcome message) in scripts
+      ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -T git@git.ikovalev.nl || true
+      echo "-------------------------------------"
+
       # Set SSH remote
       git remote set-url origin git@git.ikovalev.nl:nix/dotfiles.git
-
-      # Use verbose SSH to debug connection
-      export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh/known_hosts -v"
+      export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes"
 
       # Checkout daily branch
       echo "Fetching daily branch..."
