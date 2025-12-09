@@ -15,7 +15,6 @@ in {
     services = {
       default-runner = {
         authenticationTokenConfigFile = config.sops.secrets."gitlab-runner/token".path;
-        url = "https://git.ikovalev.nl";
         executor = "docker";
         dockerImage = "alpine:latest";
         dockerPrivileged = false;
@@ -23,6 +22,10 @@ in {
     };
   };
 
-  # Ensure the runner can talk to the docker daemon
-  users.users.gitlab-runner.extraGroups = ["docker"];
+  users.users.gitlab-runner = {
+    isSystemUser = true;
+    group = "gitlab-runner";
+    extraGroups = ["docker"];
+  };
+  users.groups.gitlab-runner = {};
 }
