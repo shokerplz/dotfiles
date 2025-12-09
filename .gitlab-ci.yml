@@ -6,6 +6,7 @@ daily-update:
   image: nixos/nix:latest
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
   script:
     # Install dependencies
     - nix-env -iA nixpkgs.git nixpkgs.openssh nixpkgs.curl
