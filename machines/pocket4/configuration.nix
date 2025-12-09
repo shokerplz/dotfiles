@@ -30,7 +30,12 @@
   };
 
   hardware.amdgpu.opencl.enable = true;
-  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      swtpm.enable = true;
+    };
+  };
   programs.virt-manager.enable = true;
 
   users.users.ikovalev.extraGroups = [
