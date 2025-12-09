@@ -27,10 +27,15 @@ daily-update:
           echo "" >> ~/.ssh/id_ed25519
       fi
 
-      echo "--- DEBUG: KEY INFO ---"
-      ls -l ~/.ssh/id_ed25519
+      echo "=================================================================="
+      echo "                        DEBUGGING SSH KEY"
+      echo "=================================================================="
+      echo "1. Key Fingerprint:"
       ssh-keygen -lf ~/.ssh/id_ed25519
-      echo "-----------------------"
+      echo ""
+      echo "2. DERIVED PUBLIC KEY (The server MUST have this exact line):"
+      ssh-keygen -y -f ~/.ssh/id_ed25519
+      echo "=================================================================="
 
       ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
 
@@ -39,13 +44,11 @@ daily-update:
       git config --global user.name "CI Bot"
 
       # TEST CONNECTION
-      echo "--- DEBUG: TESTING SSH CONNECTION ---"
-      # We ignore exit code 1 here because ssh -T usually returns 1 even on success (Welcome message) in scripts
-      ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -T git@git.ikovalev.nl || true
-      echo "-------------------------------------"
+      echo "Testing connection with 'ssh -T'..."
+      ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -T gitlab@git.ikovalev.nl || true
 
       # Set SSH remote
-      git remote set-url origin git@git.ikovalev.nl:nix/dotfiles.git
+      git remote set-url origin gitlab@git.ikovalev.nl:nix/dotfiles.git
       export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes"
 
       # Checkout daily branch
