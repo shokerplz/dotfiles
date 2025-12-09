@@ -30,9 +30,13 @@
   };
 
   hardware.amdgpu.opencl.enable = true;
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+
   users.users.ikovalev.extraGroups = [
     "video"
     "render"
+    "libvirtd"
   ];
 
   # Allow openssh, but disable it by default
