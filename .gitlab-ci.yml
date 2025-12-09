@@ -14,35 +14,37 @@ daily-update:
       mkdir -p ~/.ssh
       chmod 700 ~/.ssh
 
-      # Handle SSH_PRIVATE_KEY whether it's a File or a Variable
+      # Handle SSH_PRIVATE_KEY
       if [ -f "\$SSH_PRIVATE_KEY" ]; then
-          echo "SSH_PRIVATE_KEY detected as file"
           cp "\$SSH_PRIVATE_KEY" ~/.ssh/id_ed25519
       else
-          echo "SSH_PRIVATE_KEY detected as variable"
           echo "\$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
       fi
 
-      # Ensure permissions and fix potential missing newline at EOF
       chmod 600 ~/.ssh/id_ed25519
       if [ -n "\$(tail -c1 ~/.ssh/id_ed25519)" ]; then
           echo "" >> ~/.ssh/id_ed25519
       fi
 
-      # Start agent and add key
-      eval \$(ssh-agent -s)
-      ssh-add ~/.ssh/id_ed25519
-      
+      echo "--- DEBUG INFO ---"
+      echo "Key Fingerprint:"
+      ssh-keygen -lf ~/.ssh/id_ed25519
+      echo "------------------"
+
       ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
 
       # Configure Git
       git config --global user.email "ci-bot@ikovalev.nl"
       git config --global user.name "CI Bot"
 
-      # Switch to SSH remote to use the key for pushing
+      # Set SSH remote
       git remote set-url origin git@git.ikovalev.nl:nix/dotfiles.git
 
+      # Use verbose SSH to debug connection
+      export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh/known_hosts -v"
+
       # Checkout daily branch
+      echo "Fetching daily branch..."
       git fetch origin daily
       git checkout daily
 
