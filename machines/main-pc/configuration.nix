@@ -13,6 +13,7 @@
     ./sunshine.nix
     ./overlays.nix
     ../../services/node-exporter.nix
+    ../../common/nfs-client.nix
   ];
 
   # Bootloader.

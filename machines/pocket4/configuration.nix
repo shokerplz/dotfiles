@@ -11,6 +11,7 @@
     ./power.nix
     ./fix-screen-rotation-sleep.nix
     ../../services/node-exporter.nix
+    ../../common/nfs-client.nix
   ];
 
   # Bootloader.

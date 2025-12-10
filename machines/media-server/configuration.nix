@@ -17,6 +17,7 @@
     ../../services/jellyfin.nix
     ../../services/arr.nix
     ../../services/samba.nix
+    ../../services/nfs.nix
     ../../services/n8n.nix
   ];
 
