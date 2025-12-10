@@ -1,11 +1,19 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: let
+  nfsDir = "/mnt/ssd/nfs";
+in {
   services.nfs.server.enable = true;
   # Restrict exports to the local network
   services.nfs.server.exports = ''
-    /mnt/ssd/nfs 10.0.0.0/16(rw,sync,no_subtree_check)
+    ${nfsDir} 10.0.0.0/16(rw,sync,no_subtree_check)
   '';
+
+  systemd.tmpfiles.rules = [
+    "d ${nfsDir} 0755 ikovalev root -"
+  ];
 
   # NFS firewall
   networking.firewall.extraCommands = ''
