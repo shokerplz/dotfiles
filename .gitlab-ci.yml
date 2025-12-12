@@ -39,7 +39,7 @@ daily-update:
       # Checkout daily branch
       echo "Fetching daily branch..."
       git fetch origin daily
-      git checkout daily
+      git checkout -B daily origin/daily
 
       # Update Flake
       nix --extra-experimental-features 'nix-command flakes' flake update
