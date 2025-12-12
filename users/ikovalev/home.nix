@@ -77,13 +77,4 @@
     # Additional packages here
     gcc
   ];
-
-  xdg.desktopEntries.llama-cpp = {
-    name = "Llama.cpp AI Server";
-    comment = "Launch the Llama.cpp AI server on demand.";
-    exec = "${pkgs.xdg-utils}/bin/xdg-open http://localhost:28560";
-    terminal = false;
-    type = "Application";
-    icon = "system-run"; # Generic icon for launching applications
-  };
 }

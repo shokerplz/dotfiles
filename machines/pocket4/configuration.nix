@@ -12,14 +12,11 @@
     ./fix-screen-rotation-sleep.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
-    ../../common/docker.nix
-    ./ai.nix
   ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = [ "iommu=pt" ];
 
   networking.hostName = "pocket4"; # Define your hostname.
 
