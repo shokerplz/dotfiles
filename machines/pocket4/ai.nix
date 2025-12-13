@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   virtualisation.oci-containers.containers.llama-cpp = {
     image = "llama-cpp-rocm7.0rc";
     ports = ["28560:28560"];
@@ -12,8 +9,11 @@
       "/var/lib/llama-cpp:/models"
     ];
     cmd = [
+      "llama-server"
       "--model"
       "/models/Qwen3-Coder-30B-A3B-Instruct-UD-Q8_K_XL.gguf"
+      "--chat-template-file"
+      "/models/Qwen3-Coder-30B-A3B-Instruct-UD-Q8_K_XL.template"
       "-ngl"
       "99"
       "-c"
@@ -25,6 +25,17 @@
       "--port"
       "28560"
       "--jinja"
+      "--no-mmap"
+      "--temp"
+      "0.7"
+      "--min-p"
+      "0.01"
+      "--top-p"
+      "0.80"
+      "--top-k"
+      "20"
+      "--repeat-penalty"
+      "1.1"
     ];
     extraOptions = [
       "--device=/dev/kfd"
