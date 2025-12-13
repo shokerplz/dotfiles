@@ -13,6 +13,7 @@
     ./fix-screen-rotation-sleep.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
+    ../../common/docker.nix
   ];
 
   # Bootloader.

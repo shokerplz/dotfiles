@@ -1,16 +1,16 @@
 {
   lib,
-  nixpkgs-unstable,
   ...
 }: {
-  services.llama-cpp = {
-    package = nixpkgs-unstable.llama-cpp.override {
-      rocmSupport = false;
-      vulkanSupport = true;
-    };
-    enable = true;
-    model = "/var/lib/llama-cpp/Qwen3-Coder-30B-A3B-Instruct-UD-Q8_K_XL.gguf";
-    extraFlags = [
+  virtualisation.oci-containers.containers.llama-cpp = {
+    image = "llama-cpp-rocm7.0rc";
+    ports = ["28560:28560"];
+    volumes = [
+      "/var/lib/llama-cpp:/models"
+    ];
+    cmd = [
+      "--model"
+      "/models/Qwen3-Coder-30B-A3B-Instruct-UD-Q8_K_XL.gguf"
       "-ngl"
       "99"
       "-c"
@@ -23,9 +23,13 @@
       "28560"
       "--jinja"
     ];
+    extraOptions = [
+      "--device=/dev/kfd"
+      "--device=/dev/dri"
+    ];
   };
 
-  systemd.services.llama-cpp.wantedBy = lib.mkForce [];
+  systemd.services.docker-llama-cpp.wantedBy = lib.mkForce [];
 
   networking.firewall.extraCommands = ''
     iptables -A nixos-fw -p tcp --dport 28560 -s 10.0.0.0/16 -j nixos-fw-accept
