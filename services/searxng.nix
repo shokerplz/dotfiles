@@ -3,14 +3,20 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ../secrets/searxng.nix
+  ];
+
   services.searx = {
     enable = true;
     
+    environmentFile = config.sops.templates."searxng_env".path;
+
     settings = {
       server = {
         port = 8888;
         bind_address = "0.0.0.0";
-        secret_key = "supersecretkeythatshouldbesecret"; # TODO: Move to sops-nix
+        secret_key = "@SEARXNG_SECRET@";
       };
       ui = {
         theme_args.simple_style = "auto";
