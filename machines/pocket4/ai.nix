@@ -5,6 +5,9 @@
   virtualisation.oci-containers.containers.llama-cpp = {
     image = "llama-cpp-rocm7.0rc";
     ports = ["28560:28560"];
+    environment = {
+      HSA_OVERRIDE_GFX_VERSION = "11.5.1";
+    };
     volumes = [
       "/var/lib/llama-cpp:/models"
     ];
