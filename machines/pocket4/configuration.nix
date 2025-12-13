@@ -9,6 +9,7 @@
     ./packages.nix
     ./overlays.nix
     ./power.nix
+    ./ai.nix
     ./fix-screen-rotation-sleep.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
