@@ -15,12 +15,15 @@
       "99"
       "-c"
       "192000"
-      "-np"
-      "4"
       "--host"
       "0.0.0.0"
       "--port"
       "28560"
+      "--no-mmap"
+      "-fa"
+      "1"
+      "--chat-template-file"
+      "/var/lib/llama-cpp/Qwen3-Coder-30B-A3B-Instruct-UD-Q8_K_XL.template"
       "--jinja"
     ];
   };
