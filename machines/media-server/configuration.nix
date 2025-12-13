@@ -19,6 +19,7 @@
     ../../services/samba.nix
     ../../services/nfs.nix
     ../../services/n8n.nix
+    ../../services/searxng.nix
   ];
 
   services.cron = {
