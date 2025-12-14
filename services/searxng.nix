@@ -9,7 +9,7 @@
 
   services.searx = {
     enable = true;
-    
+
     environmentFile = config.sops.templates."searxng_env".path;
 
     settings = {
@@ -18,13 +18,15 @@
         bind_address = "0.0.0.0";
         secret_key = "@SEARXNG_SECRET@";
       };
+      search = {
+        formats = ["html" "json"];
+      };
       ui = {
         theme_args.simple_style = "auto";
       };
     };
   };
 
-  # Open Firewall for local network
   networking.firewall.extraCommands = ''
     iptables -A nixos-fw -p tcp --dport 8888 -s 10.0.0.0/16 -j nixos-fw-accept
   '';
