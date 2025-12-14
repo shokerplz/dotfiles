@@ -4,18 +4,19 @@
   lib,
   ...
 }: {
-  imports = [
-    ../../../secrets/cloudflare.nix
-    ./files.nix
-    ./kino.nix
-    ./monitoring.nix
-    ./git.nix
-    ./homeassistant.nix
-    ./authentik.nix
-    ./n8n.nix
-    ./nix-cache.nix
-    ./builder.nix
-  ];
+imports = [
+     ../../../secrets/cloudflare.nix
+     ./files.nix
+     ./kino.nix
+     ./monitoring.nix
+     ./git.nix
+     ./homeassistant.nix
+     ./authentik.nix
+     ./n8n.nix
+     ./nix-cache.nix
+     ./builder.nix
+     ./searxng.nix
+   ];
 
   # Creating directories for static websites
   system.activationScripts.createWebsites = ''
