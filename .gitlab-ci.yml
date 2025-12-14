@@ -8,38 +8,56 @@ daily-update:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "web"
   script:
-    # Install dependencies
-    - nix-env -iA nixpkgs.git nixpkgs.openssh nixpkgs.curl
-    
-    # Setup SSH for git push
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
-
-    # Configure Git
-    - git config --global user.email "ci-bot@ikovalev.nl"
-    - git config --global user.name "CI Bot"
-
-    # Checkout daily branch
-    - git fetch origin daily
-    - git checkout daily
-
-    # Update Flake
-    - nix flake update
-
-    # Commit and Trigger Build
     - |
-      if [[ -n $(git status -s) ]]; then
+      cat <<INNEREOF > update-script.sh
+      set -e
+      mkdir -p ~/.ssh
+      chmod 700 ~/.ssh
+
+      # Handle SSH_PRIVATE_KEY
+      if [ -f "\$SSH_PRIVATE_KEY" ]; then
+          cp "\$SSH_PRIVATE_KEY" ~/.ssh/id_ed25519
+      else
+          echo "\$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+      fi
+
+      chmod 600 ~/.ssh/id_ed25519
+      if [ -n "\$(tail -c1 ~/.ssh/id_ed25519)" ]; then
+          echo "" >> ~/.ssh/id_ed25519
+      fi
+
+      ssh-keyscan git.ikovalev.nl >> ~/.ssh/known_hosts
+
+      # Configure Git
+      git config --global user.email "ci-bot@ikovalev.nl"
+      git config --global user.name "CI Bot"
+
+      # Set SSH remote
+      git remote set-url origin gitlab@git.ikovalev.nl:nix/dotfiles.git
+      export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes"
+
+      # Checkout daily branch
+      echo "Fetching daily branch..."
+      git fetch origin daily
+      git checkout -B daily origin/daily
+
+      # Update Flake
+      nix --extra-experimental-features 'nix-command flakes' flake update
+
+      # Commit if changed
+      if [[ -n \$(git status --porcelain flake.lock) ]]; then
         git add flake.lock
         git commit -m "Update flake.lock [skip ci]"
         git push origin daily
-        
-        echo "Changes pushed. Triggering build on nix-local-cache..."
-        curl -X POST http://media-server:21080/build \
+        echo "Changes pushed."
+
+        echo "Triggering build on nix-local-cache..."
+        curl -v https://api.builder.ikovalev.nl/build \
              -H "Content-Type: application/json" \
-             -d '{"flake_branch": "daily"}'
+             -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
       else
-        echo "No changes in flake.lock. Skipping commit and build."
+        echo "No changes in flake.lock."
       fi
+      INNEREOF
+    
+    - nix-shell -p git openssh curl --run "bash update-script.sh"
