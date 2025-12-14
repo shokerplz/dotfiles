@@ -67,7 +67,7 @@ nix-shell -p nixfmt-rfc-style --run "nixfmt ."
 ## How to deploy to a remote machine?
 
 ```
-NIX_SSHOPTS="-A" nixos-rebuild switch -j auto --use-remote-sudo --build-host localhost --target-host ikovalev@HOSTNAME --flake ".#HOSTNAME"
+NIX_SSHOPTS="-A" nixos-rebuild switch -j auto --sudo --build-host localhost --target-host ikovalev@HOSTNAME --flake ".#HOSTNAME"
 ```
 
 Where `HOSTNAME` is a FQDN of a remote machine
