@@ -17,29 +17,6 @@
 
   programs.home-manager.enable = true; # Home manager manages itself
 
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      keyboard.bindings = [
-        {
-          key = "C";
-          mods = "Control|Shift";
-          action = "Copy";
-        }
-        {
-          key = "V";
-          mods = "Control|Shift";
-          action = "Paste";
-        }
-        {
-          key = "C";
-          mods = "Control";
-          chars = "\\u0003";
-        }
-      ];
-    };
-  };
-
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -54,6 +31,7 @@
     extraConfig = ''
       set -ga terminal-overrides ',*256color*:smcup@:rmcup@'
       set -g @yank_selection_mouse 'clipboard'
+      set -s set-clipboard on
     '';
   };
 
