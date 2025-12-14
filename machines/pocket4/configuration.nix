@@ -9,13 +9,18 @@
     ./packages.nix
     ./overlays.nix
     ./power.nix
+    ./ai.nix
     ./fix-screen-rotation-sleep.nix
     ../../services/node-exporter.nix
+    ../../common/nfs-client.nix
+    ../../common/docker.nix
   ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.kernelParams = ["amd_iommu=off" "amdgpu.gttsize=65536" "ttm.pages_limit=67108864"];
 
   networking.hostName = "pocket4"; # Define your hostname.
 
@@ -29,10 +34,21 @@
     enable32Bit = true;
   };
 
+  hardware.gpd-fan.enable = true;
+
   hardware.amdgpu.opencl.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      swtpm.enable = true;
+    };
+  };
+  programs.virt-manager.enable = true;
+
   users.users.ikovalev.extraGroups = [
     "video"
     "render"
+    "libvirtd"
   ];
 
   # Allow openssh, but disable it by default

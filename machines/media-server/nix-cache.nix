@@ -52,6 +52,8 @@
     };
   };
 
+  sops.secrets.nix_cache_private_key.restartUnits = ["nix-local-cache-server.service"];
+
   services.nix-local-cache-server = {
     enable = true;
     package = nix-local-cache.packages.${pkgs.system}.server;
