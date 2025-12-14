@@ -34,6 +34,8 @@
     enable32Bit = true;
   };
 
+  hardware.gpd-fan.enable = true;
+
   hardware.amdgpu.opencl.enable = true;
   virtualisation.libvirtd = {
     enable = true;
