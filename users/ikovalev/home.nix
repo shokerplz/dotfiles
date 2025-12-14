@@ -48,8 +48,12 @@
     enable = true;
     mouse = true;
     clock24 = true;
+    plugins = with pkgs.tmuxPlugins; [
+      yank
+    ];
     extraConfig = ''
       set -ga terminal-overrides ',*256color*:smcup@:rmcup@'
+      set -g @yank_selection_mouse 'clipboard'
     '';
   };
 
@@ -76,5 +80,7 @@
   home.packages = with pkgs; [
     # Additional packages here
     gcc
+    xclip
+    wl-clipboard
   ];
 }
