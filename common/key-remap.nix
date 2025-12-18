@@ -24,7 +24,8 @@
 
             tab = "swapm(app_switch, A-tab)";
 
-            space = "M-space";
+            # Command+Space → Ctrl+Space for language switching
+            space = "C-space";
           };
 
           "option:A" = {
@@ -38,6 +39,13 @@
             "S-tab" = "A-S-tab";
           };
         };
+
+        # Composite layers MUST come AFTER constituent layers
+        # NixOS settings dict is alphabetically sorted, so we use extraConfig
+        extraConfig = ''
+          [command+shift]
+          v = M-S-v
+        '';
       };
     };
   };
