@@ -2,10 +2,7 @@
   config,
   pkgs,
   ...
-}:
-
-{
-
+}: {
   services.loki = {
     enable = true;
     dataDir = "/mnt/zfs-pool0/loki";
@@ -64,6 +61,8 @@
     "+${pkgs.coreutils-full.outPath}/bin/chown -R loki:loki ${config.services.loki.dataDir}"
   ];
 
+  systemd.services.loki.serviceConfig.TimeoutSec = "infinity";
+
   # Loki firewall
   networking.firewall.extraCommands = ''
     iptables -A nixos-fw -p tcp --dport 3100 -s 10.0.0.0/16 -j nixos-fw-accept
@@ -71,5 +70,4 @@
   networking.firewall.extraStopCommands = ''
     iptables -D nixos-fw -p tcp --dport 3100 -s 10.0.0.0/16 -j nixos-fw-accept || true
   '';
-
 }
