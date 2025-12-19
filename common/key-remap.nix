@@ -25,7 +25,7 @@
             tab = "swapm(app_switch, A-tab)";
 
             # Command+Space → Ctrl+Space for language switching
-            space = "C-space";
+            space = "M-space";
           };
 
           "option:A" = {
