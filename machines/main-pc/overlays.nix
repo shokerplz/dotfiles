@@ -17,16 +17,12 @@
 
         nativeBuildInputs = (old.nativeBuildInputs or []) ++ [prev.makeWrapper];
 
-        postFixup =
-          (old.postFixup or "")
+        postInstall =
+          (old.postInstall or "")
           + ''
-            wrapProgram "$out/bin/orca-slicer" \
-              --set __EGL_VENDOR_LIBRARY_FILENAMES "${prev.pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json" \
-              --set WEBKIT_DISABLE_DMABUF_RENDERER "1" \
-              --set MESA_LOADER_DRIVER_OVERRIDE "zink" \
-              --set GALLIUM_DRIVER "zink" \
-              --set __GLX_VENDOR_LIBRARY_NAME "mesa" \
-              --set GBK_BACKEND "x11"
+            mv $out/bin/orca-slicer $out/bin/.orca-slicer-wrapped
+            echo "env __GLX_VENDOR_LIBRARY_NAME=mesa __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink WEBKIT_DISABLE_DMABUF_RENDERER=1 $out/bin/.orca-slicer-wrapped" > $out/bin/orca-slicer
+            chmod +x $out/bin/orca-slicer
           '';
       });
     })
