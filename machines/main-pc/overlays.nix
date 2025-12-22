@@ -26,7 +26,7 @@
               --set MESA_LOADER_DRIVER_OVERRIDE "zink" \
               --set GALLIUM_DRIVER "zink" \
               --set __GLX_VENDOR_LIBRARY_NAME "mesa" \
-              --set GBM_BACKEND "dri"
+              --set GBK_BACKEND "x11"
           '';
       });
     })
