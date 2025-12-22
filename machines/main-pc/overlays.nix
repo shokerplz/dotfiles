@@ -26,7 +26,8 @@
               --set WEBKIT_DISABLE_DMABUF_RENDERER "1" \
               --set MESA_LOADER_DRIVER_OVERRIDE "zink" \
               --set GALLIUM_DRIVER "zink" \
-              --set __GLX_VENDOR_LIBRARY_NAME "mesa"
+              --set __GLX_VENDOR_LIBRARY_NAME "mesa" \
+              --set GBM_BACKEND "dri"
           '';
       });
     })
