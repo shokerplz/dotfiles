@@ -164,7 +164,7 @@
     };
   };
 
-  # Install some cool GNOME extensions
+  # Install some GNOME extensions and essential packages
   environment.systemPackages = with pkgs; [
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator
@@ -174,5 +174,7 @@
     gnomeExtensions.window-is-ready-remover
     easyeffects
     video-trimmer
+    alacritty
+    alacritty-theme
   ];
 }

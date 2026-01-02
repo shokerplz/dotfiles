@@ -3,15 +3,10 @@
   lib,
   pkgs,
   ...
-}:
-
-let
+}: let
   # got this value from `nvidia‑smi --query-supported-clocks`
   gpuMemClk = 9501;
-in
-
-{
-
+in {
   # Enable OpenGL
   hardware.graphics = {
     enable = true;
@@ -19,14 +14,13 @@ in
   };
 
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia-container-toolkit.enable = true;
 
   nixpkgs.config.cudaSupport = true;
 
   hardware.nvidia = {
-
     # Modesetting is required.
     modesetting.enable = true;
     powerManagement.enable = true;
@@ -37,8 +31,6 @@ in
     # accessible via `nvidia-settings`.
     nvidiaSettings = true;
 
-    # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
     nvidiaPersistenced = true;
     prime = {
       offload.enable = true;
@@ -54,7 +46,7 @@ in
       "nvidia-persistenced.service"
       "display-manager.service"
     ];
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-memory-clocks=${toString gpuMemClk}";
@@ -64,5 +56,4 @@ in
   environment.systemPackages = with pkgs; [
     cudatoolkit
   ];
-
 }
