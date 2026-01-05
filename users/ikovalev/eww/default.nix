@@ -7,9 +7,10 @@
   # Import widget modules
   audioWidget = import ./audio.nix {inherit pathExport;};
   powerWidget = import ./power.nix {inherit pathExport;};
+  notificationsWidget = import ./notifications.nix {inherit pathExport;};
 
   # Combine all widget modules
-  widgets = [audioWidget powerWidget];
+  widgets = [audioWidget powerWidget notificationsWidget];
 
   # Merge all yuck content
   combinedYuck = lib.concatStringsSep "\n\n" (map (w: w.yuck) widgets);

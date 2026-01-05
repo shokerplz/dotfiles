@@ -151,7 +151,7 @@
         spacing = 5;
 
         modules-left = ["hyprland/window"];
-        modules-center = ["clock"];
+        modules-center = ["custom/notifications" "clock"];
         modules-right = [
           "tray"
           "hyprland/language"
@@ -186,7 +186,19 @@
         "clock" = {
           format = "{:%a %b %d  %H:%M}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
-          format-alt = "{:%Y-%m-%d}";
+          on-click = "~/.config/eww/scripts/toggle-notifications.sh";
+        };
+
+        "custom/notifications" = {
+          format = "{icon}{text}";
+          format-icons = {
+            none = "";
+            some = "󰍡 ";
+          };
+          return-type = "json";
+          exec = "~/.config/eww/scripts/waybar-notifications.sh";
+          on-click = "~/.config/eww/scripts/toggle-notifications.sh";
+          interval = 1;
         };
 
         "battery" = {
@@ -292,10 +304,24 @@
       #pulseaudio,
       #language,
       #custom-power,
+      #custom-notifications,
       #tray {
         margin: 0 4px;
         padding: 0 5px;
         color: #000000;
+      }
+
+      #custom-notifications {
+        padding: 0 8px;
+      }
+
+      #custom-notifications.has-notifications {
+        color: #000000;
+        font-weight: bold;
+      }
+
+      #custom-notifications.empty {
+        color: rgba(0, 0, 0, 0.4);
       }
 
       #battery icon {
