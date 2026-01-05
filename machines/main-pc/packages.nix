@@ -43,7 +43,6 @@
       ]))
     nodejs
     orca-slicer
-    nanum
     glow
   ];
 }

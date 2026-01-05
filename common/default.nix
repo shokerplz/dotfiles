@@ -84,6 +84,7 @@
   fonts.packages = with pkgs; [
     nerd-fonts.hack
     nerd-fonts.jetbrains-mono
+    nanum # Required for Orca Slicer preferences dialog
   ];
 
   nix.settings.substituters = [

@@ -78,6 +78,10 @@
 
     # Network management
     iwgtk # WiFi management GUI for iwd
+    networkmanagerapplet # For nm-connection-editor
+
+    # File picker dialogs
+    zenity
 
     # Display configuration
     nwg-displays
