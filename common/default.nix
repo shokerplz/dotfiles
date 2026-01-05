@@ -81,16 +81,21 @@
   };
 
   # Install nerdfonts
-  fonts.packages = with pkgs; [nerd-fonts.hack];
+  fonts.packages = with pkgs; [
+    nerd-fonts.hack
+    nerd-fonts.jetbrains-mono
+  ];
 
   nix.settings.substituters = [
     "https://nix-cache.ikovalev.nl"
     "https://cache.nixos.org"
     "https://nix-community.cachix.org"
+    "https://hyprland.cachix.org"
   ];
   nix.settings.trusted-public-keys = [
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     "nix-cache.ikovalev.nl:Krpx8e2jWFxP2mc+AqXkkMX0tGBFCskuRcWUcNZ4DtQ="
+    "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
   ];
 
   # Allow sudo without password for wheel group

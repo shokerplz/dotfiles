@@ -69,12 +69,6 @@
       search = [ "<Super>space" ];
     };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      binding = "<Shift><Super>v";
-      command = "/run/current-system/sw/bin/ringboard-egui toggle";
-      name = "ringboard";
-    };
-
     "org/gnome/mutter" = {
       edge-tiling = true;
     };
