@@ -158,6 +158,7 @@
           "temperature"
           "cpu"
           "memory"
+          "bluetooth"
           "network"
           "pulseaudio"
           "battery"
@@ -200,6 +201,37 @@
           interval = 1;
         };
 
+        "temperature" = {
+          format = "󰔏 {temperatureC}°C";
+          format-critical = "󰸁 {temperatureC}°C";
+          critical-threshold = 80;
+          tooltip-format = "CPU Temperature: {temperatureC}°C";
+        };
+
+        "cpu" = {
+          format = "󰍛 {usage}%";
+          tooltip-format = "CPU Usage: {usage}%";
+        };
+
+        "memory" = {
+          format = "󰘚 {}%";
+          tooltip-format = "Memory: {used:0.1f}GB / {total:0.1f}GB";
+        };
+
+        "bluetooth" = {
+          format = "󰂯";
+          format-connected = "󰂱 {device_alias}";
+          format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
+          format-disabled = "󰂲";
+          format-off = "󰂲";
+          tooltip-format = "{controller_alias}\n{num_connections} connected";
+          tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
+          tooltip-format-enumerate-connected = "{device_alias}";
+          tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_battery_percentage}%";
+          on-click = "~/.config/eww/scripts/toggle-control-center.sh";
+          on-click-right = "blueberry"; # Fallback for advanced settings
+        };
+
         "battery" = {
           states = {
             warning = 30;
@@ -223,18 +255,18 @@
         };
 
         "pulseaudio" = {
-          format = "{volume}% {icon}   {format_source}";
-          format-bluetooth = "{volume}% {icon} {format_source}";
-          format-bluetooth-muted = " {icon} {format_source}";
-          format-muted = "  {format_source}";
-          format-source = "{volume}% ";
-          format-source-muted = "";
+          format = "{icon} {volume}%  {format_source}";
+          format-bluetooth = "󰂱 {icon} {volume}%  {format_source}";
+          format-bluetooth-muted = "󰂱 󰝟 {format_source}";
+          format-muted = "󰝟 {format_source}";
+          format-source = "󰍬 {volume}%";
+          format-source-muted = "󰍭";
           format-icons = {
-            headphone = "";
-            phone = "";
-            portable = "";
-            car = "";
-            default = ["" "" ""];
+            headphone = "󰋋";
+            phone = "󰏲";
+            portable = "󰏲";
+            car = "󰄋";
+            default = ["󰕿" "󰖀" "󰕾"];
           };
           on-click = "~/.config/eww/scripts/toggle-control-center.sh";
           on-click-right = "pavucontrol";
