@@ -454,19 +454,61 @@
     enable = true;
     settings = {
       global = {
-        width = 300;
+        # Geometry
+        width = "(200, 400)";
         height = 300;
         offset = "30x50";
         origin = "top-right";
-        transparency = 10;
-        frame_color = "#eceff1";
-        font = "Droid Sans 9";
+
+        # Appearance - matching EWW widgets style
+        font = "JetBrainsMono Nerd Font 10";
+        frame_width = 0;
+        corner_radius = 12;
+        padding = 12;
+        horizontal_padding = 16;
+        text_icon_padding = 12;
+        separator_height = 2;
+        separator_color = "auto";
+
+        # Progress bar
+        progress_bar = true;
+        progress_bar_height = 8;
+        progress_bar_frame_width = 0;
+        progress_bar_corner_radius = 4;
+
+        # Icons
+        icon_position = "left";
+        min_icon_size = 48;
+        max_icon_size = 64;
+
+        # Behavior
+        sort = "yes";
+        indicate_hidden = "yes";
+        stack_duplicates = true;
+        hide_duplicate_count = false;
+        show_indicators = "yes";
+      };
+
+      urgency_low = {
+        background = "#878787";
+        foreground = "#000000";
+        highlight = "#000000";
+        timeout = 5;
       };
 
       urgency_normal = {
-        background = "#37474f";
-        foreground = "#eceff1";
+        background = "#878787";
+        foreground = "#000000";
+        highlight = "#000000";
         timeout = 10;
+      };
+
+      urgency_critical = {
+        background = "#dc3545";
+        foreground = "#ffffff";
+        highlight = "#ffffff";
+        frame_color = "#ff0000";
+        timeout = 0;
       };
     };
   };
