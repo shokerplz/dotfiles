@@ -6,16 +6,17 @@
 }: {
   imports = [
     ./key-remap.nix
+    ./hyprland.nix
   ];
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  #  services.displayManager.gdm.enable = true;
+  #  services.desktopManager.gnome.enable = true;
 
   # Disable gnome remote desktop (it doesn't work with pulseaudio)
-  services.gnome.gnome-remote-desktop.enable = false;
+  #services.gnome.gnome-remote-desktop.enable = false;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -115,63 +116,55 @@
     #media-session.enable = true;
   };
 
-  # Enable automatic login for the user.
   services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "ikovalev"; # Check user in common/users.nix
+  services.displayManager.autoLogin.user = "ikovalev";
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
+  # systemd.services."getty@tty1".enable = false;
+  # systemd.services."autovt@tty1".enable = false;
 
   # Exclude some GNOME packages
-  environment.gnome.excludePackages = (
-    with pkgs; [
-      atomix # puzzle game
-      epiphany # web browser
-      evince # document viewer
-      geary # email reader
-      gedit # text editor
-      gnome-characters
-      gnome-music
-      gnome-photos
-      gnome-tour
-      hitori # sudoku game
-      iagno # go game
-      tali # poker game
-      totem # video player
-    ]
-  );
+  #environment.gnome.excludePackages = (
+  #  with pkgs; [
+  #    atomix # puzzle game
+  #    epiphany # web browser
+  #    evince # document viewer
+  #    geary # email reader
+  #    gedit # text editor
+  #    gnome-characters
+  #    gnome-music
+  #    gnome-photos
+  #    gnome-tour
+  #    hitori # sudoku game
+  #    iagno # go game
+  #    tali # poker game
+  #    totem # video player
+  #  ]
+  #);
 
   # KDE connect allows to share clipboard between devices
-  programs.kdeconnect = {
-    enable = true;
-    package = pkgs.gnomeExtensions.gsconnect;
-  };
-  networking.firewall = rec {
-    allowedTCPPortRanges = [
-      {
-        from = 1714;
-        to = 1764;
-      }
-    ];
-    allowedUDPPortRanges = allowedTCPPortRanges;
-  };
-
-  services.ringboard = {
-    x11 = {
-      enable = true;
-      package = pkgs.ringboard-custom;
-    };
-  };
+  # programs.kdeconnect = {
+  #   enable = true;
+  #   package = pkgs.gnomeExtensions.gsconnect;
+  # };
+  # networking.firewall = rec {
+  #   allowedTCPPortRanges = [
+  #     {
+  #       from = 1714;
+  #       to = 1764;
+  #     }
+  #   ];
+  #   allowedUDPPortRanges = allowedTCPPortRanges;
+  # };
 
   # Install some GNOME extensions and essential packages
   environment.systemPackages = with pkgs; [
-    gnomeExtensions.dash-to-dock
-    gnomeExtensions.appindicator
-    gnomeExtensions.system-monitor
-    gnomeExtensions.easyeffects-preset-selector
-    gnomeExtensions.notification-timeout
-    gnomeExtensions.window-is-ready-remover
+    # gnomeExtensions.dash-to-dock
+    # gnomeExtensions.appindicator
+    # gnomeExtensions.system-monitor
+    # gnomeExtensions.easyeffects-preset-selector
+    # gnomeExtensions.notification-timeout
+    # gnomeExtensions.window-is-ready-remover
     easyeffects
     video-trimmer
     alacritty
