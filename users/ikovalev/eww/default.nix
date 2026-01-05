@@ -5,12 +5,12 @@
   pathExport = ''export PATH="$PATH:/run/current-system/sw/bin:$HOME/.nix-profile/bin"'';
 
   # Import widget modules
-  audioWidget = import ./audio.nix {inherit pathExport;};
+  controlCenterWidget = import ./control-center {inherit pathExport;};
   powerWidget = import ./power.nix {inherit pathExport;};
   notificationsWidget = import ./notifications.nix {inherit pathExport;};
 
   # Combine all widget modules
-  widgets = [audioWidget powerWidget notificationsWidget];
+  widgets = [controlCenterWidget powerWidget notificationsWidget];
 
   # Merge all yuck content
   combinedYuck = lib.concatStringsSep "\n\n" (map (w: w.yuck) widgets);

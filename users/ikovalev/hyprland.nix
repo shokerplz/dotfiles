@@ -158,7 +158,6 @@
           "temperature"
           "cpu"
           "memory"
-          "bluetooth"
           "network"
           "pulseaudio"
           "battery"
@@ -213,43 +212,31 @@
           format-icons = ["" "" "" "" ""];
         };
 
-        "bluetooth" = {
-          format = "󰂯";
-          format-connected = "󰂱 {device_alias}";
-          format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
-          format-disabled = "󰂲";
-          format-off = "󰂲";
-          tooltip-format = "{controller_alias}\n{num_connections} connected";
-          tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
-          tooltip-format-enumerate-connected = "{device_alias}";
-          tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_battery_percentage}%";
-          on-click = "blueberry";
-        };
-
         "network" = {
           format-wifi = "{essid} ({signalStrength}%) 󰖩";
           format-ethernet = "{ipaddr}/{cidr} 󰈀";
           tooltip-format = "{ifname} via {gwaddr}";
           format-linked = "{ifname} (No IP)";
           format-disconnected = "󱞐";
-          on-click = "iwgtk";
+          on-click = "~/.config/eww/scripts/toggle-control-center.sh";
+          on-click-right = "iwgtk"; # Fallback for advanced settings
         };
 
         "pulseaudio" = {
           format = "{volume}% {icon}   {format_source}";
-          format-bluetooth = "{volume}% {icon} {format_source}";
-          format-bluetooth-muted = " {icon} {format_source}";
-          format-muted = "  {format_source}";
-          format-source = "{volume}% ";
-          format-source-muted = "";
+          format-bluetooth = "{volume}% {icon} {format_source}";
+          format-bluetooth-muted = " {icon} {format_source}";
+          format-muted = "  {format_source}";
+          format-source = "{volume}% ";
+          format-source-muted = "";
           format-icons = {
-            headphone = "";
-            phone = "";
-            portable = "";
-            car = "";
-            default = ["" "" ""];
+            headphone = "";
+            phone = "";
+            portable = "";
+            car = "";
+            default = ["" "" ""];
           };
-          on-click = "~/.config/eww/scripts/toggle-audio.sh";
+          on-click = "~/.config/eww/scripts/toggle-control-center.sh";
           on-click-right = "pavucontrol";
         };
 

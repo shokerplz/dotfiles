@@ -83,12 +83,13 @@
     nwg-displays
     wlr-randr # CLI tool nwg-displays uses
 
-    # Audio popup widget
+    # Control Center widget
     eww
     pamixer # CLI volume control
     playerctl # Media player control
     jq # JSON parsing for scripts
     pulseaudio # For pactl command
+    brightnessctl # Brightness control (for laptops)
 
     # Debugging
     wev
