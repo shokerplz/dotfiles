@@ -1,15 +1,16 @@
 # Control Center Widget
-# Unified widget combining WiFi, Bluetooth, Audio, Brightness, and Media controls
+# Unified widget combining WiFi, Bluetooth, Audio, Brightness, VPN, and Media controls
 {pathExport}: let
   # Import all sections
   wifiSection = import ./wifi.nix {inherit pathExport;};
   bluetoothSection = import ./bluetooth.nix {inherit pathExport;};
   audioSection = import ./audio.nix {inherit pathExport;};
   brightnessSection = import ./brightness.nix {inherit pathExport;};
+  vpnSection = import ./vpn.nix {inherit pathExport;};
   mediaSection = import ./media.nix {inherit pathExport;};
 
   # Combine all sections
-  sections = [wifiSection bluetoothSection audioSection brightnessSection mediaSection];
+  sections = [wifiSection bluetoothSection audioSection brightnessSection vpnSection mediaSection];
 in {
   yuck = ''
     ; ====================
@@ -21,6 +22,7 @@ in {
     ${bluetoothSection.yuck}
     ${audioSection.yuck}
     ${brightnessSection.yuck}
+    ${vpnSection.yuck}
     ${mediaSection.yuck}
 
     ; Window definitions (one per monitor)
@@ -48,6 +50,7 @@ in {
           (bluetooth-section)
           (audio-section)
           (brightness-section)
+          (vpn-section)
           (media-section))))
   '';
 
@@ -248,6 +251,7 @@ in {
     ${bluetoothSection.scss}
     ${audioSection.scss}
     ${brightnessSection.scss}
+    ${vpnSection.scss}
     ${mediaSection.scss}
   '';
 
@@ -298,5 +302,6 @@ in {
   // bluetoothSection.scripts
   // audioSection.scripts
   // brightnessSection.scripts
+  // vpnSection.scripts
   // mediaSection.scripts;
 }
