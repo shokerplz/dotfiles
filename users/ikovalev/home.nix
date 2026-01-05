@@ -6,7 +6,7 @@
   imports = [
     ../../secrets/homemanager.nix
     ./hyprland.nix
-    ./eww.nix
+    ./eww
   ];
 
   sops.age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -73,24 +73,6 @@
     xclip
     wl-clipboard
   ];
-
-  # Power menu script (wofi-based, matches waybar style)
-  home.file.".config/wofi/power-menu.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      options="  Lock\n  Logout\n  Suspend\n  Reboot\n  Shutdown"
-      selected=$(echo -e "$options" | wofi --dmenu --prompt "Power" --width 200 --height 210 --cache-file /dev/null)
-
-      case "$selected" in
-        *Lock*) hyprlock ;;
-        *Logout*) hyprctl dispatch exit ;;
-        *Suspend*) systemctl suspend ;;
-        *Reboot*) systemctl reboot ;;
-        *Shutdown*) systemctl poweroff ;;
-      esac
-    '';
-  };
 
   # Create empty monitors.conf if it doesn't exist, so Hyprland can source it
   # nwg-displays will overwrite this when you configure displays

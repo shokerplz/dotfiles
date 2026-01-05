@@ -1,9 +1,6 @@
-# EWW (ElKowars Wacky Widgets) configuration
-# Audio popup widget for volume/mic control with device selection
-{pkgs, ...}: let
-  # Common PATH export for all scripts
-  pathExport = ''export PATH="$PATH:/run/current-system/sw/bin:$HOME/.nix-profile/bin"'';
-
+# EWW Audio Widget
+# Volume/mic control with device selection
+{pathExport}: let
   # Script to get list of audio sinks with duplicate handling
   getSinksScript = ''
     #!/usr/bin/env bash
@@ -60,8 +57,7 @@
     ' 2>/dev/null || echo "[]"
   '';
 in {
-  # EWW widget definition (yuck)
-  home.file.".config/eww/eww.yuck".text = ''
+  yuck = ''
     ; ====================
     ; Audio Control Widget
     ; ====================
@@ -145,68 +141,9 @@ in {
                   (button :class "dropdown-item ''${source.active == "yes" ? "active" : ""}"
                     :onclick "pactl set-default-source ''${source.name} && eww update source-expanded=false"
                     (label :text "''${source.desc}" :halign "start")))))))))
-
-    ; ====================
-    ; Power Menu Widget
-    ; ====================
-
-    ; Window definitions (one per monitor)
-    (defwindow power-popup
-      :monitor 0
-      :geometry (geometry :x "30px" :y "0px" :width "180px" :anchor "top right")
-      :stacking "fg"
-      :exclusive false
-      :focusable false
-      (power-widget))
-
-    (defwindow power-popup-1
-      :monitor 1
-      :geometry (geometry :x "30px" :y "0px" :width "180px" :anchor "top right")
-      :stacking "fg"
-      :exclusive false
-      :focusable false
-      (power-widget))
-
-    ; Main power widget
-    (defwidget power-widget []
-      (eventbox :onhoverlost "~/.config/eww/scripts/close-power.sh"
-        (box :class "power-box" :orientation "v" :space-evenly false :spacing 4
-          (label :class "section-label" :text "Power" :halign "start")
-          (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && hyprlock"
-            (box :orientation "h" :space-evenly false :spacing 8
-              (label :class "power-icon" :text "󰌾")
-              (label :text "Lock" :halign "start")))
-          (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && hyprctl dispatch exit"
-            (box :orientation "h" :space-evenly false :spacing 8
-              (label :class "power-icon" :text "󰍃")
-              (label :text "Logout" :halign "start")))
-          (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && systemctl suspend"
-            (box :orientation "h" :space-evenly false :spacing 8
-              (label :class "power-icon" :text "󰤄")
-              (label :text "Suspend" :halign "start")))
-          (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && systemctl reboot"
-            (box :orientation "h" :space-evenly false :spacing 8
-              (label :class "power-icon" :text "󰜉")
-              (label :text "Reboot" :halign "start")))
-          (button :class "power-item power-item-danger"
-            :onclick "~/.config/eww/scripts/close-power.sh && systemctl poweroff"
-            (box :orientation "h" :space-evenly false :spacing 8
-              (label :class "power-icon" :text "󰐥")
-              (label :text "Shutdown" :halign "start"))))))
   '';
 
-  # Styles (scss)
-  home.file.".config/eww/eww.scss".text = ''
-    * {
-      all: unset;
-      font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
-      font-size: 13px;
-    }
-
+  scss = ''
     .audio-box {
       background: rgba(135, 135, 135, 1);
       border-radius: 0.9rem;
@@ -218,13 +155,6 @@ in {
       background-color: rgba(0, 0, 0, 0.04);
       border-radius: 0.4rem;
       padding: 6px 8px;
-    }
-
-    .section-label {
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 0.5);
-      margin-bottom: 2px;
     }
 
     .audio-icon {
@@ -307,171 +237,110 @@ in {
         color: #000000;
       }
     }
-
-    // Power widget styles
-    .power-box {
-      background: rgba(135, 135, 135, 1);
-      border-radius: 0.9rem;
-      padding: 8px;
-      color: #000000;
-    }
-
-    .power-item {
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      color: rgba(0, 0, 0, 0.8);
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-    }
-
-    .power-item-danger {
-      &:hover {
-        background-color: rgba(220, 53, 69, 0.3);
-        color: #000000;
-      }
-    }
-
-    .power-icon {
-      font-size: 1rem;
-      min-width: 20px;
-    }
   '';
 
-  # Scripts
-  home.file.".config/eww/scripts/toggle-audio.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
+  scripts = {
+    "toggle-audio.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
 
-      monitor=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .id')
+        monitor=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .id')
 
-      if [ "$monitor" = "1" ]; then
-        window="audio-popup-1"
-      else
-        window="audio-popup"
-      fi
+        if [ "$monitor" = "1" ]; then
+          window="audio-popup-1"
+        else
+          window="audio-popup"
+        fi
 
-      if eww active-windows | grep -q "audio-popup"; then
+        if eww active-windows | grep -q "audio-popup"; then
+          eww close audio-popup audio-popup-1
+          eww update sink-expanded=false source-expanded=false
+        else
+          eww open "$window"
+        fi
+      '';
+    };
+
+    "close-audio.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
         eww close audio-popup audio-popup-1
         eww update sink-expanded=false source-expanded=false
-      else
-        eww open "$window"
-      fi
-    '';
-  };
+      '';
+    };
 
-  home.file.".config/eww/scripts/close-audio.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      eww close audio-popup audio-popup-1
-      eww update sink-expanded=false source-expanded=false
-    '';
-  };
+    "get-volume.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        pamixer --get-volume 2>/dev/null || echo "0"
+      '';
+    };
 
-  home.file.".config/eww/scripts/get-volume.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      pamixer --get-volume 2>/dev/null || echo "0"
-    '';
-  };
+    "get-mute.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        pamixer --get-mute 2>/dev/null || echo "false"
+      '';
+    };
 
-  home.file.".config/eww/scripts/get-mute.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      pamixer --get-mute 2>/dev/null || echo "false"
-    '';
-  };
+    "get-mic-volume.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        pamixer --default-source --get-volume 2>/dev/null || echo "0"
+      '';
+    };
 
-  home.file.".config/eww/scripts/get-mic-volume.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      pamixer --default-source --get-volume 2>/dev/null || echo "0"
-    '';
-  };
+    "get-mic-mute.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        pamixer --default-source --get-mute 2>/dev/null || echo "false"
+      '';
+    };
 
-  home.file.".config/eww/scripts/get-mic-mute.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      pamixer --default-source --get-mute 2>/dev/null || echo "false"
-    '';
-  };
+    "get-current-sink.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        sink=$(pactl get-default-sink 2>/dev/null)
+        pactl -f json list sinks 2>/dev/null \
+          | jq -r --arg sink "$sink" '.[] | select(.name == $sink) | .description | split(" ") | .[0:3] | join(" ")' 2>/dev/null \
+          || echo "Default"
+      '';
+    };
 
-  home.file.".config/eww/scripts/get-current-sink.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      sink=$(pactl get-default-sink 2>/dev/null)
-      pactl -f json list sinks 2>/dev/null \
-        | jq -r --arg sink "$sink" '.[] | select(.name == $sink) | .description | split(" ") | .[0:3] | join(" ")' 2>/dev/null \
-        || echo "Default"
-    '';
-  };
+    "get-current-source.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        source=$(pactl get-default-source 2>/dev/null)
+        pactl -f json list sources 2>/dev/null \
+          | jq -r --arg source "$source" '.[] | select(.name == $source) | .description | split(" ") | .[0:3] | join(" ")' 2>/dev/null \
+          || echo "Default"
+      '';
+    };
 
-  home.file.".config/eww/scripts/get-current-source.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      source=$(pactl get-default-source 2>/dev/null)
-      pactl -f json list sources 2>/dev/null \
-        | jq -r --arg source "$source" '.[] | select(.name == $source) | .description | split(" ") | .[0:3] | join(" ")' 2>/dev/null \
-        || echo "Default"
-    '';
-  };
+    "get-sinks.sh" = {
+      executable = true;
+      text = getSinksScript;
+    };
 
-  home.file.".config/eww/scripts/get-sinks.sh" = {
-    executable = true;
-    text = getSinksScript;
-  };
-
-  home.file.".config/eww/scripts/get-sources.sh" = {
-    executable = true;
-    text = getSourcesScript;
-  };
-
-  home.file.".config/eww/scripts/toggle-power.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-
-      monitor=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .id')
-
-      if [ "$monitor" = "1" ]; then
-        window="power-popup-1"
-      else
-        window="power-popup"
-      fi
-
-      if eww active-windows | grep -q "power-popup"; then
-        eww close power-popup power-popup-1
-      else
-        eww open "$window"
-      fi
-    '';
-  };
-
-  home.file.".config/eww/scripts/close-power.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      ${pathExport}
-      eww close power-popup power-popup-1
-    '';
+    "get-sources.sh" = {
+      executable = true;
+      text = getSourcesScript;
+    };
   };
 }
