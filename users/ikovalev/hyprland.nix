@@ -220,16 +220,16 @@
 
         "bluetooth" = {
           format = "󰂯";
-          format-connected = "󰂱 {device_alias}";
-          format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
+          format-connected = "󰂱";
+          format-connected-battery = "󰂱";
           format-disabled = "󰂲";
           format-off = "󰂲";
           tooltip-format = "{controller_alias}\n{num_connections} connected";
           tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
           tooltip-format-enumerate-connected = "{device_alias}";
-          tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_battery_percentage}%";
+          tooltip-format-enumerate-connected-battery = "{device_alias} ({device_battery_percentage}%)";
           on-click = "~/.config/eww/scripts/toggle-control-center.sh";
-          on-click-right = "blueberry"; # Fallback for advanced settings
+          on-click-right = "blueberry";
         };
 
         "battery" = {
@@ -240,27 +240,30 @@
           format = "{icon} {capacity}%";
           format-charging = "󰂄 {capacity}%";
           format-plugged = "󰚥 {capacity}%";
-          format-alt = "{icon} {time}";
+          tooltip-format = "{timeTo}";
           format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
         };
 
         "network" = {
-          format-wifi = "{essid} ({signalStrength}%) 󰖩";
-          format-ethernet = "{ipaddr}/{cidr} 󰈀";
-          tooltip-format = "{ifname} via {gwaddr}";
-          format-linked = "{ifname} (No IP)";
+          format-wifi = "󰖩";
+          format-ethernet = "󰈀";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)\n{ifname} via {gwaddr}";
+          tooltip-format-ethernet = "{ipaddr}/{cidr}\n{ifname} via {gwaddr}";
+          format-linked = "󰈀";
           format-disconnected = "󱞐";
+          tooltip-format-disconnected = "Disconnected";
           on-click = "~/.config/eww/scripts/toggle-control-center.sh";
-          on-click-right = "iwgtk"; # Fallback for advanced settings
+          on-click-right = "iwgtk";
         };
 
         "pulseaudio" = {
-          format = "{icon} {volume}%  {format_source}";
-          format-bluetooth = "󰂱 {icon} {volume}%  {format_source}";
+          format = "{icon} {volume}% {format_source}";
+          format-bluetooth = "󰂱 {volume}% {format_source}";
           format-bluetooth-muted = "󰂱 󰝟 {format_source}";
           format-muted = "󰝟 {format_source}";
-          format-source = "󰍬 {volume}%";
+          format-source = "󰍬";
           format-source-muted = "󰍭";
+          tooltip-format = "Output: {volume}%\nMic: {source_volume}%";
           format-icons = {
             headphone = "󰋋";
             phone = "󰏲";
