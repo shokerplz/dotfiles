@@ -244,7 +244,7 @@
         "custom/power" = {
           format = "";
           tooltip = false;
-          on-click = "~/.config/wofi/power-menu.sh";
+          on-click = "~/.config/eww/scripts/toggle-power.sh";
         };
       };
     };

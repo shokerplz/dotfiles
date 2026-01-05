@@ -22,8 +22,6 @@
 
             backspace = "C-u";
 
-            tab = "swapm(app_switch, A-tab)";
-
             # Command+Space → Ctrl+Space for language switching
             space = "M-space";
           };
