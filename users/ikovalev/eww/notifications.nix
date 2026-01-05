@@ -50,13 +50,13 @@
     (defwidget notif-group [group]
       (box :class "notif-group" :orientation "v" :space-evenly false :spacing 0
         ; Group header (clickable to expand/collapse)
-        (button :class "notif-group-header"
-          :onclick "~/.config/eww/scripts/toggle-notif-group.sh '{}'"
+        (eventbox :class "notif-group-header"
+          :onclick "~/.config/eww/scripts/toggle-notif-group.sh ''\'''${group.app}'"
           (box :orientation "h" :space-evenly false :spacing 10
             (label :class "notif-app-icon" :text {group.icon})
             (label :class "notif-app-name" :text {group.app} :hexpand true :halign "start")
             (label :class "notif-group-count" :text {group.count} :visible {group.count > 1})
-            (button :class "notif-group-clear" :onclick "~/.config/eww/scripts/clear-app-notifications.sh '{}'"
+            (button :class "notif-group-clear" :onclick "~/.config/eww/scripts/clear-app-notifications.sh ''\'''${group.app}'"
               (label :text "󰅖"))))
 
         ; Expanded notifications
@@ -68,14 +68,14 @@
     ; Individual notification item
     (defwidget notif-item [notif]
       (box :class "notif-item ''${notif.urgency}" :orientation "h" :space-evenly false :spacing 10
-        (button :class "notif-content" :onclick "~/.config/eww/scripts/activate-notification.sh '{}'"
+        (eventbox :class "notif-content" :onclick "~/.config/eww/scripts/activate-notification.sh ''\'''${notif.id}' ''\'''${notif.app}'"
           :hexpand true
           (box :orientation "v" :space-evenly false :spacing 2 :hexpand true
             (box :orientation "h" :space-evenly false
               (label :class "notif-summary" :text {notif.summary} :halign "start" :hexpand true :limit-width 35)
               (label :class "notif-time" :text {notif.time}))
             (label :class "notif-body" :text {notif.body} :halign "start" :limit-width 45 :visible {notif.body != ""})))
-        (button :class "notif-dismiss" :onclick "~/.config/eww/scripts/dismiss-notification.sh '{}'"
+        (button :class "notif-dismiss" :onclick "~/.config/eww/scripts/dismiss-notification.sh ''\'''${notif.id}'"
           (label :text "󰅖"))))
   '';
 
@@ -249,6 +249,7 @@
         fi
 
         # Parse and group notifications by app
+        # Filter out system notifications (WiFi, Bluetooth status messages)
         echo "$history" | jq -c '
           # App icon mapping
           def get_icon:
@@ -267,17 +268,17 @@
             else "󰍡"
             end;
 
-          # Format timestamp to relative time
-          def format_time:
-            now - . |
-            if . < 60 then "now"
-            elif . < 3600 then "\(. / 60 | floor)m"
-            elif . < 86400 then "\(. / 3600 | floor)h"
-            else "\(. / 86400 | floor)d"
-            end;
+          # Check if notification is a system notification to filter out
+          def is_system_notification:
+            (.summary.data == "WiFi") or
+            (.summary.data == "Bluetooth") or
+            (.summary.data == "Volume") or
+            (.summary.data == "Brightness");
 
           now as $now |
           [.data[][] |
+            # Filter out system notifications
+            select(is_system_notification | not) |
             {
               id: .id.data,
               app: .appname.data,
@@ -379,11 +380,86 @@
       text = ''
         #!/usr/bin/env bash
         ${pathExport}
+        
         id="$1"
+        app="$2"
+        
         # Try to invoke the default action for this notification
         dunstctl action "$id" 2>/dev/null
+        
+        # Map app names to window class patterns and desktop files
+        # This handles cases where notification app name differs from window class
+        get_window_class() {
+          case "$1" in
+            "Spotify"|"spotify") echo "spotify" ;;
+            "Discord"|"discord") echo "discord" ;;
+            "Slack"|"slack") echo "Slack" ;;
+            "Telegram"|"telegram"|"org.telegram.desktop") echo "org.telegram.desktop" ;;
+            "Firefox"|"firefox") echo "firefox" ;;
+            "Chromium"|"chromium") echo "chromium" ;;
+            "Google Chrome"|"google-chrome") echo "google-chrome" ;;
+            "Thunderbird"|"thunderbird") echo "thunderbird" ;;
+            "Steam"|"steam") echo "steam" ;;
+            "VLC"|"vlc") echo "vlc" ;;
+            "Nautilus"|"nautilus"|"Files") echo "org.gnome.Nautilus" ;;
+            *) echo "$1" ;;
+          esac
+        }
+        
+        get_desktop_file() {
+          case "$1" in
+            "Spotify"|"spotify") echo "spotify" ;;
+            "Discord"|"discord") echo "discord" ;;
+            "Slack"|"slack") echo "slack" ;;
+            "Telegram"|"telegram"|"org.telegram.desktop") echo "org.telegram.desktop" ;;
+            "Firefox"|"firefox") echo "firefox" ;;
+            "Chromium"|"chromium") echo "chromium" ;;
+            "Google Chrome"|"google-chrome") echo "google-chrome" ;;
+            "Thunderbird"|"thunderbird") echo "thunderbird" ;;
+            "Steam"|"steam") echo "steam" ;;
+            "VLC"|"vlc") echo "vlc" ;;
+            "Nautilus"|"nautilus"|"Files") echo "org.gnome.Nautilus" ;;
+            *) echo "$1" ;;
+          esac
+        }
+        
+        window_class=$(get_window_class "$app")
+        desktop_file=$(get_desktop_file "$app")
+        
+        # Try to find and focus the window using hyprctl
+        # Search by class (case insensitive)
+        window_address=$(hyprctl clients -j | jq -r --arg class "$window_class" \
+          '.[] | select(.class | ascii_downcase == ($class | ascii_downcase)) | .address' | head -1)
+        
+        if [ -n "$window_address" ] && [ "$window_address" != "null" ]; then
+          # Window found, focus it
+          hyprctl dispatch focuswindow "address:$window_address"
+        else
+          # Window not found, try to launch the app
+          # First try gtk-launch with desktop file
+          if gtk-launch "$desktop_file" 2>/dev/null; then
+            : # launched successfully
+          elif gtk-launch "''${desktop_file,,}" 2>/dev/null; then
+            : # try lowercase
+          else
+            # Fallback: try running the app directly
+            case "$app" in
+              "Spotify"|"spotify") spotify & ;;
+              "Discord"|"discord") discord & ;;
+              "Slack"|"slack") slack & ;;
+              "Telegram"|"telegram"|"org.telegram.desktop") telegram-desktop & ;;
+              "Firefox"|"firefox") firefox & ;;
+              "Nautilus"|"nautilus"|"Files") nautilus & ;;
+              *) notify-send "Notification Center" "Could not open $app" ;;
+            esac
+          fi
+        fi
+        
         # Remove from history after activation
         dunstctl history-rm "$id" 2>/dev/null
+        
+        # Close notification center
+        ~/.config/eww/scripts/close-notifications.sh
       '';
     };
 
