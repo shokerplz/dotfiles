@@ -237,6 +237,7 @@
             .appname.data != "grimblast" and
             .appname.data != "Screenshot" and
             .appname.data != "dunst" and
+            .appname.data != "udiskie" and
             .appname.data != "" and
             .appname.data != null
           )] | length
@@ -295,6 +296,7 @@
             (.summary.data == "Recording Started") or
             (.summary.data == "Recording Stopped") or
             (.summary.data == "Recording") or
+            (.summary.data == "udiskie") or
             (.summary.data == "Select Region");
 
           now as $now |
@@ -402,13 +404,13 @@
       text = ''
         #!/usr/bin/env bash
         ${pathExport}
-        
+
         id="$1"
         app="$2"
-        
+
         # Try to invoke the default action for this notification
         dunstctl action "$id" 2>/dev/null
-        
+
         # Map app names to window class patterns and desktop files
         # This handles cases where notification app name differs from window class
         get_window_class() {
@@ -427,7 +429,7 @@
             *) echo "$1" ;;
           esac
         }
-        
+
         get_desktop_file() {
           case "$1" in
             "Spotify"|"spotify") echo "spotify" ;;
@@ -444,15 +446,15 @@
             *) echo "$1" ;;
           esac
         }
-        
+
         window_class=$(get_window_class "$app")
         desktop_file=$(get_desktop_file "$app")
-        
+
         # Try to find and focus the window using hyprctl
         # Search by class (case insensitive)
         window_address=$(hyprctl clients -j | jq -r --arg class "$window_class" \
           '.[] | select(.class | ascii_downcase == ($class | ascii_downcase)) | .address' | head -1)
-        
+
         if [ -n "$window_address" ] && [ "$window_address" != "null" ]; then
           # Window found, focus it
           hyprctl dispatch focuswindow "address:$window_address"
@@ -476,10 +478,10 @@
             esac
           fi
         fi
-        
+
         # Remove from history after activation
         dunstctl history-rm "$id" 2>/dev/null
-        
+
         # Close notification center
         ~/.config/eww/scripts/close-notifications.sh
       '';
