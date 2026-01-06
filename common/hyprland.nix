@@ -55,9 +55,11 @@
     # Terminal
     kitty
 
-    # Screenshots
+    # Screenshots & Screen Recording
     grim
     slurp
+    grimblast # Hyprland screenshot helper
+    gpu-screen-recorder # GPU-accelerated recording
 
     # Clipboard
     wl-clipboard

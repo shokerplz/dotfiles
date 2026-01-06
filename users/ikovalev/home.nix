@@ -5,7 +5,7 @@
 }: {
   imports = [
     ../../secrets/homemanager.nix
-    ./hyprland.nix
+    ./hyprland
     ./eww
   ];
 
