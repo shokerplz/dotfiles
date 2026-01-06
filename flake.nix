@@ -56,11 +56,14 @@
         ];
       };
   in {
-    packages."x86_64-linux".my-neovim =
-      (nvf.lib.neovimConfiguration {
-        pkgs = nixpkgs-unstable.legacyPackages."x86_64-linux";
-        modules = [./packages/nvf-config.nix];
-      }).neovim;
+    packages."x86_64-linux" = {
+      my-neovim =
+        (nvf.lib.neovimConfiguration {
+          pkgs = nixpkgs-unstable.legacyPackages."x86_64-linux";
+          modules = [./packages/nvf-config.nix];
+        }).neovim;
+      ssh-toggle = nixpkgs-current.legacyPackages."x86_64-linux".callPackage ./packages/ssh-toggle {};
+    };
 
     nixosConfigurations = {
       pocket4 = nixpkgs-current.lib.nixosSystem rec {
@@ -84,7 +87,10 @@
           }
           (
             {pkgs, ...}: {
-              environment.systemPackages = [self.packages.${pkgs.stdenv.system}.my-neovim];
+              environment.systemPackages = [
+                self.packages.${pkgs.stdenv.system}.my-neovim
+                self.packages.${pkgs.stdenv.system}.ssh-toggle
+              ];
             }
           )
         ];
@@ -154,7 +160,10 @@
           }
           (
             {pkgs, ...}: {
-              environment.systemPackages = [self.packages.${pkgs.stdenv.system}.my-neovim];
+              environment.systemPackages = [
+                self.packages.${pkgs.stdenv.system}.my-neovim
+                self.packages.${pkgs.stdenv.system}.ssh-toggle
+              ];
             }
           )
         ];
