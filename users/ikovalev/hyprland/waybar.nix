@@ -44,8 +44,9 @@
 
         "clock" = {
           format = "{:%a %b %d  %H:%M}";
-          tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
+          tooltip = false;
           on-click = "~/.config/eww/scripts/toggle-notifications.sh";
+          on-click-right = "gnome-calendar";
         };
 
         "custom/notifications" = {

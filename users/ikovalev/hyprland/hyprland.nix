@@ -1,5 +1,8 @@
 # Core Hyprland window manager settings
-{pkgs, scripts}: {
+{
+  pkgs,
+  scripts,
+}: {
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -99,6 +102,8 @@
         "float, title:(iwgtk)"
         "size 50% 60%, title:(iwgtk)"
         "center, title:(iwgtk)"
+        "float, title:(Calendar)"
+        "center, title:(Calendar)"
       ];
 
       layerrule = [

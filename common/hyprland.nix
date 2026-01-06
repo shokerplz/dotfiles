@@ -79,6 +79,7 @@
     file-roller # Archive manager
     gnome-calculator
     gnome-text-editor
+    gnome-calendar
 
     # Auth
     hyprpolkitagent
