@@ -38,7 +38,7 @@
           format = "{class}";
           max-length = 20;
           rewrite = {
-            "^(?!.*\\S).*" = "Finder";
+            "^(?!.*\\S).*" = "";
           };
         };
 
@@ -135,7 +135,7 @@
         };
 
         "custom/power" = {
-          format = "";
+          format = "";
           tooltip = false;
           on-click = "~/.config/eww/scripts/toggle-power.sh";
         };

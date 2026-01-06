@@ -28,24 +28,24 @@
 
     style = ''
       * {
-        font-family: "SF Pro Display", "Helvetica Neue", "JetBrainsMono Nerd Font", sans-serif;
-        font-size: 14px;
+        font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
+        font-size: 13px;
       }
 
       window {
-        background-color: rgba(30, 30, 30, 0.95);
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgba(135, 135, 135, 1);
+        border-radius: 0.9rem;
+        border: none;
       }
 
       #input {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 0, 0, 0.06);
         border: none;
-        border-radius: 8px;
-        margin: 12px;
-        padding: 12px 16px;
-        color: #ffffff;
-        font-size: 18px;
+        border-radius: 0.6rem;
+        margin: 10px;
+        padding: 10px 14px;
+        color: #000000;
+        font-size: 14px;
       }
 
       #input:focus {
@@ -54,7 +54,7 @@
       }
 
       #inner-box {
-        margin: 0 12px 12px 12px;
+        margin: 0 10px 10px 10px;
       }
 
       #outer-box {
@@ -68,23 +68,24 @@
       }
 
       #entry {
-        padding: 10px 12px;
+        padding: 8px 12px;
         margin: 2px 0;
-        border-radius: 8px;
-        color: #ffffff;
+        border-radius: 4px;
+        color: rgba(0, 0, 0, 0.8);
       }
 
       #entry:selected {
-        background-color: rgba(0, 122, 255, 0.8);
+        background-color: rgba(0, 0, 0, 0.15);
+        color: #000000;
       }
 
       #entry:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 0, 0, 0.1);
       }
 
       #text {
         margin-left: 8px;
-        color: #ffffff;
+        color: rgba(0, 0, 0, 0.9);
       }
 
       #img {
