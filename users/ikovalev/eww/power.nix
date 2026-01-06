@@ -29,27 +29,27 @@
         (box :class "power-box" :orientation "v" :space-evenly false :spacing 4
           (label :class "section-label" :text "Power" :halign "start")
           (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && hyprlock"
+            :onclick "~/.config/eww/scripts/power-lock.sh"
             (box :orientation "h" :space-evenly false :spacing 8
               (label :class "power-icon" :text "󰌾")
               (label :text "Lock" :halign "start")))
           (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && hyprctl dispatch exit"
+            :onclick "~/.config/eww/scripts/power-logout.sh"
             (box :orientation "h" :space-evenly false :spacing 8
               (label :class "power-icon" :text "󰍃")
               (label :text "Logout" :halign "start")))
           (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && systemctl suspend"
+            :onclick "~/.config/eww/scripts/power-suspend.sh"
             (box :orientation "h" :space-evenly false :spacing 8
               (label :class "power-icon" :text "󰤄")
               (label :text "Suspend" :halign "start")))
           (button :class "power-item"
-            :onclick "~/.config/eww/scripts/close-power.sh && systemctl reboot"
+            :onclick "~/.config/eww/scripts/power-reboot.sh"
             (box :orientation "h" :space-evenly false :spacing 8
               (label :class "power-icon" :text "󰜉")
               (label :text "Reboot" :halign "start")))
           (button :class "power-item power-item-danger"
-            :onclick "~/.config/eww/scripts/close-power.sh && systemctl poweroff"
+            :onclick "~/.config/eww/scripts/power-shutdown.sh"
             (box :orientation "h" :space-evenly false :spacing 8
               (label :class "power-icon" :text "󰐥")
               (label :text "Shutdown" :halign "start"))))))
@@ -116,6 +116,56 @@
         #!/usr/bin/env bash
         ${pathExport}
         eww close power-popup power-popup-1
+      '';
+    };
+
+    "power-lock.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        eww close power-popup power-popup-1
+        hyprlock
+      '';
+    };
+
+    "power-logout.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        eww close power-popup power-popup-1
+        hyprctl dispatch exit
+      '';
+    };
+
+    "power-suspend.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        eww close power-popup power-popup-1
+        systemctl suspend
+      '';
+    };
+
+    "power-reboot.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        eww close power-popup power-popup-1
+        systemctl reboot
+      '';
+    };
+
+    "power-shutdown.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+        eww close power-popup power-popup-1
+        systemctl poweroff
       '';
     };
   };

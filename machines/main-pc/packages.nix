@@ -44,5 +44,6 @@
     nodejs
     orca-slicer
     glow
+    mcp-nixos
   ];
 }

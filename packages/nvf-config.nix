@@ -14,6 +14,10 @@
         package = tiny-inline-diagnostic-nvim;
         setup = "require('tiny-inline-diagnostic').setup({options = {multilines = {enabled = true, always_show = true, trim_whitespaces = true}}})";
       };
+      nvim-lastplace = {
+        package = nvim-lastplace;
+        setup = "require('nvim-lastplace').setup({lastplace_ignore_buftype = {'quickfix', 'nofile', 'help'}, lastplace_ignore_filetype = {'gitcommit', 'gitrebase', 'svn', 'hgcommit'}, lastplace_open_folds = true})";
+      };
     };
 
     clipboard = {
@@ -85,10 +89,55 @@
         };
         treesitter.enable = true;
       };
-      go.enable = true;
-      python.enable = true;
-      terraform.enable = true;
-      markdown.enable = true;
+      go = {
+        enable = true;
+        format.enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
+      python = {
+        enable = true;
+        format.enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
+      terraform = {
+        enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
+      markdown = {
+        enable = true;
+        format.enable = true;
+        treesitter.enable = true;
+      };
+      json = {
+        enable = true;
+        format.enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
+      yaml = {
+        enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
+      html = {
+        enable = true;
+        format.enable = true;
+        treesitter.enable = true;
+      };
+      css = {
+        enable = true;
+        format.enable = true;
+        treesitter.enable = true;
+      };
+      ts = {
+        enable = true;
+        format.enable = true;
+        lsp.enable = true;
+        treesitter.enable = true;
+      };
     };
   };
 }
