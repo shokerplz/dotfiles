@@ -55,9 +55,9 @@
         show_indicators = "no";
         sticky_history = "yes";
 
-        # Mouse actions (like macOS - click to dismiss)
-        mouse_left_click = "close_current";
-        mouse_middle_click = "do_action, close_current";
+        # Mouse actions - left click triggers action then closes (for Telegram etc.)
+        mouse_left_click = "do_action, close_current";
+        mouse_middle_click = "close_current";
         mouse_right_click = "close_all";
       };
 

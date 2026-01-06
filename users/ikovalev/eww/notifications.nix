@@ -229,7 +229,19 @@
       text = ''
         #!/usr/bin/env bash
         ${pathExport}
-        count=$(dunstctl count history 2>/dev/null || echo "0")
+
+        # Count only app notifications, exclude system/self-generated ones
+        count=$(dunstctl history 2>/dev/null | jq '
+          [.data[][] | select(
+            .appname.data != "notify-send" and
+            .appname.data != "grimblast" and
+            .appname.data != "Screenshot" and
+            .appname.data != "dunst" and
+            .appname.data != "" and
+            .appname.data != null
+          )] | length
+        ' 2>/dev/null || echo "0")
+
         echo "$count"
       '';
     };
@@ -268,12 +280,22 @@
             else "󰍡"
             end;
 
-          # Check if notification is a system notification to filter out
+          # Check if notification should be filtered out (system/self-generated)
           def is_system_notification:
+            (.appname.data == "notify-send") or
+            (.appname.data == "grimblast") or
+            (.appname.data == "Screenshot") or
+            (.appname.data == "dunst") or
+            (.appname.data == "") or
+            (.appname.data == null) or
             (.summary.data == "WiFi") or
             (.summary.data == "Bluetooth") or
             (.summary.data == "Volume") or
-            (.summary.data == "Brightness");
+            (.summary.data == "Brightness") or
+            (.summary.data == "Recording Started") or
+            (.summary.data == "Recording Stopped") or
+            (.summary.data == "Recording") or
+            (.summary.data == "Select Region");
 
           now as $now |
           [.data[][] |
