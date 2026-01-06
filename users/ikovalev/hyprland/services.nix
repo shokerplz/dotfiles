@@ -28,7 +28,7 @@
         # Dim screen after 2.5 minutes
         {
           timeout = 150;
-          on-timeout = "brightnessctl -s set 30%";
+          on-timeout = "brightnessctl -s set 5%";
           on-resume = "brightnessctl -r";
         }
         # Turn off screen after 5 minutes
