@@ -7,25 +7,15 @@
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.sddm.enable = true;
 
+  # USB automounting support
+  services.udisks2.enable = true;
+
+  # GVFS for Nautilus file operations (trash, mounts, copy/paste to removable media)
+  services.gvfs.enable = true;
+
   # Bluetooth support (service only starts if hardware present)
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
-
-  # WiFi via iwd (used by iwgtk)
-  networking.wireless.iwd = {
-    enable = true;
-    settings = {
-      General = {
-        EnableNetworkConfiguration = true;
-      };
-      Network = {
-        EnableIPv6 = true;
-      };
-      Settings = {
-        AutoConnect = true;
-      };
-    };
-  };
 
   environment.sessionVariables = {
     # If your cursor becomes invisible
@@ -91,7 +81,6 @@
     blueberry
 
     # Network management
-    iwgtk # WiFi management GUI for iwd
     networkmanagerapplet # For nm-connection-editor
 
     # File picker dialogs

@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   nixpkgs-unstable,
   ...
 }: {
@@ -19,6 +20,26 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.timeout = 1; # Reduce bootloader wait time (hold key to see menu)
+
+  # Boot optimizations
+  systemd.services.NetworkManager-wait-online.enable = false; # Not needed for desktop
+  systemd.network.wait-online.enable = false; # Disable systemd-networkd wait too
+
+  # Start docker lazily via socket activation (starts on first docker command)
+  virtualisation.docker.enableOnBoot = lib.mkForce false; # Override common config
+
+  # Defer VirtualBox network setup - not needed until VMs are started
+  systemd.services."vboxnet0" = {
+    wantedBy = lib.mkForce []; # Don't start at boot
+    after = ["graphical.target"];
+  };
+  systemd.services."network-addresses-vboxnet0" = {
+    wantedBy = lib.mkForce []; # Don't start at boot
+  };
+
+  # Defer libvirt - use socket activation
+  virtualisation.libvirtd.onBoot = "ignore";
 
   # installs the udev rules and the Solaar (tool for logitech devices)
   hardware.logitech.wireless.enable = true;

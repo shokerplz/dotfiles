@@ -113,7 +113,7 @@
           format-disconnected = "󱞐";
           tooltip-format-disconnected = "Disconnected";
           on-click = "~/.config/eww/scripts/toggle-control-center.sh";
-          on-click-right = "iwgtk";
+          on-click-right = "nm-connection-editor";
         };
 
         "pulseaudio" = {
