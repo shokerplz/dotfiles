@@ -69,6 +69,17 @@
     # File manager
     nautilus
 
+    # Media viewers
+    loupe # Image viewer (GNOME, Wayland-native)
+    mpv # Video player
+    celluloid # GTK frontend for mpv
+    evince # PDF/document viewer
+
+    # Utilities
+    file-roller # Archive manager
+    gnome-calculator
+    gnome-text-editor
+
     # Auth
     hyprpolkitagent
 
