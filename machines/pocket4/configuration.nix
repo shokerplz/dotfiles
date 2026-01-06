@@ -19,6 +19,13 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.timeout = 1; # Reduce bootloader wait time
+
+  # Boot optimizations
+  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.network.wait-online.enable = false;
+  virtualisation.docker.enableOnBoot = lib.mkForce false; # Use socket activation
+  virtualisation.libvirtd.onBoot = "ignore";
 
   boot.kernelParams = ["amd_iommu=off" "amdgpu.gttsize=65536" "ttm.pages_limit=67108864"];
 
