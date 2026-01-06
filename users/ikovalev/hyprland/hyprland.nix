@@ -127,6 +127,25 @@
         ", Print, exec, ${scripts.screenshot}"
       ];
 
+      # Volume keys (bindel = repeat when held)
+      bindel = [
+        ", XF86AudioRaiseVolume, exec, pamixer -i 5"
+        ", XF86AudioLowerVolume, exec, pamixer -d 5"
+        ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
+        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+      ];
+
+      # Media keys (bindl = works even when locked)
+      bindl = [
+        ", XF86AudioMute, exec, pamixer -t"
+        ", XF86AudioMicMute, exec, pamixer --default-source -t"
+        ", XF86AudioPlay, exec, playerctl play-pause"
+        ", XF86AudioPause, exec, playerctl play-pause"
+        ", XF86AudioNext, exec, playerctl next"
+        ", XF86AudioPrev, exec, playerctl previous"
+        ", XF86AudioStop, exec, playerctl stop"
+      ];
+
       bindm = [
         # Move/resize windows with ALT + LMB/RMB
         "ALT, mouse:272, movewindow"
