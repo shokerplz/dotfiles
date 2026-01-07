@@ -24,6 +24,9 @@
 
             # Command+Space → Ctrl+Space for language switching
             space = "M-space";
+
+            # Pass through for Hyprland window switching
+            tab = "M-tab";
           };
 
           "option:A" = {

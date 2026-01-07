@@ -23,17 +23,31 @@ in {
   hardware.nvidia = {
     # Modesetting is required.
     modesetting.enable = true;
-    powerManagement.enable = true;
-    powerManagement.finegrained = true;
+
+    # Power management - disabled for gaming performance
+    # finegrained allows GPU to fully power down when idle, but adds latency
+    # when starting games. Disabled for faster game launches.
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+
+    # Use open source kernel modules (better for newer GPUs)
     open = true;
 
     # Enable the Nvidia settings menu,
     # accessible via `nvidia-settings`.
     nvidiaSettings = true;
 
+    # Keep GPU initialized for faster response
     nvidiaPersistenced = true;
+
+    # PRIME configuration for hybrid graphics
+    # Using offload mode: games run on iGPU by default, use prime-run for NVIDIA
+    # Alternative: Set sync.enable = true to always render on NVIDIA (more power, simpler)
     prime = {
-      offload.enable = true;
+      offload = {
+        enable = true;
+        enableOffloadCmd = true; # Provides nvidia-offload command
+      };
       amdgpuBusId = "PCI:5:0:0";
       nvidiaBusId = "PCI:1:0:0";
     };

@@ -40,6 +40,8 @@
 
       decoration = {
         rounding = 10;
+        dim_inactive = true;
+        dim_strength = 0.15;
 
         blur = {
           enabled = true;
@@ -70,6 +72,7 @@
       misc = {
         force_default_wallpaper = 0;
         disable_hyprland_logo = true;
+        animate_manual_resizes = true;
       };
 
       cursor = {
@@ -128,6 +131,9 @@
         "SUPER SHIFT, V, exec, cliphist list | wofi --dmenu --prompt 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
         # Screenshots & Recording (PrintScreen toggles menu, or stops recording if active)
         ", Print, exec, ${scripts.screenshot}"
+        # Window cycling (works even when games lock cursor)
+        "$mod, Tab, cyclenext"
+        "$mod SHIFT, Tab, cyclenext, prev"
       ];
 
       # Volume keys (bindel = repeat when held)

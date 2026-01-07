@@ -13,6 +13,7 @@
     ./docker.nix
     ./sunshine.nix
     ./overlays.nix
+    ./gaming-performance.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
   ];
