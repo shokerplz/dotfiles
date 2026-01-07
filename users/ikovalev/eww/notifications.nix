@@ -238,6 +238,7 @@
             .appname.data != "Screenshot" and
             .appname.data != "dunst" and
             .appname.data != "udiskie" and
+            .appname.data != ".grimblast-wrapped" and
             .appname.data != "" and
             .appname.data != null
           )] | length
@@ -297,6 +298,7 @@
             (.summary.data == "Recording Stopped") or
             (.summary.data == "Recording") or
             (.summary.data == "udiskie") or
+            (.summart.data == ".grimblast-wrappe") or
             (.summary.data == "Select Region");
 
           now as $now |

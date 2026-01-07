@@ -83,6 +83,19 @@
     fi
   '';
 
+  # Create empty gaming.conf for machine-specific game window rules
+  home.activation.createGamingConf = ''
+    if [ ! -f "$HOME/.config/hypr/gaming.conf" ]; then
+      mkdir -p "$HOME/.config/hypr"
+      cat > "$HOME/.config/hypr/gaming.conf" << 'EOF'
+# Machine-specific gaming window rules
+# Example: Launch games on specific monitor
+# windowrulev2 = monitor DP-3, class:^(steam_app_.*)$
+# windowrulev2 = fullscreen, class:^(steam_app_.*)$
+EOF
+    fi
+  '';
+
   # Dark mode for GTK apps
   gtk = {
     enable = true;

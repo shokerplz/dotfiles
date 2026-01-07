@@ -3,7 +3,19 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  # Wrapper script for launching games with NVIDIA + gamemode
+  game-run = pkgs.writeShellScriptBin "game-run" ''
+    # Force NVIDIA GPU
+    export __NV_PRIME_RENDER_OFFLOAD=1
+    export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export __VK_LAYER_NV_optimus=NVIDIA_only
+
+    # Run with gamemode
+    exec ${pkgs.gamemode}/bin/gamemoderun "$@"
+  '';
+in {
   # =============================================================================
   # GAMING KERNEL - Zen Kernel
   # =============================================================================
@@ -161,6 +173,9 @@
   # ADDITIONAL GAMING PACKAGES
   # =============================================================================
   environment.systemPackages = with pkgs; [
+    # Game launcher wrapper (use as: game-run <command>)
+    game-run
+
     # Performance monitoring
     btop
     nvtopPackages.nvidia # GPU monitoring for NVIDIA
