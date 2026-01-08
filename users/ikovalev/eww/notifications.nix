@@ -298,7 +298,7 @@
             (.summary.data == "Recording Stopped") or
             (.summary.data == "Recording") or
             (.summary.data == "udiskie") or
-            (.summart.data == ".grimblast-wrappe") or
+            (.appname.data == ".grimblast-wrapped") or
             (.summary.data == "Select Region");
 
           now as $now |
