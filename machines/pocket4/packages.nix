@@ -1,11 +1,13 @@
-{ pkgs, ... }:
-let
-  virtio-win-iso = pkgs.runCommand "virtio-win-iso" { } ''
+{
+  pkgs,
+  nixpkgs-unstable,
+  ...
+}: let
+  virtio-win-iso = pkgs.runCommand "virtio-win-iso" {} ''
     mkdir -p $out/share/virtio-win
     ln -s ${pkgs.virtio-win.src} $out/share/virtio-win/virtio-win.iso
   '';
-in
-{
+in {
   environment.systemPackages = with pkgs; [
     neovim
     git
@@ -22,5 +24,7 @@ in
     libreoffice-qt6-fresh
     guvcview # Camera app for KVM
     virtio-win-iso
+    orca-slicer
+    nixpkgs-unstable.claude-code
   ];
 }
