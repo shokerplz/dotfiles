@@ -29,8 +29,6 @@
 
   boot.kernelParams = ["amd_iommu=off" "amdgpu.gttsize=65536" "ttm.pages_limit=67108864"];
 
-  boot.kernelParams = ["amd_iommu=off" "amdgpu.gttsize=65536" "ttm.pages_limit=67108864"];
-
   networking.hostName = "pocket4"; # Define your hostname.
 
   # Use systemd-resolve so DNS works fine with WireGuard VPN
