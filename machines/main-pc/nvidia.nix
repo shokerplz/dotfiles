@@ -16,6 +16,9 @@ in {
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
 
+  # Preserve video memory across suspend/resume - critical for Wayland
+  boot.kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
+
   hardware.nvidia-container-toolkit.enable = true;
 
   nixpkgs.config.cudaSupport = true;
@@ -24,10 +27,12 @@ in {
     # Modesetting is required.
     modesetting.enable = true;
 
-    # Power management - disabled for gaming performance
+    # Power management - REQUIRED for suspend/resume to work properly
+    # This enables the NVIDIA driver to save and restore GPU state during suspend.
+    # Without this, resume from suspend often results in a frozen/black screen.
+    powerManagement.enable = true;
     # finegrained allows GPU to fully power down when idle, but adds latency
-    # when starting games. Disabled for faster game launches.
-    powerManagement.enable = false;
+    # when starting games. Keep disabled for faster game launches.
     powerManagement.finegrained = false;
 
     # Use open source kernel modules (better for newer GPUs)
