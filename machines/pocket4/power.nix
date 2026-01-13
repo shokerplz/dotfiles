@@ -1,6 +1,49 @@
 { config, pkgs, ... }:
 
 {
+  # Disable power-profiles-daemon (conflicts with TLP)
+  services.power-profiles-daemon.enable = false;
+
+  # Enable TLP for comprehensive power management
+  services.tlp = {
+    enable = true;
+    settings = {
+      # CPU settings
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      CPU_BOOST_ON_AC = 1;
+      CPU_BOOST_ON_BAT = 0;
+
+      # Platform profile (AMD-specific)
+      PLATFORM_PROFILE_ON_AC = "performance";
+      PLATFORM_PROFILE_ON_BAT = "low-power";
+
+      # Storage power saving
+      SATA_LINKPWR_ON_BAT = "med_power_with_dipm";
+      AHCI_RUNTIME_PM_ON_BAT = "auto";
+
+      # PCIe power management
+      RUNTIME_PM_ON_AC = "auto";
+      RUNTIME_PM_ON_BAT = "auto";
+
+      # WiFi - keep power saving OFF for stable connection
+      WIFI_PWR_ON_AC = "off";
+      WIFI_PWR_ON_BAT = "off";
+
+      # USB autosuspend
+      USB_AUTOSUSPEND = 1;
+
+      # Disable wake-on-LAN
+      WOL_DISABLE = "Y";
+    };
+  };
+
+  # Audio power saving
+  boot.extraModprobeConfig = ''
+    options snd_hda_intel power_save=1
+  '';
 
   boot.kernelPackages = pkgs.linuxPackages.extend (
     self: super: {
