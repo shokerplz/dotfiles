@@ -11,6 +11,7 @@
     ./power.nix
     ./ai.nix
     ./fix-screen-rotation-sleep.nix
+    ./fingerprint-scanner.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
     ../../common/docker.nix
@@ -43,6 +44,17 @@
 
   hardware.gpd-fan.enable = true;
 
+  # Enable fingerprint debug logging (saves images to /tmp/fprint-debug/)
+  # Need to relax sandboxing to allow writing to /tmp
+  systemd.services.fprintd.serviceConfig = {
+    PrivateTmp = lib.mkForce false;
+    ReadWritePaths = lib.mkForce ["/tmp" "/sys/devices"];
+  };
+  systemd.services.fprintd.environment = {
+    FP_DEBUG_IMAGES = "1";
+    G_MESSAGES_DEBUG = "all";
+  };
+
   hardware.amdgpu.opencl.enable = true;
   virtualisation.libvirtd = {
     enable = true;
@@ -56,6 +68,7 @@
     "video"
     "render"
     "libvirtd"
+    "plugdev"
   ];
 
   # Allow openssh, but disable it by default

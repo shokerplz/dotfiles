@@ -18,6 +18,7 @@
     };
     nix-local-cache.url = "git+ssh://gitlab@git.ikovalev.nl/nix/nix-local-cache.git";
     gpd-fan-driver.url = "github:Cryolitia/gpd-fan-driver/main";
+    gpd-fp-driver.url = "github:shokerplz/ft9362-driver/master";
 
     # Home Manager
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -40,6 +41,7 @@
     nvf,
     nix-local-cache,
     gpd-fan-driver,
+    gpd-fp-driver,
   }: let
     makeDevShell = system: let
       pkgs = import nixpkgs-current {
@@ -77,6 +79,7 @@
           nixos-hardware.nixosModules.gpd-pocket-4
           sops-nix.nixosModules.sops
           gpd-fan-driver.nixosModules.default
+          gpd-fp-driver.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
