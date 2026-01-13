@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Disable power-profiles-daemon (conflicts with TLP)
@@ -101,6 +101,45 @@
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.ryzenadj}/bin/ryzenadj --stapm-limit=54000 --fast-limit=54000 --slow-limit=54000";
+    };
+  };
+
+  # Disable XHC0 as wake source (fingerprint sensor triggers unwanted wakes)
+  systemd.services.disable-usb-wakeup = {
+    description = "Disable USB controller wake sources";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "disable-usb-wakeup" ''
+        # Disable XHC0 (fingerprint sensor controller) as wake source
+        echo XHC0 > /proc/acpi/wakeup || true
+      '';
+    };
+  };
+
+  # Workaround for USB4 controller (c7:00.0) failing to suspend
+  # The xhci_hcd driver returns -16 (EBUSY) preventing sleep
+  systemd.services.usb4-suspend-workaround = {
+    description = "Disable USB4 runtime PM before sleep";
+    wantedBy = [ "sleep.target" ];
+    before = [ "sleep.target" ];
+    unitConfig.StopWhenUnneeded = true;
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "usb4-suspend-prepare" ''
+        # Disable runtime PM for problematic USB4 controllers before sleep
+        for dev in /sys/bus/pci/devices/0000:c7:00.*/power/control; do
+          [ -f "$dev" ] && echo on > "$dev" 2>/dev/null || true
+        done
+      '';
+      ExecStop = pkgs.writeShellScript "usb4-suspend-restore" ''
+        # Re-enable runtime PM after wake
+        for dev in /sys/bus/pci/devices/0000:c7:00.*/power/control; do
+          [ -f "$dev" ] && echo auto > "$dev" 2>/dev/null || true
+        done
+      '';
     };
   };
 

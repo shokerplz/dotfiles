@@ -10,7 +10,6 @@
     ./overlays.nix
     ./power.nix
     ./ai.nix
-    ./fix-screen-rotation-sleep.nix
     ./fingerprint-scanner.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
@@ -33,8 +32,8 @@
     "amdgpu.gttsize=65536"
     "ttm.pages_limit=67108864"
     # Power saving
-    "pcie_aspm=force"   # Force PCIe Active State Power Management
-    "nmi_watchdog=0"    # Disable NMI watchdog (saves power)
+    "pcie_aspm=force" # Force PCIe Active State Power Management
+    "nmi_watchdog=0" # Disable NMI watchdog (saves power)
   ];
 
   networking.hostName = "pocket4"; # Define your hostname.
