@@ -45,5 +45,15 @@
     orca-slicer
     glow
     mcp-nixos
+    bun
+    nodejs
+    uv
+    sqlite
+  ];
+
+  # That will allow apps to have LD_LIBRARY_PATH
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
   ];
 }
