@@ -66,6 +66,7 @@
           format-critical = "󰸁 {temperatureC}°C";
           critical-threshold = 80;
           tooltip-format = "CPU Temperature: {temperatureC}°C";
+          interval = 1;
         };
 
         "cpu" = {
