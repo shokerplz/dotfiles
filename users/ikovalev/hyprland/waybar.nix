@@ -208,42 +208,8 @@
         color: rgba(0, 0, 0, 0.4);
       }
 
-      #battery icon {
-        color: red;
-      }
 
-      #battery.charging,
-      #battery.plugged {
-        color: #ffffff;
-        background-color: #26a65b;
-      }
 
-      @keyframes blink {
-        to {
-          background-color: #ffffff;
-          color: #000000;
-        }
-      }
-
-      #battery.warning:not(.charging) {
-        background-color: #f53c3c;
-        color: #ffffff;
-        animation-name: blink;
-        animation-duration: 0.5s;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-      }
-
-      #battery.critical:not(.charging) {
-        background-color: #f53c3c;
-        color: #ffffff;
-        animation-name: blink;
-        animation-duration: 0.5s;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-      }
 
       label:focus {
         background-color: #000000;
