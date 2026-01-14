@@ -122,7 +122,7 @@
         "$mod, E, exec, nautilus"
         # Alt+V -> Toggle Floating (Avoids Cmd+V paste conflict)
         "ALT, V, togglefloating,"
-        "$mod, SPACE, exec, wofi --show=drun"
+        "$mod, SPACE, exec, pkill -x wofi; wofi --show=drun"
         "$mod, P, pseudo," # dwindle
         "$mod, J, togglesplit," # dwindle
         "$mod, F, fullscreen"
