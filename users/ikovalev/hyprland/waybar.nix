@@ -1,5 +1,20 @@
 # Waybar status bar configuration
-{...}: {
+{osConfig, ...}: let
+  hostname = osConfig.networking.hostName;
+  # Per-host temperature sensor paths
+  temperatureConfig = {
+    # Intel systems use coretemp
+    main-pc = {
+      hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
+      input-filename = "temp1_input";
+    };
+    # AMD systems (GPD Pocket 4) use k10temp
+    pocket4 = {
+      hwmon-path-abs = "/sys/devices/pci0000:00/0000:00:18.3/hwmon";
+      input-filename = "temp1_input";
+    };
+  };
+in {
   programs.waybar = {
     enable = true;
     settings = {
@@ -67,7 +82,7 @@
           critical-threshold = 80;
           tooltip-format = "CPU Temperature: {temperatureC}°C";
           interval = 1;
-        };
+        } // (temperatureConfig.${hostname} or {});
 
         "cpu" = {
           format = "󰍛 {usage}%";
