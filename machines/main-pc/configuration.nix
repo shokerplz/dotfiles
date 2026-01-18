@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ./packages.nix
     ./nvidia.nix
+    ./power.nix
     ./docker.nix
     ./sunshine.nix
     ./overlays.nix

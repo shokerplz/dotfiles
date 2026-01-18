@@ -45,17 +45,8 @@ in {
     # Keep GPU initialized for faster response
     nvidiaPersistenced = true;
 
-    # PRIME configuration for hybrid graphics
-    # Using offload mode: games run on iGPU by default, use prime-run for NVIDIA
-    # Alternative: Set sync.enable = true to always render on NVIDIA (more power, simpler)
-    prime = {
-      offload = {
-        enable = true;
-        enableOffloadCmd = true; # Provides nvidia-offload command
-      };
-      amdgpuBusId = "PCI:5:0:0";
-      nvidiaBusId = "PCI:1:0:0";
-    };
+    # No PRIME configuration needed - this system has only an NVIDIA GPU
+    # (no integrated graphics present)
   };
 
   # This prevents random sound crashes (nvidia should just fix their drivers)
