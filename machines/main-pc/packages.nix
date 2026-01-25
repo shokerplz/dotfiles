@@ -51,6 +51,7 @@
     sqlite
     typora
     qbittorrent
+    gdb
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
