@@ -129,7 +129,7 @@
         # Switch keyboard layout (us/ru)
         "CTRL, SPACE, exec, hyprctl switchxkblayout all next"
         # Clipboard history (Cmd+Shift+V via keyd -> Meta+Shift+V)
-        "SUPER SHIFT, V, exec, cliphist list | wofi --dmenu --prompt 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
+        "SUPER SHIFT, V, exec, cliphist list | wofi --dmenu --sort-order=default --prompt 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
         # Screenshots & Recording (PrintScreen toggles menu, or stops recording if active)
         ", Print, exec, ${scripts.screenshot}"
         # Window cycling - all visible windows across all monitors (focus history order)
@@ -188,7 +188,7 @@
         "dunst"
         "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
         "eww daemon"
-        "wl-paste --watch cliphist store"
+        "wl-paste --watch cliphist store -max-items 100"
       ];
     };
   };
