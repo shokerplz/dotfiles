@@ -50,6 +50,7 @@
     uv
     sqlite
     typora
+    qbittorrent
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
