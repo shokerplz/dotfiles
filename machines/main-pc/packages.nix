@@ -52,6 +52,7 @@
     typora
     qbittorrent
     gdb
+    ghidra
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
