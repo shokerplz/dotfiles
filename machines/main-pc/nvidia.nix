@@ -13,9 +13,6 @@ in {
     enable32Bit = lib.mkForce true;
   };
 
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
-
   # Preserve video memory across suspend/resume - critical for Wayland
   boot.kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
 
@@ -67,10 +64,4 @@ in {
     cudatoolkit
   ];
 
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "nvidia";
-    XDG_SESSION_TYPE = "wayland";
-    GBM_BACKEND = "nvidia-drm";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  };
 }
