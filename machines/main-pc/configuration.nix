@@ -10,7 +10,7 @@
     ./hardware-configuration.nix
     ./packages.nix
     ./amd.nix
-    ./nvidia.nix
+    # ./nvidia.nix Disabled until I'll find a way to mount this GPU in some other spot
     ./power.nix
     ./docker.nix
     ./sunshine.nix
