@@ -24,6 +24,7 @@
       source = [
         "~/.config/hypr/monitors.conf"
         "~/.config/hypr/gaming.conf"
+        "~/.config/hypr/workspaces.conf"
       ];
 
       general = {
