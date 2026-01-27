@@ -1,8 +1,4 @@
 {pkgs, ...}: {
-  boot.kernelParams = [
-    "amdgpu.freesync_video=0"
-  ];
-
   environment.sessionVariables.WLR_DRM_DEVICES = "/dev/dri/card1";
 
   services.xserver.videoDrivers = ["amdgpu"];
