@@ -502,11 +502,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1769403795,
-        "narHash": "sha256-Gk1MedUqTOMt9Hnn4WEGK/lpC/6UJ8O+e1Rm3LRnLgI=",
+        "lastModified": 1769555186,
+        "narHash": "sha256-wNoPRTt5ZAzXnu3uoan4p8h1hC0EvEurAX2708p1umU=",
         "owner": "notashelf",
         "repo": "nvf",
-        "rev": "45aaf1cccff9981456821105b4d2b5918f00cab0",
+        "rev": "dacc7270a5a6db3dd2bdc5ae1713f1fe975ecbd8",
         "type": "github"
       },
       "original": {
