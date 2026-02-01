@@ -19,6 +19,9 @@
   # Allow myself to rebuild nixos from main-pc
   nix.settings.trusted-users = ["ikovalev"];
 
+  # Mount /tmp to RAM
+  boot.tmp.useTmpfs = true;
+
   # Garbage collection
   nix.optimise.automatic = true;
   nix.settings.auto-optimise-store = true;
