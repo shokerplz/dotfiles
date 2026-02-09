@@ -8,6 +8,8 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # NixPKGs nixos24.11
     nixpkgs-24-11.url = "github:nixos/nixpkgs/nixos-24.11";
+    # NixPKGs nixos25.05
+    nixpkgs-25-05.url = "github:nixos/nixpkgs/nixos-25.05";
     # NixPKGs that I am currently using
     nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.11";
     # NixOS Hardware
@@ -33,6 +35,7 @@
     self,
     nixpkgs-unstable,
     nixpkgs-24-11,
+    nixpkgs-25-05,
     nixpkgs-current,
     sops-nix,
     nixos-hardware,
@@ -114,7 +117,6 @@
           ./common/default.nix
           ./common/ssh.nix
           ./machines/rpi5/configuration.nix
-          nixos-hardware.nixosModules.raspberry-pi-5
           sops-nix.nixosModules.sops
           authentik-nix.nixosModules.default
           nix-local-cache.nixosModules.frontend
@@ -122,6 +124,10 @@
         specialArgs = {
           inherit nix-local-cache;
           nixpkgs-unstable = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          nixpkgs-old = import nixpkgs-25-05 {
             inherit system;
             config.allowUnfree = true;
           };

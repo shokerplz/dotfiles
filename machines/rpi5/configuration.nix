@@ -1,5 +1,8 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  nixpkgs-old,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ./docker.nix
@@ -24,7 +27,7 @@
   boot.loader.systemd-boot.enable = true;
 
   # Add the RPi kernel
-  boot.kernelPackages = pkgs.linuxPackages_rpi4;
+  boot.kernelPackages = nixpkgs-old.linuxPackages_rpi4;
 
   # Should never be changed!
   system.stateVersion = "24.11"; # Did you read the comment?
