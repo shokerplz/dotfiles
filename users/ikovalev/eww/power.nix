@@ -12,7 +12,7 @@
       :geometry (geometry :x "30px" :y "0px" :width "180px" :anchor "top right")
       :stacking "fg"
       :exclusive false
-      :focusable false
+      :focusable true
       (power-widget))
 
     (defwindow power-popup-1
@@ -20,12 +20,13 @@
       :geometry (geometry :x "30px" :y "0px" :width "180px" :anchor "top right")
       :stacking "fg"
       :exclusive false
-      :focusable false
+      :focusable true
       (power-widget))
 
     ; Main power widget
     (defwidget power-widget []
       (eventbox :onhoverlost "~/.config/eww/scripts/close-power.sh"
+                :onfocuslost "~/.config/eww/scripts/close-power.sh"
         (box :class "power-box" :orientation "v" :space-evenly false :spacing 4
           (label :class "section-label" :text "Power" :halign "start")
           (button :class "power-item"

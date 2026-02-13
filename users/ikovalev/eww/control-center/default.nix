@@ -31,7 +31,7 @@ in {
       :geometry (geometry :x "10px" :y "0px" :width "320px" :anchor "top right")
       :stacking "fg"
       :exclusive false
-      :focusable false
+      :focusable true
       (control-center-widget))
 
     (defwindow control-center-1
@@ -39,12 +39,13 @@ in {
       :geometry (geometry :x "10px" :y "0px" :width "320px" :anchor "top right")
       :stacking "fg"
       :exclusive false
-      :focusable false
+      :focusable true
       (control-center-widget))
 
     ; Main Control Center widget
     (defwidget control-center-widget []
       (eventbox :onhoverlost "~/.config/eww/scripts/close-control-center.sh"
+                :onfocuslost "~/.config/eww/scripts/close-control-center.sh"
         (box :class "control-center-box" :orientation "v" :space-evenly false :spacing 8
           (wifi-section)
           (bluetooth-section)

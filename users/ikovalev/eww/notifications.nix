@@ -19,7 +19,7 @@
       :geometry (geometry :x "0px" :y "5px" :width "380px" :anchor "top center")
       :stacking "fg"
       :exclusive false
-      :focusable false
+      :focusable true
       (notification-center-widget))
 
     (defwindow notification-center-1
@@ -27,12 +27,13 @@
       :geometry (geometry :x "0px" :y "5px" :width "380px" :anchor "top center")
       :stacking "fg"
       :exclusive false
-      :focusable false
+      :focusable true
       (notification-center-widget))
 
     ; Main notification center widget
     (defwidget notification-center-widget []
       (eventbox :onhoverlost "~/.config/eww/scripts/close-notifications.sh"
+                :onfocuslost "~/.config/eww/scripts/close-notifications.sh"
         (box :class "notif-center" :orientation "v" :space-evenly false :spacing 0
           ; Header
           (box :class "notif-header" :orientation "h" :space-evenly false
