@@ -292,6 +292,8 @@ in {
 
         # Reset UI state
         eww update wifi-expanded=false
+        ~/.config/eww/scripts/wifi-auth-cancel.sh >/dev/null 2>&1
+        eww update wifi-connecting=""
         eww update sink-expanded=false
         eww update source-expanded=false
 

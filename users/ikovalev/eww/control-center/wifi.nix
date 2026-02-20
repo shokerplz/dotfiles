@@ -12,6 +12,8 @@
     ; WiFi UI state
     (defvar wifi-expanded false)
     (defvar wifi-connecting "")  ; SSID currently being connected to (empty = not connecting)
+    (defvar wifi-auth-ssid "")
+    (defvar wifi-auth-error "")
 
     ; WiFi section widget
     (defwidget wifi-section []
@@ -20,7 +22,7 @@
         (box :class "cc-section-header" :orientation "h" :space-evenly false
           (label :class "cc-section-title" :text "WiFi" :hexpand true :halign "start")
           (label :class "cc-section-status''${wifi-connecting != "" ? " connecting" : ""}"
-            :text {wifi-connecting != "" ? "Connecting..." : (wifi-status.connected == "true" ? wifi-status.ssid : "Not connected")}
+            :text {wifi-connecting != "" ? "Connecting..." : (wifi-auth-ssid != "" ? "Password needed" : (wifi-status.connected == "true" ? wifi-status.ssid : "Not connected"))}
             :halign "end")
           (button :class "cc-toggle-btn ''${wifi-status.enabled == "true" ? "active" : "disabled"}"
             :onclick "~/.config/eww/scripts/wifi-toggle.sh"
@@ -58,8 +60,26 @@
                         (label :class "cc-item-icon" :text {network.signal >= 70 ? "󰤨" : (network.signal >= 40 ? "󰤟" : "󰤯")})
                         (label :class "cc-item-name" :text {network.ssid} :hexpand true :halign "start" :limit-width 20)
                         (label :class "cc-item-status" :text {network.security != "" ? "󰌾" : ""})
-                        (label :class "cc-item-signal" :text "''${network.signal}%")))))))))
-      ))
+                        (label :class "cc-item-signal" :text "''${network.signal}%")))))))
+
+            ; Password prompt for protected networks
+            (revealer :transition "slidedown" :reveal {wifi-auth-ssid != ""} :duration "150ms"
+              (box :class "cc-wifi-auth-box" :orientation "v" :space-evenly false :spacing 4
+                (label :class "cc-item-name" :text {"Password for " + wifi-auth-ssid} :halign "start" :limit-width 28)
+                (input :class "cc-wifi-password-input"
+                  :hexpand true
+                  :password true
+                  :onaccept "setsid -f ~/.config/eww/scripts/wifi-connect-submit.sh <<'__EWW_WIFI_PASSWORD_END_44B7C0C6__'
+{}
+__EWW_WIFI_PASSWORD_END_44B7C0C6__")
+                (label :class "cc-item-status" :text "Press Enter to connect" :halign "start")
+                (label :class "cc-wifi-auth-error" :text wifi-auth-error :visible {wifi-auth-error != ""} :halign "start" :wrap true)
+                (button :class "cc-dropdown-btn" :onclick "~/.config/eww/scripts/wifi-auth-cancel.sh"
+                  (label :text "Cancel"))))
+          )
+        )
+      )
+    )
   '';
 
   scss = ''
@@ -67,6 +87,30 @@
     .cc-section-status.connecting {
       font-style: italic;
       opacity: 0.8;
+    }
+
+    .cc-wifi-auth-box {
+      margin-top: 4px;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .cc-wifi-password-input {
+      background-color: rgba(255, 255, 255, 0.7);
+      color: #000000;
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+
+      &:focus {
+        border: 1px solid #2563eb;
+      }
+    }
+
+    .cc-wifi-auth-error {
+      color: #b91c1c;
+      font-size: 0.75rem;
     }
   '';
 
@@ -137,16 +181,15 @@
         SSID="$1"
         SECURITY="$2"
         DEBUG_LOG="/tmp/wifi-debug.log"
+        STATE_DIR="''${XDG_RUNTIME_DIR:-/tmp}/eww-wifi-auth"
+        SSID_FILE="$STATE_DIR/ssid"
 
-        # Helper to clear connecting state
         clear_connecting() {
           eww update wifi-connecting="" 2>/dev/null
         }
 
-        # Ensure connecting state is cleared on exit (success, failure, or interrupt)
         trap clear_connecting EXIT
 
-        # Debug logging
         echo "$(date): wifi-connect called with SSID='$SSID' SECURITY='$SECURITY'" >> "$DEBUG_LOG"
 
         if [ -z "$SSID" ]; then
@@ -154,10 +197,14 @@
           exit 1
         fi
 
-        # Set connecting state in EWW
-        eww update wifi-connecting="$SSID" 2>/dev/null
+        secure_network=false
+        if [ -n "$SECURITY" ] && [ "$SECURITY" != "--" ]; then
+          secure_network=true
+        fi
 
-        # Detect WiFi interface dynamically
+        eww update wifi-connecting="$SSID" 2>/dev/null
+        ~/.config/eww/scripts/wifi-auth-cancel.sh >/dev/null 2>&1
+
         WIFI_IFACE=$(nmcli -t -f DEVICE,TYPE device status 2>/dev/null | grep ':wifi$' | cut -d: -f1 | head -1)
         echo "$(date): Detected WiFi interface: '$WIFI_IFACE'" >> "$DEBUG_LOG"
 
@@ -167,7 +214,6 @@
           exit 1
         fi
 
-        # Check if we already have a saved connection for this network
         if nmcli connection show "$SSID" &>/dev/null; then
           echo "$(date): Found saved connection for '$SSID', activating on $WIFI_IFACE..." >> "$DEBUG_LOG"
           notify-send "WiFi" "Connecting to $SSID..." 2>/dev/null
@@ -176,48 +222,120 @@
           echo "$(date): nmcli exit code: $exit_code, result: $result" >> "$DEBUG_LOG"
           if [ $exit_code -eq 0 ]; then
             notify-send "WiFi" "Connected to $SSID" 2>/dev/null
-          else
-            notify-send "WiFi" "Failed to connect: $result" 2>/dev/null
+            exit 0
           fi
-          exit $exit_code
+
+          if [ "$secure_network" != "true" ]; then
+            notify-send "WiFi" "Failed to connect: $result" 2>/dev/null
+            exit $exit_code
+          fi
+
+          echo "$(date): Saved connection failed for secure network '$SSID', showing inline password prompt" >> "$DEBUG_LOG"
         fi
 
-        # If network has security, prompt for password
-        # Script runs in its own session via setsid, so wofi can get focus
-        if [ -n "$SECURITY" ] && [ "$SECURITY" != "--" ] && [ "$SECURITY" != "" ]; then
-          echo "$(date): Network '$SSID' requires password (security: $SECURITY), launching wofi..." >> "$DEBUG_LOG"
-          
-          # Launch wofi directly - script is already detached via setsid -f in onclick
-          password=$(wofi --dmenu --password --prompt "Password for $SSID:" 2>/dev/null)
+        if [ "$secure_network" = "true" ]; then
+          mkdir -p "$STATE_DIR"
+          printf '%s' "$SSID" > "$SSID_FILE"
+          eww update wifi-auth-ssid="$SSID" 2>/dev/null
+          eww update wifi-auth-error="" 2>/dev/null
+          notify-send "WiFi" "Enter password for $SSID in Control Center" 2>/dev/null
+          exit 0
+        fi
 
-          if [ -z "$password" ]; then
-            echo "$(date): Password prompt cancelled or empty" >> "$DEBUG_LOG"
-            notify-send "WiFi" "Connection cancelled" 2>/dev/null
-            exit 1
-          fi
-
-          echo "$(date): Got password, connecting to '$SSID' on $WIFI_IFACE..." >> "$DEBUG_LOG"
-          notify-send "WiFi" "Connecting to $SSID..." 2>/dev/null
-          result=$(nmcli device wifi connect "$SSID" password "$password" ifname "$WIFI_IFACE" 2>&1)
-          exit_code=$?
-          echo "$(date): nmcli exit code: $exit_code, result: $result" >> "$DEBUG_LOG"
-          if [ $exit_code -eq 0 ]; then
-            notify-send "WiFi" "Connected to $SSID" 2>/dev/null
-          else
-            notify-send "WiFi" "Failed to connect: $result" 2>/dev/null
-          fi
+        echo "$(date): Open network '$SSID', connecting directly on $WIFI_IFACE..." >> "$DEBUG_LOG"
+        notify-send "WiFi" "Connecting to $SSID..." 2>/dev/null
+        result=$(nmcli device wifi connect "$SSID" ifname "$WIFI_IFACE" 2>&1)
+        exit_code=$?
+        echo "$(date): nmcli exit code: $exit_code, result: $result" >> "$DEBUG_LOG"
+        if [ $exit_code -eq 0 ]; then
+          notify-send "WiFi" "Connected to $SSID" 2>/dev/null
         else
-          echo "$(date): Open network '$SSID', connecting directly on $WIFI_IFACE..." >> "$DEBUG_LOG"
-          notify-send "WiFi" "Connecting to $SSID..." 2>/dev/null
-          result=$(nmcli device wifi connect "$SSID" ifname "$WIFI_IFACE" 2>&1)
-          exit_code=$?
-          echo "$(date): nmcli exit code: $exit_code, result: $result" >> "$DEBUG_LOG"
-          if [ $exit_code -eq 0 ]; then
-            notify-send "WiFi" "Connected to $SSID" 2>/dev/null
-          else
-            notify-send "WiFi" "Failed to connect: $result" 2>/dev/null
-          fi
+          notify-send "WiFi" "Failed to connect: $result" 2>/dev/null
         fi
+
+        exit $exit_code
+      '';
+    };
+
+    "wifi-connect-submit.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+
+        DEBUG_LOG="/tmp/wifi-debug.log"
+        STATE_DIR="''${XDG_RUNTIME_DIR:-/tmp}/eww-wifi-auth"
+        SSID_FILE="$STATE_DIR/ssid"
+        PASSWORD=$(cat)
+        PASSWORD=''${PASSWORD%$'\n'}
+
+        clear_connecting() {
+          eww update wifi-connecting="" 2>/dev/null
+        }
+
+        trap clear_connecting EXIT
+
+        if [ -z "$PASSWORD" ]; then
+          eww update wifi-auth-error="Password cannot be empty" 2>/dev/null
+          notify-send "WiFi" "Password cannot be empty" 2>/dev/null
+          exit 1
+        fi
+
+        if [ -r "$SSID_FILE" ]; then
+          SSID=$(cat "$SSID_FILE")
+        else
+          SSID=$(eww get wifi-auth-ssid 2>/dev/null || true)
+        fi
+
+        if [ -z "$SSID" ] || [ "$SSID" = "null" ]; then
+          eww update wifi-auth-error="No network selected" 2>/dev/null
+          notify-send "WiFi" "No network selected" 2>/dev/null
+          exit 1
+        fi
+
+        eww update wifi-auth-error="" 2>/dev/null
+        eww update wifi-connecting="$SSID" 2>/dev/null
+
+        WIFI_IFACE=$(nmcli -t -f DEVICE,TYPE device status 2>/dev/null | grep ':wifi$' | cut -d: -f1 | head -1)
+        echo "$(date): wifi-connect-submit for SSID='$SSID' iface='$WIFI_IFACE'" >> "$DEBUG_LOG"
+
+        if [ -z "$WIFI_IFACE" ]; then
+          eww update wifi-auth-error="No WiFi adapter found" 2>/dev/null
+          notify-send "WiFi" "No WiFi adapter found" 2>/dev/null
+          exit 1
+        fi
+
+        notify-send "WiFi" "Connecting to $SSID..." 2>/dev/null
+        result=$(nmcli device wifi connect "$SSID" password "$PASSWORD" ifname "$WIFI_IFACE" 2>&1)
+        exit_code=$?
+        echo "$(date): nmcli submit exit code: $exit_code, result: $result" >> "$DEBUG_LOG"
+
+        if [ $exit_code -eq 0 ]; then
+          notify-send "WiFi" "Connected to $SSID" 2>/dev/null
+          ~/.config/eww/scripts/wifi-auth-cancel.sh >/dev/null 2>&1
+        else
+          eww update wifi-auth-error="Failed to connect. Check password and try again." 2>/dev/null
+          notify-send "WiFi" "Failed to connect: $result" 2>/dev/null
+        fi
+
+        exit $exit_code
+      '';
+    };
+
+    "wifi-auth-cancel.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        ${pathExport}
+
+        STATE_DIR="''${XDG_RUNTIME_DIR:-/tmp}/eww-wifi-auth"
+        SSID_FILE="$STATE_DIR/ssid"
+
+        rm -f "$SSID_FILE"
+        rmdir "$STATE_DIR" 2>/dev/null || true
+
+        eww update wifi-auth-ssid="" 2>/dev/null
+        eww update wifi-auth-error="" 2>/dev/null
       '';
     };
 
