@@ -2,6 +2,22 @@
 
 let
   nzbBaseDir = "/mnt/ssd/kino/nzbget";
+  nzbCompletedDir = "${nzbBaseDir}/completed";
+  nzbMoviesDir = "${nzbCompletedDir}/movies";
+  nzbShowsDir = "${nzbCompletedDir}/shows";
+  nzbBooksDir = "${nzbCompletedDir}/books";
+  nzbManagedDirs = [
+    nzbBaseDir
+    nzbCompletedDir
+    nzbMoviesDir
+    nzbShowsDir
+    nzbBooksDir
+    "${nzbBaseDir}/queue"
+    "${nzbBaseDir}/nzb"
+    "${nzbBaseDir}/tmp"
+    "${nzbBaseDir}/scripts"
+    "${nzbBaseDir}/intermediate"
+  ];
 in
 
 {
@@ -12,7 +28,7 @@ in
       group = lib.mkDefault "arr";
       settings = lib.mkDefault {
         MainDir = nzbBaseDir;
-        DestDir = "${nzbBaseDir}/completed";
+        DestDir = nzbCompletedDir;
         QueueDir = "${nzbBaseDir}/queue";
         NzbDir = "${nzbBaseDir}/nzb";
         TempDir = "${nzbBaseDir}/tmp";
@@ -58,7 +74,7 @@ in
         CertCheck = "yes";
         UpdateCheck = "stable";
         DaemonUsername = "root";
-        UMask = 1000;
+        UMask = "0002";
         AppendCategoryDir = "yes";
         NzbDirInterval = 5;
         NzbDirFileAge = 60;
@@ -140,31 +156,52 @@ in
         RenameAfterUnpack = "yes";
         RenameIgnoreExt = ".zip, .7z, .rar, .par2";
         Category1.Name = "Movies";
-        Category1.DestDir = "${nzbBaseDir}/completed/movies";
+        Category1.DestDir = nzbMoviesDir;
         Category1.Unpack = "yes";
         Category1.Extensions = "";
         Category1.Aliases = "";
         Category2.Name = "Series";
-        Category2.DestDir = "${nzbBaseDir}/completed/shows";
+        Category2.DestDir = nzbShowsDir;
         Category2.Unpack = "yes";
         Category2.Extensions = "";
         Category2.Aliases = "";
         Category3.Name = "Readarr";
-        Category3.DestDir = "${nzbBaseDir}/completed/books";
+        Category3.DestDir = nzbBooksDir;
         Category3.Unpack = "yes";
         Category3.Extensions = "";
         Category3.Aliases = "";
       };
     };
 
+    system.activationScripts.fixNzbgetPermissions = ''
+      mkdir -p ${lib.concatStringsSep " " nzbManagedDirs}
+      chown nzbget:arr ${lib.concatStringsSep " " nzbManagedDirs}
+      chmod 0770 ${nzbBaseDir} ${nzbBaseDir}/nzb
+      chmod 2770 ${nzbBaseDir}/queue ${nzbBaseDir}/tmp ${nzbBaseDir}/scripts ${nzbBaseDir}/intermediate
+      chmod 2775 ${nzbCompletedDir} ${nzbMoviesDir} ${nzbShowsDir} ${nzbBooksDir}
+    '';
+
     systemd.tmpfiles.rules = [
       "d ${nzbBaseDir} 0770 nzbget arr -"
-      "d ${nzbBaseDir}/completed 2770 nzbget arr -"
+      "d ${nzbCompletedDir} 2775 nzbget arr -"
+      "d ${nzbMoviesDir} 2775 nzbget arr -"
+      "d ${nzbShowsDir} 2775 nzbget arr -"
+      "d ${nzbBooksDir} 2775 nzbget arr -"
       "d ${nzbBaseDir}/queue 2770 nzbget arr -"
       "d ${nzbBaseDir}/nzb 0770 nzbget arr -"
       "d ${nzbBaseDir}/tmp 2770 nzbget arr -"
       "d ${nzbBaseDir}/scripts 2770 nzbget arr -"
       "d ${nzbBaseDir}/intermediate 2770 nzbget arr -"
+      "z ${nzbBaseDir} 0770 nzbget arr -"
+      "z ${nzbCompletedDir} 2775 nzbget arr -"
+      "z ${nzbMoviesDir} 2775 nzbget arr -"
+      "z ${nzbShowsDir} 2775 nzbget arr -"
+      "z ${nzbBooksDir} 2775 nzbget arr -"
+      "z ${nzbBaseDir}/queue 2770 nzbget arr -"
+      "z ${nzbBaseDir}/nzb 0770 nzbget arr -"
+      "z ${nzbBaseDir}/tmp 2770 nzbget arr -"
+      "z ${nzbBaseDir}/scripts 2770 nzbget arr -"
+      "z ${nzbBaseDir}/intermediate 2770 nzbget arr -"
     ];
   };
 }
