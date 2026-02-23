@@ -38,9 +38,9 @@
           on-timeout = "brightnessctl -s set 5%";
           on-resume = "brightnessctl -r";
         }
-        # Turn off screen after 20 minutes
+        # Turn off screen after 40 minutes
         {
-          timeout = 1200;
+          timeout = 2400;
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
         }
