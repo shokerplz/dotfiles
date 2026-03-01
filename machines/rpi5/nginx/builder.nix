@@ -7,6 +7,7 @@
   services.nginx.virtualHosts."builder.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
+    acmeRoot = null;
     listenAddresses = ["10.0.1.20"];
     root = nix-local-cache.packages.${pkgs.system}.frontend;
     locations."/" = {
@@ -24,6 +25,7 @@
   services.nginx.virtualHosts."api.builder.ikovalev.nl" = {
     enableACME = true;
     forceSSL = true;
+    acmeRoot = null;
     listenAddresses = ["10.0.1.20"];
     locations."/" = {
       proxyPass = "http://media-server.home:21080";

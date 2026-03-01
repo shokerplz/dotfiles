@@ -40,6 +40,10 @@ imports = [
     acceptTerms = true;
     defaults = {
       dnsProvider = "cloudflare";
+      extraLegoFlags = [
+        "--dns.propagation-wait"
+        "120s"
+      ];
       dnsResolver = "8.8.8.8:53";
       environmentFile = "/etc/myacme/cloudflare";
       email = "ivan@ikovalev.nl";
