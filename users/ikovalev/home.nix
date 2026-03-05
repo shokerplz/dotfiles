@@ -67,6 +67,29 @@
     ];
   };
 
+  programs.starship = {
+    enable = true;
+    settings = {
+      format = "$directory$git_branch$git_status$character";
+      git_branch = {
+        format = "[git:$branch(:$remote_branch)]($style) ";
+        always_show_remote = true;
+      };
+      git_status = {
+        format = "([$all_status$ahead_behind]($style) )";
+        ahead = "^\${count}";
+        behind = "v\${count}";
+        diverged = "^\${ahead_count}v\${behind_count}";
+        untracked = "?\${count}";
+        stashed = "*\${count}";
+        modified = "!\${count}";
+        staged = "+\${count}";
+        renamed = ">\${count}";
+        deleted = "x\${count}";
+      };
+    };
+  };
+
   home.packages = with pkgs; [
     # Additional packages here
     gcc
@@ -85,15 +108,15 @@
 
   # Create empty gaming.conf for machine-specific game window rules
   home.activation.createGamingConf = ''
-    if [ ! -f "$HOME/.config/hypr/gaming.conf" ]; then
-      mkdir -p "$HOME/.config/hypr"
-      cat > "$HOME/.config/hypr/gaming.conf" << 'EOF'
-# Machine-specific gaming window rules
-# Example: Launch games on specific monitor
-# windowrulev2 = monitor DP-3, class:^(steam_app_.*)$
-# windowrulev2 = fullscreen, class:^(steam_app_.*)$
-EOF
-    fi
+        if [ ! -f "$HOME/.config/hypr/gaming.conf" ]; then
+          mkdir -p "$HOME/.config/hypr"
+          cat > "$HOME/.config/hypr/gaming.conf" << 'EOF'
+    # Machine-specific gaming window rules
+    # Example: Launch games on specific monitor
+    # windowrulev2 = monitor DP-3, class:^(steam_app_.*)$
+    # windowrulev2 = fullscreen, class:^(steam_app_.*)$
+    EOF
+        fi
   '';
 
   # Dark mode for GTK apps
