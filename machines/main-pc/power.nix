@@ -6,6 +6,7 @@
 }: {
   boot.kernelParams = [
     "mem_sleep_default=deep"
+    "amd_pstate=active"
   ];
 
   systemd.services.sync-before-sleep = {

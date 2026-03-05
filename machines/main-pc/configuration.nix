@@ -76,7 +76,7 @@
   users.extraGroups.vboxusers.members = ["ikovalev"];
   virtualisation.virtualbox.host.enableExtensionPack = true;
   virtualisation.libvirtd.enable = true;
-  boot.kernelModules = ["kvm-intel"];
+  boot.kernelModules = ["kvm-amd"];
   users.extraGroups."qemu-libvirtd".members = ["ikovalev"];
   users.extraGroups.libvirtd.members = ["ikovalev"];
 
