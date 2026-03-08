@@ -72,7 +72,6 @@
 
   # VirtualBox
   virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.package = nixpkgs-unstable.virtualbox;
   users.extraGroups.vboxusers.members = ["ikovalev"];
   virtualisation.virtualbox.host.enableExtensionPack = true;
   virtualisation.libvirtd.enable = true;

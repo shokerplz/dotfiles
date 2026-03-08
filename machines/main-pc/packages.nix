@@ -53,6 +53,7 @@
     qbittorrent
     gdb
     ghidra
+    bottles
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
