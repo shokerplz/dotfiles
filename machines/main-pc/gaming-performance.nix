@@ -4,67 +4,34 @@
   lib,
   ...
 }: let
-  # Wrapper script for launching games with NVIDIA + gamemode
   game-run = pkgs.writeShellScriptBin "game-run" ''
-    # Force NVIDIA GPU
-    export __NV_PRIME_RENDER_OFFLOAD=1
-    export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
-    export __GLX_VENDOR_LIBRARY_NAME=nvidia
-    export __VK_LAYER_NV_optimus=NVIDIA_only
-
     # Run with gamemode
     exec ${pkgs.gamemode}/bin/gamemoderun "$@"
   '';
 in {
-  # =============================================================================
-  # GAMING KERNEL - Zen Kernel
-  # =============================================================================
-  # The Zen kernel is optimized for desktop responsiveness and gaming.
-  # It includes patches for better interactivity, reduced latency, and
-  # improved scheduler behavior for gaming workloads.
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
-  # =============================================================================
-  # KERNEL PARAMETERS - Gaming Optimizations
-  # =============================================================================
   boot.kernelParams = [
-    # Reduce kernel timer interrupt frequency for smoother frame pacing
-    # 1000Hz is good for gaming (vs default 250Hz)
     "tsc=reliable"
-
-    # Disable watchdog timers - not needed for desktop, reduces overhead
     "nowatchdog"
     "nmi_watchdog=0"
 
-    # Transparent Huge Pages - can improve memory performance
     "transparent_hugepage=always"
 
-    # Split lock detection can cause performance issues in games
     "split_lock_detect=off"
 
-    # Prevent kernel from moving running processes between CPUs unnecessarily
     "workqueue.power_efficient=0"
-
-    # NVIDIA-specific: enable PAT (Page Attribute Table) for better GPU memory access
-    "nvidia-drm.modeset=1"
-    "nvidia-drm.fbdev=1"
   ];
 
-  # =============================================================================
-  # SYSCTL TWEAKS - System Performance
-  # =============================================================================
   boot.kernel.sysctl = {
-    # Virtual memory tweaks for gaming
-    "vm.swappiness" = 10; # Prefer RAM over swap
-    "vm.vfs_cache_pressure" = 50; # Keep directory/inode caches longer
-    "vm.dirty_ratio" = 10; # Percentage of RAM for dirty pages before sync
-    "vm.dirty_background_ratio" = 5; # Start background writeback earlier
-    "vm.page-cluster" = 0; # Disable readahead for swap (we have zram)
+    "vm.swappiness" = 10;
+    "vm.vfs_cache_pressure" = 50;
+    "vm.dirty_ratio" = 10;
+    "vm.dirty_background_ratio" = 5;
+    "vm.page-cluster" = 0;
 
-    # Increase max memory map areas (needed for some games and Wine)
     "vm.max_map_count" = 2147483642;
 
-    # Network performance for online gaming (low latency)
     "net.core.netdev_max_backlog" = 16384;
     "net.core.somaxconn" = 8192;
     "net.core.rmem_default" = 1048576;
@@ -80,40 +47,27 @@ in {
     "net.ipv4.tcp_slow_start_after_idle" = 0;
     "net.ipv4.tcp_mtu_probing" = 1;
 
-    # Increase inotify limits for games with many files
     "fs.inotify.max_user_watches" = 524288;
     "fs.inotify.max_user_instances" = 1024;
 
-    # File handle limits
     "fs.file-max" = 2097152;
 
-    # Kernel scheduler tweaks
-    "kernel.sched_autogroup_enabled" = 0; # Disable autogroup for better game priority control
+    "kernel.sched_autogroup_enabled" = 0;
   };
 
-  # =============================================================================
-  # ZRAM SWAP - Fast Compressed Memory
-  # =============================================================================
-  # ZRAM provides fast compressed swap in RAM, reducing I/O latency
-  # when memory pressure occurs during gaming
   zramSwap = {
     enable = true;
-    algorithm = "zstd"; # Best balance of compression and speed
-    memoryPercent = 50; # Use up to 50% of RAM for compressed swap
-    priority = 100; # Higher priority than disk swap
+    algorithm = "zstd";
+    memoryPercent = 50;
+    priority = 100;
   };
 
-  # =============================================================================
-  # ANANICY-CPP - Automatic Process Nice Daemon
-  # =============================================================================
-  # Automatically adjusts process priorities for better gaming performance
-  # Uses CachyOS rules which are well-maintained and gaming-focused
   services.ananicy = {
     enable = true;
     package = pkgs.ananicy-cpp;
     rulesProvider = pkgs.ananicy-rules-cachyos;
     settings = {
-      check_freq = 5; # Check every 5 seconds
+      check_freq = 5;
       cgroup_load = true;
       type_load = true;
       rule_load = true;
@@ -127,28 +81,23 @@ in {
     };
   };
 
-  # =============================================================================
-  # GAMEMODE - Enhanced Configuration
-  # =============================================================================
   programs.gamemode = {
     enable = lib.mkForce true;
-    enableRenice = true; # Allow gamemode to renice processes
+    enableRenice = true;
     settings = {
       general = {
-        renice = 10; # Renice game processes by -10 (higher priority)
-        softrealtime = "auto"; # Use soft realtime scheduling when available
-        ioprio = 0; # Highest I/O priority for games
+        renice = 10;
+        softrealtime = "auto";
+        ioprio = 0;
         inhibit_screensaver = 1;
       };
 
-      # GPU optimizations for NVIDIA
       gpu = {
         apply_gpu_optimisations = "accept-responsibility";
         gpu_device = 0;
-        nv_powermizer_mode = 1; # Force maximum performance mode
+        nv_powermizer_mode = 1;
       };
 
-      # Custom scripts
       custom = {
         start = "${pkgs.libnotify}/bin/notify-send -u low 'GameMode' 'Performance mode activated'";
         end = "${pkgs.libnotify}/bin/notify-send -u low 'GameMode' 'Performance mode deactivated'";
@@ -156,10 +105,6 @@ in {
     };
   };
 
-  # =============================================================================
-  # I/O SCHEDULER - Optimized for NVMe/SSD
-  # =============================================================================
-  # Use 'none' or 'mq-deadline' for NVMe SSDs
   services.udev.extraRules = ''
     # Set I/O scheduler for NVMe drives
     ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
@@ -168,45 +113,25 @@ in {
     # Set I/O scheduler for HDDs
     ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
   '';
-
-  # =============================================================================
-  # ADDITIONAL GAMING PACKAGES
-  # =============================================================================
   environment.systemPackages = with pkgs; [
-    # Game launcher wrapper (use as: game-run <command>)
     game-run
 
-    # Performance monitoring
     btop
-    nvtopPackages.nvidia # GPU monitoring for NVIDIA
     iotop
 
-    # I/O latency testing
     ioping
 
-    # CPU frequency management
     cpupower-gui
   ];
 
-  # Enable cpupower-gui service
   services.cpupower-gui.enable = true;
 
-  # =============================================================================
-  # CPU POWER MANAGEMENT
-  # =============================================================================
-  # Disable power-profiles-daemon if enabled (we manage power via gamemode)
   services.power-profiles-daemon.enable = lib.mkForce false;
 
-  # Set CPU governor to performance for gaming
-  # Note: Can also be dynamically changed via gamemode
   powerManagement.cpuFreqGovernor = "performance";
 
-  # =============================================================================
-  # REALTIME AUDIO (Optional but recommended for low-latency audio in games)
-  # =============================================================================
   security.rtkit.enable = true;
 
-  # Allow users in the 'games' group to use realtime scheduling
   security.pam.loginLimits = [
     {
       domain = "@wheel";

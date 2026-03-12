@@ -16,7 +16,7 @@
     firefox-bin
     vscode
     spotify
-    telegram-desktop
+    nixpkgs-unstable.telegram-desktop
     vlc
     obs-studio
     libreoffice-qt6-fresh
