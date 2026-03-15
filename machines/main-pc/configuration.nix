@@ -15,6 +15,7 @@
     ./sunshine.nix
     ./overlays.nix
     ./gaming-performance.nix
+    ./win-pc-conn.nix
     ../../services/node-exporter.nix
     ../../common/nfs-client.nix
   ];

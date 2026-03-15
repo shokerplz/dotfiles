@@ -54,6 +54,7 @@
     gdb
     ghidra
     bottles
+    moonlight-qt
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
