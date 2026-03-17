@@ -53,6 +53,11 @@
     options snd_hda_intel power_save=0 power_save_controller=N enable_msi=1
   '';
 
+  boot.kernelParams = [
+    "pcie_port_pm=off"
+    "pcie_aspm.policy=performance"
+  ];
+
   # Allow to build aarch64
   boot.binfmt.emulatedSystems = ["aarch64-linux"];
   nix = {
