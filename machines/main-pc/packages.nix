@@ -55,6 +55,7 @@
     ghidra
     bottles
     moonlight-qt
+    yandex-cloud
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
