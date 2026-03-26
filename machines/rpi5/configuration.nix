@@ -17,6 +17,7 @@
     ../../services/node-exporter.nix
     ../../services/cert-exporter.nix
     ../../services/authentik.nix
+    ../../services/rust-desk.nix
   ];
 
   # Set hostname
