@@ -5,8 +5,8 @@
 }: {
   imports = [
     ../../secrets/homemanager.nix
-    ./hyprland
-    ./eww
+    ./hyprland/default.nix
+    #    ./eww
   ];
 
   sops.age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -95,6 +95,7 @@
     gcc
     xclip
     wl-clipboard
+    dconf
   ];
 
   # Create empty monitors.conf if it doesn't exist, so Hyprland can source it
@@ -141,13 +142,6 @@
     style = {
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;
-    };
-  };
-
-  # Set color-scheme preference for apps that check it
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
     };
   };
 }

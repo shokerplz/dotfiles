@@ -29,6 +29,10 @@
       url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs-current";
+    };
   };
 
   outputs = {
@@ -42,6 +46,7 @@
     home-manager,
     authentik-nix,
     nvf,
+    noctalia,
     nix-local-cache,
     gpd-fan-driver,
     gpd-fp-driver,
@@ -165,6 +170,7 @@
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
             home-manager.sharedModules = [
               sops-nix.homeManagerModules.sops
+              noctalia.homeModules.default
             ];
           }
           (

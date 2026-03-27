@@ -1,8 +1,11 @@
-# Core Hyprland window manager settings
 {
   pkgs,
-  scripts,
-}: {
+  config,
+  lib,
+  ...
+}: let
+  ipc = "${lib.getExe config.programs.noctalia-shell.package} ipc call";
+in {
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -109,33 +112,23 @@
         "center, title:(Calendar)"
       ];
 
-      layerrule = [
-        "blur, wofi"
-        "ignorezero, wofi"
-        "blur, eww"
-        "ignorezero, eww"
-      ];
-
       bind = [
         # Cmd+Q -> Ctrl+Q (via keyd) -> Kill Active
         "CTRL, Q, killactive,"
         "$mod, M, exit,"
-        "$mod, E, exec, nautilus"
         # Alt+V -> Toggle Floating (Avoids Cmd+V paste conflict)
         "ALT, V, togglefloating,"
-        "$mod, SPACE, exec, pkill -x wofi; wofi --show=drun"
-        "$mod, P, pseudo," # dwindle
-        "$mod, J, togglesplit," # dwindle
-        "$mod, F, fullscreen"
+        "$mod, SPACE, exec, ${ipc} launcher toggle"
+        "SUPER SHIFT, F, fullscreen"
         # Switch keyboard layout (us/ru)
         "CTRL, SPACE, exec, hyprctl switchxkblayout all next"
         # Clipboard history (Cmd+Shift+V via keyd -> Meta+Shift+V)
-        "SUPER SHIFT, V, exec, cliphist list | wofi --dmenu --sort-order=default --prompt 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
-        # Screenshots & Recording (PrintScreen toggles menu, or stops recording if active)
-        ", Print, exec, ${scripts.screenshot}"
+        "SUPER SHIFT, V, exec, ${ipc} launcher clipboard"
         # Window cycling - all visible windows across all monitors (focus history order)
         "$mod, Tab, cyclenext, visible hist"
         "$mod SHIFT, Tab, cyclenext, prev visible hist"
+        # Screenshot
+        ", Print, exec, ${ipc} plugin:screen-shot-and-record screenshot"
 
         # Workspaces - Super+Number to switch, Super+Shift+Number to move window
         "$mod, 1, workspace, 1"
@@ -160,21 +153,21 @@
 
       # Volume keys (bindel = repeat when held)
       bindel = [
-        ", XF86AudioRaiseVolume, exec, pamixer -i 5"
-        ", XF86AudioLowerVolume, exec, pamixer -d 5"
-        ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
-        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+        ", XF86AudioRaiseVolume, exec, ${ipc} volume increase"
+        ", XF86AudioLowerVolume, exec, ${ipc} volume decrease"
+        ", XF86MonBrightnessUp, exec, ${ipc} brightness increase"
+        ", XF86MonBrightnessDown, exec, ${ipc} brightness decrease"
       ];
 
       # Media keys (bindl = works even when locked)
       bindl = [
-        ", XF86AudioMute, exec, pamixer -t"
-        ", XF86AudioMicMute, exec, pamixer --default-source -t"
-        ", XF86AudioPlay, exec, playerctl play-pause"
-        ", XF86AudioPause, exec, playerctl play-pause"
-        ", XF86AudioNext, exec, playerctl next"
-        ", XF86AudioPrev, exec, playerctl previous"
-        ", XF86AudioStop, exec, playerctl stop"
+        ", XF86AudioMute, exec, ${ipc} volume muteOutput"
+        ", XF86AudioMicMute, exec, ${ipc} volume muteInput"
+        ", XF86AudioPlay, exec, ${ipc} media play"
+        ", XF86AudioPause, exec, ${ipc} media pause"
+        ", XF86AudioNext, exec, ${ipc} media next"
+        ", XF86AudioPrev, exec, ${ipc} media previous"
+        ", XF86AudioStop, exec, ${ipc} media stop"
       ];
 
       bindm = [
@@ -184,12 +177,9 @@
       ];
 
       exec-once = [
-        "waybar"
         "hyprpaper"
-        "dunst"
+        "noctalia-shell"
         "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
-        "eww daemon"
-        "wl-paste --watch cliphist store -max-items 100"
       ];
     };
   };
