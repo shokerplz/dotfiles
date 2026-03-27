@@ -162,12 +162,9 @@ in {
       # Media keys (bindl = works even when locked)
       bindl = [
         ", XF86AudioMute, exec, ${ipc} volume muteOutput"
-        ", XF86AudioMicMute, exec, ${ipc} volume muteInput"
-        ", XF86AudioPlay, exec, ${ipc} media play"
-        ", XF86AudioPause, exec, ${ipc} media pause"
+        ", XF86AudioPlay, exec, ${ipc} media playPause"
         ", XF86AudioNext, exec, ${ipc} media next"
         ", XF86AudioPrev, exec, ${ipc} media previous"
-        ", XF86AudioStop, exec, ${ipc} media stop"
       ];
 
       bindm = [
@@ -177,7 +174,6 @@ in {
       ];
 
       exec-once = [
-        "hyprpaper"
         "noctalia-shell"
         "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1"
       ];
