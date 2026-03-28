@@ -64,5 +64,17 @@ in {
     };
   };
 
-  networking.firewall.interfaces.end0.allowedUDPPorts = [30003];
+  networking.firewall.interfaces.end0.allowedUDPPortRanges = [
+    {
+      from = 30000;
+      to = 50000;
+    }
+  ];
+
+  networking.firewall.extraCommands = ''
+    iptables -t nat -A PREROUTING -i end0 -p udp --dport 30000:50000 -j DNAT --to-destination :30003
+  '';
+  networking.firewall.extraStopCommands = ''
+    iptables -t nat -D PREROUTING -i end0 -p udp --dport 30000:50000 -j DNAT --to-destination :30003 || true
+  '';
 }

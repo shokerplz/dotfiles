@@ -94,6 +94,7 @@
             home-manager.users.ikovalev = import ./users/ikovalev/home.nix;
             home-manager.sharedModules = [
               sops-nix.homeManagerModules.sops
+              noctalia.homeModules.default
             ];
           }
           (
