@@ -366,7 +366,7 @@
       "terminalCommand": "alacritty -e",
       "customLaunchPrefixEnabled": false,
       "customLaunchPrefix": "",
-      "viewMode": "grid",
+      "viewMode": "list",
       "showCategories": true,
       "iconMode": "tabler",
       "showIconBackground": false,
@@ -578,7 +578,9 @@
       "enabled": true,
       "enableMarkdown": false,
       "density": "default",
-      "monitors": [],
+      "monitors": [
+        "DP-2"
+      ],
       "location": "top_right",
       "overlayLayer": true,
       "backgroundOpacity": 1,
@@ -632,7 +634,7 @@
     "brightness": {
       "brightnessStep": 5,
       "enforceMinimum": true,
-      "enableDdcSupport": false,
+      "enableDdcSupport": true,
       "backlightDeviceMappings": []
     },
     "colorSchemes": {
@@ -737,7 +739,7 @@
       }
     },
     "notificationsState": {
-      "lastSeenTs": 1774571561000
+      "lastSeenTs": 1774656704000
     },
     "changelogState": {
       "lastSeenVersion": "v4.7.2-git"
