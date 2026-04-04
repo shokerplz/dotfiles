@@ -75,10 +75,6 @@
 
   networking.hostName = "main-pc"; # Define your hostname.
 
-  # VirtualBox
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = ["ikovalev"];
-  virtualisation.virtualbox.host.enableExtensionPack = true;
   virtualisation.libvirtd.enable = true;
   boot.kernelModules = ["kvm-amd"];
   users.extraGroups."qemu-libvirtd".members = ["ikovalev"];

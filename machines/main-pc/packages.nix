@@ -26,8 +26,6 @@
     libnotify
     adwaita-icon-theme
     nixpkgs-unstable.codex
-    nixpkgs-unstable.claude-code-router
-    nixpkgs-unstable.claude-code
     nixpkgs-unstable.gemini-cli
     nixpkgs-unstable.godot
     nixpkgs-unstable.opencode

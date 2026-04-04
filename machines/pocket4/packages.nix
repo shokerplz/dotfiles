@@ -25,7 +25,6 @@ in {
     guvcview # Camera app for KVM
     virtio-win-iso
     orca-slicer
-    nixpkgs-unstable.claude-code
     mcp-nixos
   ];
 }
