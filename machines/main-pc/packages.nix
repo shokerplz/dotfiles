@@ -54,6 +54,7 @@
     bottles
     moonlight-qt
     yandex-cloud
+    nixpkgs-unstable.shadps4
   ];
 
   # That will allow apps to have LD_LIBRARY_PATH
