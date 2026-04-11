@@ -3,7 +3,9 @@
   pkgs,
   nixpkgs-unstable,
   ...
-}: {
+}: let
+  jellyfinTranscodeDir = "/mnt/ssd/kino/jellyfin/transcodes";
+in {
   # Jellyfin service
   services.jellyfin = {
     enable = true;
@@ -18,8 +20,16 @@
     mkdir -p /mnt/zfs-pool0/kino/data
     mkdir -p /mnt/zfs-pool0/kino/jellyfin/config
     mkdir -p /mnt/zfs-pool0/kino/jellyfin/cache
+    mkdir -p ${jellyfinTranscodeDir}
        chown -R jellyfin /mnt/zfs-pool0/kino/data
     chown -R jellyfin:jellyfin /mnt/zfs-pool0/kino/jellyfin
+    chown -R jellyfin:jellyfin ${jellyfinTranscodeDir}
+  '';
+
+  systemd.services.jellyfin.preStart = ''
+    if [ -f /mnt/zfs-pool0/kino/jellyfin/config/encoding.xml ]; then
+      sed -i 's#<TranscodingTempPath>.*</TranscodingTempPath>#<TranscodingTempPath>${jellyfinTranscodeDir}</TranscodingTempPath>#' /mnt/zfs-pool0/kino/jellyfin/config/encoding.xml
+    fi
   '';
 
   # Add user to render and video group for hw transcoding
