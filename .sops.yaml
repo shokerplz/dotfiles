@@ -4,8 +4,20 @@ keys:
   - &ikovalev age1c0882dc0kj7mwdwud775xerlgk66p439xrlcktlmuv9ed0hfy95sycs699
   - &main-pc age1k56jkzr3frfrlfzdv4uatqqzv8v9h95pgyen9j9v8n67vm7kvvwsd08ghj
   - &pocket4 age1mculuz7alkk7k8at58pq3rf5ktgrutu8psgzmlu0rhycccyjs3nsdrfpec
+  - &vm-ru-0 age1dmkrst679usupgg4ls3py0kuzrw6ncctppvuxhhzqclswdwq7awq4053s4
+  - &vm-de-0 age1wq77enrcrhe8xa8q7yurgg5lezxzw4xmlx2wyf6cwhrztppsquvqh6yprh
 
 creation_rules:
+  - path_regex: secrets/xray-role-entry\.yaml$
+    key_groups:
+      - age:
+        - *ikovalev
+        - *vm-ru-0
+  - path_regex: secrets/xray-role-exit\.yaml$
+    key_groups:
+      - age:
+        - *ikovalev
+        - *vm-de-0
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:

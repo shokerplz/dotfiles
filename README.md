@@ -1,95 +1,208 @@
-## How to work with secrets
+# NixOS Setup
 
-We're using sops-nix (https://github.com/Mic92/sops-nix). It is already added to
-flake so nothing needs to be done in terms of installation.
+## Everyday Commands
 
-### How to create private key?
+Inspect the exported outputs:
 
+```bash
+nix flake show --all-systems --no-write-lock-file
 ```
+
+Evaluate a host without building it:
+
+```bash
+nix eval .#nixosConfigurations.rpi5.config.system.build.toplevel.drvPath
+```
+
+Build a host:
+
+```bash
+nix build .#nixosConfigurations.rpi5.config.system.build.toplevel
+```
+
+Switch locally on the machine itself:
+
+```bash
+sudo nixos-rebuild switch --flake .#main-pc
+```
+
+Build locally and deploy remotely over SSH agent forwarding:
+
+```bash
+CONFIG=rpi5
+SSH_HOST=ikovalev@rpi5.home
+
+NIX_SSHOPTS="-A" nixos-rebuild switch -j auto --sudo --build-host localhost --target-host "$SSH_HOST" --flake ".#$CONFIG"
+```
+
+Use the flake attribute name for `CONFIG` and the actual SSH destination for
+`SSH_HOST`.
+
+Format all Nix files:
+
+```bash
+nix-shell -p nixfmt-rfc-style --run "nixfmt ."
+```
+
+## Adding A New Host
+
+1. Create `modules/hosts/<name>/configuration.nix` and export
+   `flake.nixosModules.<Something>Configuration`.
+2. Create `modules/hosts/<name>/default.nix` and export
+   `flake.nixosConfigurations.<name>` with `withSystem`.
+3. Keep machine-local files next to it, for example
+   `_hardware-configuration.nix`, `_packages.nix`, `_overlays.nix`, or
+   `_disko.nix`.
+4. Import shared modules from `self.nixosModules.*` inside the host config.
+5. Build the host with
+   `nix build .#nixosConfigurations.<name>.config.system.build.toplevel` before
+   switching it.
+
+## Secrets
+
+Secrets are managed with `sops-nix`, which is imported by `commonDefault`.
+
+Current setup:
+
+- encrypted data lives in `secrets/*.yaml`
+- matching `secrets/*.nix` files declare `sops.secrets` and `sops.templates`
+- hosts decrypt with `/etc/ssh/ssh_host_ed25519_key`
+- general secrets are shared with `rpi5`, `media-server`, `main-pc`, `pocket4`,
+  and `ikovalev`
+- Xray secrets are intentionally split so each relay host only gets the material
+  it needs
+
+Create a personal age key:
+
+```bash
 mkdir -p ~/.config/sops/age
 age-keygen -o ~/.config/sops/age/keys.txt
 ```
 
-### Where private key is stored?
+Private key location:
 
-Private key is stored on a secure machine in ~/.config/sops/age/keys.txt
-
-### How to add a secret for a new machine?
-
-1. You need to acquire public key for a new machine
-
-```
-nix-shell -p ssh-to-age --run "ssh-keyscan new-machine.home | grep -i ed25519 | ssh-to-age"
+```text
+~/.config/sops/age/keys.txt
 ```
 
-In the output you will find a public key
+Create or edit a secret file:
 
-2. You need to add that public key to .sops.yaml file to `keys` array. Example:
-   &new-machine aabbb...
-3. You need to add an alias of this machine (*new-machine) to
-   `creation_rules.key_groups.age` array of a secret group that needs to be
-   added
-4. You need to run `sops updatekeys secrets/needed_secret.yaml` to update it so
-   new public key will be added to this secret
-
-### How to add secrets to nix configuration?
-
-In service configuration define secret that needs to be accessed. For example in
-`services/cloudflare-ddns.nix`
-
-```
-sops = { secrets = { cloudflare_api_token = { sopsFile = "secrets/cloudflare.yaml" }; }; };
-```
-
-That means that cloudflare_api_token secret will be accessibe in this
-configuration and relative location of encrypted secret is
-secrets/cloudflare.yaml.
-
-After that - secrets will be accessible via file paths, for example
-`config.sops.secrets.cloudflare_api_token.path` will point to a file where
-secret is stored in plain text.
-
-NB: It is impossible to get secrets as strings as of now.
-
-### How to create/edit a secret?
-
-```
+```bash
 nix-shell -p sops --run "sops secrets/newsecret.yaml"
 ```
 
-### FAQ
+### Adding A Secret To Nix Code
 
-If you have encountered error:
+The pattern in this repository is to keep the encrypted file and its Nix wrapper
+side by side.
 
+Example from `secrets/cloudflare.nix`:
+
+```nix
+{ config, ... }: let
+  cloudflareSecretFile = ./cloudflare.yaml;
+in {
+  sops.secrets.cloudflare_api_token = {
+    sopsFile = cloudflareSecretFile;
+    uid = 1000;
+    group = "acme";
+    mode = "440";
+  };
+
+  sops.templates.cloudflare-ddns_api_token = {
+    content = ''
+      CLOUDFLARE_API_TOKEN="${config.sops.placeholder.cloudflare_api_token}"
+    '';
+    owner = "cloudflare-ddns";
+  };
+}
 ```
-failed to load age identities: failed to open file: open
-/Users/admin/Library/Application Support/sops/age/keys.txt:
-no such file or directory
+
+Then import that wrapper from the module that needs it:
+
+```nix
+imports = [ ../../secrets/cloudflare.nix ];
+
+services.cloudflare-ddns.credentialsFile =
+  config.sops.templates.cloudflare-ddns_api_token.path;
 ```
 
-Then you need to do:
+Useful rule of thumb:
 
+- use `config.sops.secrets.<name>.path` when a service can read a secret file
+  directly
+- use `sops.templates` when a service needs an env file or a rendered config
+  file
+
+### Adding A New Machine To SOPS
+
+1. Get the host public key as an age key:
+
+```bash
+nix-shell -p ssh-to-age --run "ssh-keyscan new-machine.home | grep -i ed25519 | ssh-to-age"
 ```
-mkdir -p  "/Users/admin/Library/Application Support/sops/age/"
+
+2. Add it to `.sops.yaml` under `keys`, for example `- &new-machine age1...`.
+3. Add `*new-machine` to the matching `creation_rules` entry.
+4. Run `sops updatekeys secrets/needed-secret.yaml`.
+
+### macOS SOPS Fix
+
+If SOPS looks for the key here:
+
+```text
+/Users/admin/Library/Application Support/sops/age/keys.txt
+```
+
+create the compatibility symlink:
+
+```bash
+mkdir -p "/Users/admin/Library/Application Support/sops/age/"
 ln -s ~/.config/sops/age/keys.txt "/Users/admin/Library/Application Support/sops/age/keys.txt"
 ```
 
-## How to format files?
+## Reverse Proxy Notes
 
+The reverse proxy is modeled as one service module plus per-site modules.
+
+- base module: `modules/services/reverse-proxy/default.nix`
+- site modules: `modules/services/reverse-proxy/sites/*.nix`
+- host-facing options live under `dotfiles.services.reverseProxy.*`
+
+## Xray Relay Hosts
+
+Current design:
+
+- native `services.xray` module
+- native `services.haproxy` module
+- secret-backed rendered config via `sops.templates`
+- `disko` layout for fresh installs
+- static networking encoded from the current VPS setup
+
+Behavior notes:
+
+- HAProxy listens on `:80` and `:443`
+- xray itself only listens on `127.0.0.1:7443`
+- logs go to journald
+- relay secrets are split between `secrets/xray-role-entry.yaml` and
+  `secrets/xray-role-exit.yaml`
+
+### Install With nixos-anywhere-zram
+
+This flake provides `nixos-anywhere-zram`, a wrapped `nixos-anywhere` that
+enables zram before the install, which is useful on low-memory VPSes.
+
+This command repartitions the target machine and replace the current OS:
+
+```bash
+nix run .#nixos-anywhere-zram -- --flake .#vm-0 --target-host user@target_ip --build-on remote --copy-host-keys
 ```
-nix-shell -p nixfmt-rfc-style --run "nixfmt ."
-```
 
-## How to deploy to a remote machine?
+`--copy-host-keys` matters because these secrets are encrypted to the current
+host SSH keys and `sops-nix` decrypts through `/etc/ssh/ssh_host_ed25519_key`.
 
-```
-NIX_SSHOPTS="-A" nixos-rebuild switch -j auto --sudo --build-host localhost --target-host ikovalev@HOSTNAME --flake ".#HOSTNAME"
-```
+### Remote Switch After Install
 
-Where `HOSTNAME` is a FQDN of a remote machine
-
-## How to export noctalia-shell config?
-
-```
-noctalia-shell ipc call state all > users/ikovalev/hyprland/noctalia.json
+```bash
+nixos-rebuild switch --flake .#vm-0 --target-host user@target_ip --sudo
 ```

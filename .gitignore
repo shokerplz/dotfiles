@@ -1,6 +1,2 @@
 result
-
-# Claude Code context files
-.claude/REPO_CONTEXT.md
-.claude/*.md
-.claude/notes/
+.direnv

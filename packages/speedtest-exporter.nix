@@ -35,13 +35,12 @@ python3Packages.buildPythonApplication rec {
   installPhase = ''
     runHook preInstall
 
-    # Install the python script into the site-packages directory
     install -Dm644 $src/src/exporter.py $out/${python3Packages.python.sitePackages}/speedtest_exporter.py
 
     mkdir -p $out/bin
     makeWrapper ${python3Packages.python}/bin/python $out/bin/speedtest-exporter \
       --add-flags "$out/${python3Packages.python.sitePackages}/speedtest_exporter.py" \
-      --prefix PATH : ${lib.makeBinPath [ ookla-speedtest ]} \
+      --prefix PATH : ${lib.makeBinPath [ookla-speedtest]} \
       --prefix PYTHONPATH : "$PYTHONPATH"
 
     runHook postInstall
@@ -53,7 +52,7 @@ python3Packages.buildPythonApplication rec {
     description = "Prometheus exporter for Ookla Speedtest results";
     homepage = "https://github.com/MiguelNdeCarvalho/speedtest-exporter";
     license = licenses.unfree;
-    maintainers = with maintainers; [ ];
+    maintainers = with maintainers; [];
     platforms = ookla-speedtest.meta.platforms;
   };
 }
