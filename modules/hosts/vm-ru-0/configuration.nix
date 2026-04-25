@@ -39,26 +39,19 @@
       useNetworkd = true;
       usePredictableInterfaceNames = false;
       networkmanager.enable = lib.mkForce false;
-      defaultGateway = {
-        address = "89.111.165.1";
-        interface = "eth0";
-      };
       nameservers = [
         "1.1.1.1"
         "8.8.8.8"
       ];
+      defaultGateway = {
+        address = "130.49.173.1";
+        interface = "eth0";
+      };
       interfaces.eth0 = {
         ipv4.addresses = [
           {
-            address = "89.111.165.62";
+            address = "130.49.173.113";
             prefixLength = 24;
-          }
-        ];
-        ipv4.routes = [
-          {
-            address = "169.254.169.254";
-            prefixLength = 32;
-            via = "89.111.165.4";
           }
         ];
       };
