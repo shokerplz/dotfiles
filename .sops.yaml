@@ -4,7 +4,7 @@ keys:
   - &ikovalev age1c0882dc0kj7mwdwud775xerlgk66p439xrlcktlmuv9ed0hfy95sycs699
   - &main-pc age1k56jkzr3frfrlfzdv4uatqqzv8v9h95pgyen9j9v8n67vm7kvvwsd08ghj
   - &pocket4 age1mculuz7alkk7k8at58pq3rf5ktgrutu8psgzmlu0rhycccyjs3nsdrfpec
-  - &vm-ru-0 age1508mclu9jynmsu4xp40ysmcwj63dexqgrqn7yv3jvxl59l7s9y7qvkg4s8
+  - &vm-ru-0 age1jvwlkhhlzjjln5908dj98ft8jg9hj2nju4wmqup2475aw238a3lsnc7y2r
   - &vm-de-0 age1wq77enrcrhe8xa8q7yurgg5lezxzw4xmlx2wyf6cwhrztppsquvqh6yprh
 
 creation_rules:
