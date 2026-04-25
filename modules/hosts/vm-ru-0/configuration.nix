@@ -61,6 +61,10 @@
     systemd.network.wait-online.enable = false;
 
     services.qemuGuest.enable = true;
+    services.tailscale = {
+      enable = true;
+      openFirewall = true;
+    };
 
     dotfiles.services.xrayRelay = {
       enable = true;

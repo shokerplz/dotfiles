@@ -61,7 +61,7 @@ in {
             "settings": {
               "vnext": [
                 {
-                  "address": "5.189.191.2",
+                  "address": "vm-de-0",
                   "port": 443,
                   "users": [
                     {
