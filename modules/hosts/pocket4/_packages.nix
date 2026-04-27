@@ -11,6 +11,7 @@ in {
   environment.systemPackages = with pkgs; [
     neovim
     git
+    alacritty
     wl-clipboard
     appimage-run
     guvcview
