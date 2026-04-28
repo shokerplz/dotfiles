@@ -16,5 +16,8 @@ in {
     appimage-run
     guvcview
     virtio-win-iso
+    ryzenadj
+    lm_sensors
+    pkgs-unstable.lmstudio
   ];
 }
