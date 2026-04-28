@@ -57,6 +57,8 @@
     unitConfig.DefaultDependencies = "false";
   };
 
+  services.upower.enable = true;
+
   services.udev.extraRules = ''
     SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ENV{POWER_SUPPLY_ONLINE}=="1", \
         TAG+="systemd", ENV{SYSTEMD_WANTS}+="ac.target"
