@@ -27,9 +27,7 @@
 
   boot.kernel.sysctl."net.ipv4.ip_nonlocal_bind" = 1;
 
-  services.resolved.extraConfig = ''
-    Cache = no
-  '';
+  services.resolved.settings.Resolve.Cache = "no";
 
   networking.firewall = {
     extraCommands = ''

@@ -4,6 +4,10 @@
     pkgs,
     ...
   }: {
+    imports = [
+      ../../secrets/grafana.nix
+    ];
+
     services.grafana = {
       enable = true;
       dataDir = "/var/data/grafana";
@@ -31,6 +35,7 @@
         domain = "mon.ikovalev.nl";
         enforce_domain = true;
       };
+      settings.security.secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
     };
 
     systemd.services.grafana.serviceConfig.ExecStartPre = [
