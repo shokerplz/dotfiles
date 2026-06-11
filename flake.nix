@@ -9,6 +9,7 @@
     nixpkgs-25-05.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-current.url = "github:nixos/nixpkgs/nixos-25.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    mt7927.url = "github:cmspam/mt7927-nixos";
 
     nix-local-cache.url = "git+ssh://gitlab@git.ikovalev.nl/nix/nix-local-cache.git";
 

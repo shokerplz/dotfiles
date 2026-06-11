@@ -17,15 +17,10 @@ in {
           "loglevel": "warning"
         },
         "dns": {
-          "hosts": {
-            "vpn.ikovalev.nl": "91.141.199.17"
-          },
           "servers": [
-            {
-              "address": "https://8.8.8.8/dns-query",
-              "skipFallback": true,
-              "queryStrategy": "UseIPv4"
-            }
+            "1.1.1.1",
+            "8.8.8.8",
+            "localhost"
           ],
           "queryStrategy": "UseIP",
           "tag": "dns-in"
@@ -66,7 +61,7 @@ in {
             "settings": {
               "vnext": [
                 {
-                  "address": "5.189.191.2",
+                  "address": "vm-de-0",
                   "port": 443,
                   "users": [
                     {

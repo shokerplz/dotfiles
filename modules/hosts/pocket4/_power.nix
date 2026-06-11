@@ -29,10 +29,6 @@
     };
   };
 
-  boot.extraModprobeConfig = ''
-    options snd_hda_intel power_save=1
-  '';
-
   boot.kernelPackages = pkgs.linuxPackages.extend (
     self: super: {
       ryzen-smu = super.ryzen-smu.overrideAttrs (_: {
@@ -49,8 +45,6 @@
 
   hardware.cpu.amd.ryzen-smu.enable = true;
 
-  environment.systemPackages = with pkgs; [ryzenadj];
-
   systemd.targets.ac = {
     description = "AC power";
     conflicts = ["battery.target"];
@@ -62,6 +56,8 @@
     conflicts = ["ac.target"];
     unitConfig.DefaultDependencies = "false";
   };
+
+  services.upower.enable = true;
 
   services.udev.extraRules = ''
     SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ENV{POWER_SUPPLY_ONLINE}=="1", \

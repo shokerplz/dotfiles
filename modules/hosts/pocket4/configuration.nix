@@ -51,6 +51,7 @@
         "ttm.pages_limit=67108864"
         "pcie_aspm=force"
         "nmi_watchdog=0"
+        "amd_pstate=active"
       ];
       kernel.sysctl = {
         "vm.swappiness" = 10;

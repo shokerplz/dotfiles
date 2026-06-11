@@ -71,6 +71,12 @@
     systemd.network.wait-online.enable = false;
 
     services.qemuGuest.enable = true;
+    services.tailscale = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [443];
 
     dotfiles.services.xrayRelay = {
       enable = true;
