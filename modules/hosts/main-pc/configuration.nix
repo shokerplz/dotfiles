@@ -37,6 +37,7 @@
       # Some fixes + performance tweaks
       extraModprobeConfig = ''
         options snd_hda_intel power_save=0 power_save_controller=N enable_msi=1
+        softdep btusb pre: mt7925e btmtk
       '';
 
       kernelPackages = pkgs.linuxPackages_zen;
@@ -106,6 +107,24 @@
       enable = true;
       enableGraphical = true;
     };
+
+    hardware.mediatek-mt7927 = {
+      enable = true;
+      enableWifi = true;
+      enableBluetooth = true;
+      disableAspm = true;
+    };
+
+    hardware.firmware = [
+      (pkgs.runCommand "mediatek-mt7927-bt-firmware-compat" {} ''
+        install -Dm644 ${inputs.mt7927.packages.${pkgs.stdenv.hostPlatform.system}.firmware}/lib/firmware/mediatek/mt6639/BT_RAM_CODE_MT6639_2_1_hdr.bin \
+          $out/lib/firmware/mediatek/mt7927/BT_RAM_CODE_MT6639_2_1_hdr.bin
+      '')
+    ];
+
+    services.udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x14c3", ATTR{device}=="0x6639", TEST=="link/l1_aspm", ATTR{link/l1_aspm}="0"
+    '';
 
     nix = {
       settings = {

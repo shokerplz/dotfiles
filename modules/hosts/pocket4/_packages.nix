@@ -11,9 +11,13 @@ in {
   environment.systemPackages = with pkgs; [
     neovim
     git
+    alacritty
     wl-clipboard
     appimage-run
     guvcview
     virtio-win-iso
+    ryzenadj
+    lm_sensors
+    pkgs-unstable.lmstudio
   ];
 }
