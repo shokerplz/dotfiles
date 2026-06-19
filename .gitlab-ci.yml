@@ -4,25 +4,33 @@ stages:
 daily-update:
   stage: maintenance
   image: nixos/nix:latest
+  timeout: 13 hours
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "web"
   script:
     - |
-      cat <<INNEREOF > update-script.sh
+      cat <<'INNEREOF' > update-script.sh
       set -e
+
+      DEFAULT_BRANCH="${CI_DEFAULT_BRANCH:-main}"
+      REPO_URL="git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git"
+      API_URL="https://api.builder.ikovalev.nl"
+      MAX_POLLS=144
+      POLL_INTERVAL_SECONDS=300
+
       mkdir -p ~/.ssh
       chmod 700 ~/.ssh
 
       # Handle SSH_PRIVATE_KEY
-      if [ -f "\$SSH_PRIVATE_KEY" ]; then
-          cp "\$SSH_PRIVATE_KEY" ~/.ssh/id_ed25519
+      if [ -f "$SSH_PRIVATE_KEY" ]; then
+          cp "$SSH_PRIVATE_KEY" ~/.ssh/id_ed25519
       else
-          echo "\$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
       fi
 
       chmod 600 ~/.ssh/id_ed25519
-      if [ -n "\$(tail -c1 ~/.ssh/id_ed25519)" ]; then
+      if [ -n "$(tail -c1 ~/.ssh/id_ed25519)" ]; then
           echo "" >> ~/.ssh/id_ed25519
       fi
 
@@ -38,26 +46,66 @@ daily-update:
 
       # Checkout daily branch
       echo "Fetching daily branch..."
-      git fetch origin daily
+      git fetch origin
       git checkout -B daily origin/daily
 
       # Update Flake
       nix --extra-experimental-features 'nix-command flakes' flake update
 
       # Commit if changed
-      if [[ -n \$(git status --porcelain flake.lock) ]]; then
+      if [[ -n $(git status --porcelain flake.lock) ]]; then
         git add flake.lock
         git commit -m "Update flake.lock [skip ci]"
         git push origin daily
         echo "Changes pushed."
 
         echo "Triggering build on nix-local-cache..."
-        curl -v https://api.builder.ikovalev.nl/build \
-             -H "Content-Type: application/json" \
-             -d '{"flake_url": "git+ssh://gitlab@git.ikovalev.nl/nix/dotfiles.git", "flake_branch": "daily"}'
+        build_response=$(curl -fsS "$API_URL/build" \
+          -H "Content-Type: application/json" \
+          -d "{\"flake_url\": \"$REPO_URL\", \"flake_branch\": \"daily\", \"timeout_seconds\": 43200}")
+        job_id=$(echo "$build_response" | jq -r '.job_id')
+
+        if [ -z "$job_id" ] || [ "$job_id" = "null" ]; then
+          echo "Build API did not return a job_id: $build_response"
+          exit 1
+        fi
+
+        echo "Build job: $job_id"
+
+        for poll in $(seq 1 "$MAX_POLLS"); do
+          job=$(curl -fsS "$API_URL/jobs/$job_id")
+          status=$(echo "$job" | jq -r '.status')
+          message=$(echo "$job" | jq -r '.status_message // empty')
+          echo "Poll $poll/$MAX_POLLS: $status $message"
+
+          case "$status" in
+            Completed)
+              echo "Build completed. Merging daily into $DEFAULT_BRANCH..."
+              git fetch origin
+              git checkout -B "$DEFAULT_BRANCH" "origin/$DEFAULT_BRANCH"
+              git merge --no-edit origin/daily
+              git push origin "$DEFAULT_BRANCH"
+              exit 0
+              ;;
+            Failed)
+              echo "Build failed. Not merging daily."
+              exit 1
+              ;;
+            Queued|Running)
+              sleep "$POLL_INTERVAL_SECONDS"
+              ;;
+            *)
+              echo "Unknown build status: $status"
+              exit 1
+              ;;
+          esac
+        done
+
+        echo "Build did not finish within 12 hours. Not merging daily."
+        exit 1
       else
         echo "No changes in flake.lock."
       fi
       INNEREOF
-    
-    - nix-shell -p git openssh curl --run "bash update-script.sh"
+
+    - nix-shell -p git openssh curl jq --run "bash update-script.sh"
