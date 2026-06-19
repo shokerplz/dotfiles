@@ -99,7 +99,7 @@
       group = "arr";
     };
 
-    services.jellyseerr.enable = true;
+    services.seerr.enable = true;
 
     services.qbittorrent = {
       enable = true;
