@@ -30,6 +30,11 @@
           location / {
             root /var/www/websites/kino.ikovalev.nl;
             index index.html;
+            try_files $uri $uri/ @seerr_unprefixed;
+          }
+
+          location @seerr_unprefixed {
+            rewrite ^/(.*)$ /seerr/$1 permanent;
           }
         '';
         locations."/jellyfin/" = {
@@ -123,38 +128,51 @@
             proxy_buffering off;
           '';
         };
-        locations."/jellyseerr" = {
+        locations."/seerr" = {
           proxyPass = "http://media-server.home:5055/$1$is_args$args";
           extraConfig = ''
-            set $app 'jellyseerr';
-            rewrite ^/jellyseerr/?(.*)$ /$1 break;
-            proxy_redirect ^ /$app;
-            proxy_redirect /setup /$app/setup;
-            proxy_redirect /login /$app/login;
+            rewrite ^/seerr/?(.*)$ /$1 break;
+            proxy_pass_request_headers on;
+            proxy_redirect ~^(/(?!seerr/).*)$ /seerr$1;
             proxy_set_header Accept-Encoding "";
             sub_filter_once off;
             sub_filter_types *;
-            sub_filter '</head>' '<script language="javascript">(()=>{var t="$app";let e=history.pushState;history.pushState=function a(){arguments[2]&&!arguments[2].startsWith("/"+t)&&(arguments[2]="/"+t+arguments[2]);let s=e.apply(this,arguments);return window.dispatchEvent(new Event("pushstate")),s};let a=history.replaceState;history.replaceState=function e(){arguments[2]&&!arguments[2].startsWith("/"+t)&&(arguments[2]="/"+t+arguments[2]);let s=a.apply(this,arguments);return window.dispatchEvent(new Event("replacestate")),s},window.addEventListener("popstate",()=>{console.log("popstate")})})();</script></head>';
-            sub_filter 'href="/"' 'href="/$app"';
-            sub_filter 'href="/login"' 'href="/$app/login"';
-            sub_filter 'href:"/"' 'href:"/$app"';
-            sub_filter '\/_next' '\/$app\/_next';
-            sub_filter '/_next' '/$app/_next';
-            sub_filter '/api/v1' '/$app/api/v1';
-            sub_filter '/login/plex/loading' '/$app/login/plex/loading';
-            sub_filter '/images/' '/$app/images/';
-            sub_filter '/android-' '/$app/android-';
-            sub_filter '/apple-' '/$app/apple-';
-            sub_filter '/favicon' '/$app/favicon';
-            sub_filter '/logo_' '/$app/logo_';
-            sub_filter '/site.webmanifest' '/$app/site.webmanifest';
+            sub_filter '\/_next' '\/seerr\/_next';
+            sub_filter '/_next' '/seerr/_next';
+            sub_filter '/api/v1' '/seerr/api/v1';
+            sub_filter '/login/plex/loading' '/seerr/login/plex/loading';
+            sub_filter '/images/' '/seerr/images/';
+            sub_filter '/android-' '/seerr/android-';
+            sub_filter '/apple-' '/seerr/apple-';
+            sub_filter '/favicon' '/seerr/favicon';
+            sub_filter '/logo_' '/seerr/logo_';
+            sub_filter '/site.webmanifest' '/seerr/site.webmanifest';
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $http_host;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $http_connection;
+            proxy_buffering off;
           '';
         };
+        locations."/seerr/api/" = {
+          proxyPass = "http://media-server.home:5055/api/";
+          extraConfig = ''
+            proxy_pass_request_headers on;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $http_connection;
+            proxy_buffering off;
+          '';
+        };
+        locations."/jellyseerr".extraConfig = ''
+          rewrite ^/jellyseerr/?(.*)$ /seerr/$1 permanent;
+        '';
         locations."/sw.js" = {
           proxyPass = "http://media-server.home:5055/sw.js";
           extraConfig = ''

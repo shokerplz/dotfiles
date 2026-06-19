@@ -7,7 +7,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = [];
+  boot.initrd.availableKernelModules."tpm-crb" = lib.mkForce false;
   boot.initrd.kernelModules = [];
   boot.kernelModules = [];
   boot.extraModulePackages = [];

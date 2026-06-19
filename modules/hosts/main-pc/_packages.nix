@@ -11,8 +11,8 @@
     pkgs-current.appimage-run
     pkgs-current.gnome-randr
     pkgs-current.sunshine
-    pkgs-current.xorg.libXtst
-    pkgs-current.xorg.libXi
+    pkgs-current.libxtst
+    pkgs-current.libxi
     pkgs-current.alacritty
     pkgs-current.solaar
     pkgs-current.libnotify
@@ -20,7 +20,7 @@
     pkgs-unstable.ddgr
     pkgs-current.vagrant
     pkgs-current.devenv
-    (pkgs-current.python312.withPackages (python-pkgs:
+    (pkgs-current.python3.withPackages (python-pkgs:
       with python-pkgs; [
         requests
         uv

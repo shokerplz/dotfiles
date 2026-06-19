@@ -10,7 +10,7 @@
       self.nixosModules.locationHome
       self.nixosModules.serviceNixLocalCache
       self.nixosModules.serviceNodeExporter
-      self.nixosModules.servicePromtail
+      self.nixosModules.serviceAlloy
       self.nixosModules.serviceLoki
       self.nixosModules.serviceJellyfin
       self.nixosModules.serviceArr
@@ -45,12 +45,12 @@
 
     # Keep the machine awake when used closed-lid as a server.
     services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
-    systemd.sleep.extraConfig = ''
-      AllowSuspend=no
-      AllowHibernation=no
-      AllowHybridSleep=no
-      AllowSuspendThenHibernate=no
-    '';
+    systemd.sleep.settings.Sleep = {
+      AllowSuspend = "no";
+      AllowHibernation = "no";
+      AllowHybridSleep = "no";
+      AllowSuspendThenHibernate = "no";
+    };
 
     swapDevices = [
       {
