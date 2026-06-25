@@ -64,10 +64,11 @@
     ];
 
     system.activationScripts.createArrDirs = ''
-      mkdir -p /mnt/zfs-pool0/kino/{${builtins.concatStringsSep "," arrServices}}/config
+      mkdir -p /mnt/zfs-pool0/kino/{${builtins.concatStringsSep "," arrServices}}/config /mnt/zfs-pool0/kino/data
       chgrp -R arr /mnt/zfs-pool0/kino/{${builtins.concatStringsSep "," arrServices}}/config
       chgrp -R arr /mnt/zfs-pool0/kino/data
-      find /mnt/zfs-pool0/kino/data -type d -exec chmod g+wx {} +
+      chmod 2775 /mnt/zfs-pool0/kino/data
+      find /mnt/zfs-pool0/kino/data -type d -exec chmod g+rwx,g+s {} +
       chown sonarr /mnt/zfs-pool0/kino/sonarr/config
       chown radarr /mnt/zfs-pool0/kino/radarr/config
     '';
@@ -180,6 +181,8 @@
         };
       };
     };
+
+    systemd.services.qbittorrent.serviceConfig.UMask = "0002";
 
     services.nzbget = {
       enable = true;
