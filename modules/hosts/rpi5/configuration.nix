@@ -36,6 +36,8 @@
 
     boot.kernelPackages = pkgs-old.linuxPackages_rpi4;
 
+    systemd.settings.Manager.RuntimeWatchdogSec = "15s";
+
     dotfiles.services.reverseProxy.enable = true;
     dotfiles.services.reverseProxy.sites = {
       builder.enable = true;
