@@ -32,6 +32,17 @@
           auto-detach = "true";
         }
         {
+          name = "Steam Big Picture";
+          exclude-global-prep-cmd = "false";
+          auto-detach = "true";
+          prep-cmd = [
+            {
+              undo = "setsid steam steam://close/bigpicture";
+            }
+          ];
+          detached = [ "setsid steam steam://open/bigpicture" ];
+        }
+        {
           name = "BloodBorne";
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
