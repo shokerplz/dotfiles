@@ -1,6 +1,20 @@
 {pkgs-current, ...}: {
+  environment.systemPackages = [
+    (pkgs-current.lib.hiPrio (pkgs-current.makeDesktopItem {
+      name = "dev.lizardbyte.app.Sunshine";
+      desktopName = "Sunshine";
+      comment = "Start Sunshine game streaming";
+      exec = "systemctl --user start sunshine";
+      icon = "dev.lizardbyte.app.Sunshine";
+      categories = [
+        "Network"
+        "RemoteAccess"
+      ];
+    }))
+  ];
+
   services.sunshine = {
-    autoStart = true;
+    autoStart = false;
     enable = true;
     capSysAdmin = true;
     settings = {
@@ -17,6 +31,7 @@
       apps = [
         {
           name = "1080p Desktop";
+          image-path = "${pkgs-current.sunshine}/assets/desktop.png";
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
           prep-cmd = [
@@ -28,14 +43,24 @@
         }
         {
           name = "1440p Desktop";
+          image-path = "${pkgs-current.sunshine}/assets/desktop.png";
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
         }
         {
           name = "Steam Big Picture";
+          image-path = "${pkgs-current.sunshine}/assets/steam.png";
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
           prep-cmd = [
+            {
+              do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
+              undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
+            }
+            {
+              do = "noctalia-shell ipc call notifications enableDND";
+              undo = "noctalia-shell ipc call notifications disableDND";
+            }
             {
               undo = "setsid steam steam://close/bigpicture";
             }
@@ -44,6 +69,7 @@
         }
         {
           name = "BloodBorne";
+          image-path = "/home/ikovalev/.config/sunshine/covers/igdb_7334.png";
           exclude-global-prep-cmd = "false";
           auto-detach = "true";
           prep-cmd = [
