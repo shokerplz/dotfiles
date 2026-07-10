@@ -70,9 +70,6 @@
               do = "noctalia-shell ipc call notifications enableDND";
               undo = "noctalia-shell ipc call notifications disableDND";
             }
-            {
-              undo = "setsid steam steam://close/bigpicture";
-            }
           ];
           detached = ["setsid steam steam://open/bigpicture"];
         }
