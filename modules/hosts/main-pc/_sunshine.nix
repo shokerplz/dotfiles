@@ -13,12 +13,21 @@
     }))
   ];
 
+  boot.kernelModules = ["uhid"];
+
+  services.udev.extraRules = ''
+    KERNEL=="uhid", SUBSYSTEM=="misc", MODE="0660", GROUP="uinput", TAG+="uaccess"
+  '';
+
+  users.users.ikovalev.extraGroups = ["uinput"];
+
   services.sunshine = {
     autoStart = false;
     enable = true;
     capSysAdmin = true;
     settings = {
       output_name = "0";
+      gamepad = "ds5";
     };
     openFirewall = true;
     applications = {
@@ -65,7 +74,7 @@
               undo = "setsid steam steam://close/bigpicture";
             }
           ];
-          detached = [ "setsid steam steam://open/bigpicture" ];
+          detached = ["setsid steam steam://open/bigpicture"];
         }
         {
           name = "BloodBorne";
