@@ -21,6 +21,7 @@
       ./_packages.nix
       ./_power.nix
       ./_amd.nix
+      ./_steamvr.nix
       ./_sunshine.nix
       ./_win-pc-conn.nix
     ];
