@@ -85,7 +85,7 @@
             }
           ];
           cmd = "shadps4 -g /home/ikovalev/ShadPS4/CUSA03173/eboot.bin";
-          output = "/home/ikovalev/shadps4-sunshine-out.txt";
+          output = "/dev/null";
         }
       ];
     };
