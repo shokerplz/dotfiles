@@ -59,6 +59,9 @@
       }
     ];
 
+    # Pin postgresql version explicitly. By default it depends on system.stateVersion
+    services.postgresql.package = pkgs-current.postgresql_17;
+
     system.stateVersion = "24.11";
   };
 }
