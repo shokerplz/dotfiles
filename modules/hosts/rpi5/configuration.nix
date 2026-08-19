@@ -44,6 +44,7 @@
       files.enable = true;
       git.enable = true;
       homeAssistant.enable = true;
+      jobs.enable = true;
       kino.enable = true;
       monitoring.enable = true;
       n8n.enable = true;

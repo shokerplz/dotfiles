@@ -15,6 +15,7 @@
       self.nixosModules.reverseProxySiteFiles
       self.nixosModules.reverseProxySiteGit
       self.nixosModules.reverseProxySiteHomeAssistant
+      self.nixosModules.reverseProxySiteJobs
       self.nixosModules.reverseProxySiteKino
       self.nixosModules.reverseProxySiteMonitoring
       self.nixosModules.reverseProxySiteN8N
