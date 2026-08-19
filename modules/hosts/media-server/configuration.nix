@@ -59,6 +59,17 @@
       }
     ];
 
+    # Pin postgresql version explicitly. By default it depends on system.stateVersion
+    services.postgresql.package = pkgs-current.postgresql_17;
+
+    # jobhunt's dashboard. It is deployed as a plain docker container and it is only temporary
+    networking.firewall.extraCommands = ''
+      iptables -A nixos-fw -p tcp --dport 8765 -s 10.0.0.0/16 -j nixos-fw-accept
+    '';
+    networking.firewall.extraStopCommands = ''
+      iptables -D nixos-fw -p tcp --dport 8765 -s 10.0.0.0/16 -j nixos-fw-accept || true
+    '';
+
     system.stateVersion = "24.11";
   };
 }

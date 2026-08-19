@@ -5,14 +5,9 @@
     ...
   }: let
     gitlabSecretFile = ../../secrets/gitlab.yaml;
-    patchedGitlab = pkgs.gitlab.overrideAttrs (old: {
-      # GitLab 18.10.3 ships this feature flag twice and crashes during boot.
-      postInstall = (old.postInstall or "") + ''
-        rm -f $out/share/gitlab/config/feature_flags/beta/glql_es_integration.yml
-      '';
-    });
   in {
-    sops.secrets = builtins.mapAttrs
+    sops.secrets =
+      builtins.mapAttrs
       (_: _: {
         sopsFile = gitlabSecretFile;
         uid = config.users.users.gitlab.uid;
@@ -58,7 +53,6 @@
 
     services.gitlab = {
       enable = true;
-      packages.gitlab = patchedGitlab;
       databasePasswordFile = config.sops.secrets.databasePassword.path;
       initialRootPasswordFile = config.sops.secrets.initialRootPassword.path;
       initialRootEmail = "gitlab@ikovalev.nl";

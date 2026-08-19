@@ -12,6 +12,7 @@
 
     services.gitlab-runner = {
       enable = true;
+      settings.concurrent = 4;
       services = {
         default-runner = {
           authenticationTokenConfigFile = config.sops.secrets."gitlab-runner/token".path;
