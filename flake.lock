@@ -166,11 +166,11 @@
     "mediatek-mt7927-dkms": {
       "flake": false,
       "locked": {
-        "lastModified": 1783265495,
-        "narHash": "sha256-GXbwhZbvfWE+w9TgMReAsAFL/WkbCokzEiIChmX2d00=",
+        "lastModified": 1787329668,
+        "narHash": "sha256-Xha4HBF6zuK+kxJ5d4pHTkJktH9WtpF/EYGN7Hv/S+I=",
         "owner": "jetm",
         "repo": "mediatek-mt7927-dkms",
-        "rev": "ad1f3e4d19fe540aaa1f449ddba86c65db9bfc82",
+        "rev": "05614ebc5dec99daef52098ab25b18d53473a936",
         "type": "github"
       },
       "original": {
@@ -185,11 +185,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1787204073,
-        "narHash": "sha256-bPcD29U3rr4AxciHa0pODC5BqoIBVrXdGiWzcsSjYpk=",
+        "lastModified": 1787330255,
+        "narHash": "sha256-1JYA/IBF/+wZ69kX86aFtwHwQmX9CfTytbhQGMDKPsE=",
         "owner": "cmspam",
         "repo": "mt7927-nixos",
-        "rev": "5aaf251e6c34d0e7ddc3b8d90004fe52e2a8d25d",
+        "rev": "c5a904695fe7b1c248a9a86a981d16179a443a90",
         "type": "github"
       },
       "original": {
@@ -373,11 +373,11 @@
     },
     "nixpkgs-current": {
       "locked": {
-        "lastModified": 1787101114,
-        "narHash": "sha256-gwrPcFf/rDjHPaVflbDZ040ZDmBTRj/7+s8ZmE2SaIM=",
+        "lastModified": 1787204541,
+        "narHash": "sha256-OURZPknrTjQrlNyxPdqzyqmU/81Wes1CUP/Ft1Rv/YI=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b18a4b905f8d028dc4476412e6d6891728695379",
+        "rev": "5880666fd9eb563038431edb35c2d0aa595884e6",
         "type": "github"
       },
       "original": {
