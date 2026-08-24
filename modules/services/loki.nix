@@ -59,7 +59,8 @@
     # Fix permissions if directory already exists.
     systemd.services.loki.serviceConfig.ExecStartPre = [
       "+${pkgs.coreutils-full.outPath}/bin/mkdir -p ${config.services.loki.dataDir}"
-      "+${pkgs.coreutils-full.outPath}/bin/chown -R loki:loki ${config.services.loki.dataDir}"
+      # This is very bad since it walks the whole directory on each service start, need to replace it with something more sensible
+      #"+${pkgs.coreutils-full.outPath}/bin/chown -R loki:loki ${config.services.loki.dataDir}"
     ];
 
     systemd.services.loki.serviceConfig.TimeoutSec = "infinity";

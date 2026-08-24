@@ -73,7 +73,7 @@
       chown radarr /mnt/zfs-pool0/kino/radarr/config
     '';
 
-    users.groups.arr = {};
+    users.groups.arr.gid = 987;
 
     services.radarr = {
       enable = true;
@@ -332,6 +332,11 @@
         Category3.Unpack = "yes";
         Category3.Extensions = "";
         Category3.Aliases = "";
+        Category4.Name = "Music";
+        Category4.DestDir = "/mnt/zfs-pool0/music/nzbget";
+        Category4.Unpack = "yes";
+        Category4.Extensions = "";
+        Category4.Aliases = "";
       };
     };
 

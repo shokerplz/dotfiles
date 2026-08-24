@@ -44,6 +44,10 @@
           static_configs = [{targets = ["rpi5.home:9141"];}];
         }
         {
+          job_name = "muse";
+          static_configs = [{targets = ["media-server.home:4535"];}];
+        }
+        {
           job_name = "speedtest";
           scrape_interval = "1h";
           scrape_timeout = "1m";

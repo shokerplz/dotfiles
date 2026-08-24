@@ -18,6 +18,7 @@
       self.nixosModules.reverseProxySiteJobs
       self.nixosModules.reverseProxySiteKino
       self.nixosModules.reverseProxySiteMonitoring
+      self.nixosModules.reverseProxySiteMusic
       self.nixosModules.reverseProxySiteN8N
       self.nixosModules.reverseProxySiteNixCache
       self.nixosModules.reverseProxySiteSearxNG

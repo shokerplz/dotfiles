@@ -14,6 +14,9 @@
       self.nixosModules.serviceLoki
       self.nixosModules.serviceJellyfin
       self.nixosModules.serviceArr
+      self.nixosModules.serviceSlskd
+      self.nixosModules.serviceFlaresolverr
+      self.nixosModules.serviceMuse
       self.nixosModules.serviceSamba
       self.nixosModules.serviceNFS
       self.nixosModules.serviceNextcloud
@@ -35,6 +38,10 @@
       zfs.extraPools = ["pool0"];
       binfmt.emulatedSystems = ["aarch64-linux"];
       loader.systemd-boot.enable = true;
+      kernelParams = ["zfs.zfs_arc_max=3221225472"];
+      kernel = {
+        sysctl = {"vm.swappiness" = 10;};
+      };
     };
 
     nix.settings.extra-platforms = ["aarch64-linux"];

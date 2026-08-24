@@ -1,6 +1,7 @@
 {...}: {
   users.users.ikovalev = {
     isNormalUser = true;
+    uid = 1000;
     description = "Ivan Kovalev";
     extraGroups = [
       "networkmanager"

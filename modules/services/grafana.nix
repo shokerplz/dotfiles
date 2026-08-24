@@ -13,6 +13,16 @@
       dataDir = "/var/data/grafana";
       provision = {
         enable = true;
+        dashboards.settings = {
+          apiVersion = 1;
+          providers = [
+            {
+              name = "dotfiles";
+              allowUiUpdates = true;
+              options.path = ../services/grafana-dashboards;
+            }
+          ];
+        };
         datasources.settings = {
           apiVersion = 1;
           datasources = [

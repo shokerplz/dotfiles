@@ -47,6 +47,7 @@
       jobs.enable = true;
       kino.enable = true;
       monitoring.enable = true;
+      music.enable = true;
       n8n.enable = true;
       nixCache.enable = true;
       searxng.enable = true;
