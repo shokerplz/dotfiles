@@ -52,7 +52,6 @@
         enable = true;
         keyboards = {
           default = {
-            ids = ["3434:0e20"]; # Only Keychron k2
             settings = {
               main = {
                 leftmeta = "layer(command)";
@@ -60,8 +59,8 @@
               };
 
               "command:C" = {
-                c = "C-insert";
-                v = "S-insert";
+                c = "f23";
+                v = "f24";
                 x = "S-delete";
 
                 left = "home";
