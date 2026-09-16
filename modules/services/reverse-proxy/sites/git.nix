@@ -30,7 +30,7 @@
         enableACME = true;
         forceSSL = true;
         acmeRoot = null;
-        listenAddresses = ["10.0.1.98"];
+        listenAddresses = ["10.0.1.20" "10.0.1.98"];
         extraConfig = ''
           access_log /var/log/nginx/registry.ikovalev.nl-access.log;
           error_log /var/log/nginx/registry.ikovalev.nl-error.log error;
@@ -39,7 +39,7 @@
           proxy_set_header Host $host;
           client_max_body_size 0;
         '';
-        locations."/".proxyPass = "https://media-server.home:10443";
+        locations."/".proxyPass = "http://media-server.home:10443";
       };
 
       services.nginx.streamConfig = lib.mkAfter ''

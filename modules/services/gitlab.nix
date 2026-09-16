@@ -112,11 +112,13 @@
       };
       registry = {
         enable = true;
-        externalPort = 10443;
+        port = 10443;
+        externalPort = 443;
         externalAddress = "registry.ikovalev.nl";
         certFile = "/etc/ssl/certs/registry.ikovalev.nl.crt";
         keyFile = "/etc/ssl/private/registry.ikovalev.nl.key";
       };
+      extraConfig.registry.api_url = "http://127.0.0.1:10443/";
       secrets = {
         secretFile = config.sops.secrets."secrets/secret".path;
         otpFile = config.sops.secrets."secrets/otp".path;
@@ -127,6 +129,8 @@
         activeRecordDeterministicKeyFile = config.sops.secrets."secrets/activeRecordDeterministicKey".path;
       };
     };
+
+    services.dockerRegistry.listenAddress = "0.0.0.0";
 
     systemd.services.gitlab-sshd = {
       after = [
