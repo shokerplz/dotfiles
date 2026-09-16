@@ -41,6 +41,14 @@
       "targetBlank": false
     },
     {
+      "title": "Muse",
+      "url": "/d/muse",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
       "title": "Monitoring pipeline",
       "url": "/d/services-monitoring",
       "type": "link",

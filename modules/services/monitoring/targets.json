@@ -21,7 +21,7 @@
   {"target":"media-server.home:6789","module":"tcp","host":"media-server","service":"nzbget","check":"listener","layer":"core"},
   {"target":"http://media-server.home:6767/bazarr/","module":"http_2xx","host":"media-server","service":"bazarr","check":"web","layer":"core"},
   {"target":"https://kino.ikovalev.nl/bazarr/","module":"http_2xx","host":"media-server","service":"bazarr","check":"web","layer":"edge","ingress":"rpi5"},
-  {"target":"http://media-server.home:4535/","module":"http_2xx","host":"media-server","service":"muse","check":"web","layer":"core"},
+  {"target":"http://media-server.home:4535/api/health","module":"muse_health","host":"media-server","service":"muse","check":"health","layer":"core"},
   {"target":"https://music.ikovalev.nl/","module":"http_2xx","host":"media-server","service":"muse","check":"web","layer":"edge","ingress":"rpi5"},
   {"target":"media-server.home:20443","module":"tcp","host":"media-server","service":"nextcloud","check":"listener","layer":"core"},
   {"target":"https://files.ikovalev.nl/status.php","module":"nextcloud","host":"media-server","service":"nextcloud","check":"status","layer":"edge","ingress":"rpi5"},

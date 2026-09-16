@@ -26,6 +26,11 @@ modules:
     http:
       <<: *http_options
       fail_if_body_not_matches_regexp: ['"database"\s*:\s*"ok"']
+  muse_health:
+    <<: *http
+    http:
+      <<: *http_options
+      fail_if_body_not_matches_regexp: ['"ok"\s*:\s*true']
   seerr:
     <<: *http
     http:
