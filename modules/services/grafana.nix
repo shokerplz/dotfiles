@@ -36,6 +36,15 @@
               type = "loki";
               url = "http://media-server.home:3100";
             }
+            {
+              name = "Alertmanager";
+              type = "alertmanager";
+              url = "http://127.0.0.1:9093";
+              jsonData = {
+                implementation = "prometheus";
+                handleGrafanaManagedAlerts = false;
+              };
+            }
           ];
         };
       };

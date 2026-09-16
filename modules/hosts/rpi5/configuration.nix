@@ -10,6 +10,7 @@
       self.nixosModules.locationHome
       self.nixosModules.serviceGrafana
       self.nixosModules.servicePrometheus
+      self.nixosModules.serviceMonitoring
       self.nixosModules.serviceAlloy
       self.nixosModules.serviceSpeedtestExporter
       self.nixosModules.serviceNodeExporter

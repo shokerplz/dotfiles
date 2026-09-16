@@ -10,6 +10,7 @@
       self.nixosModules.locationHome
       self.nixosModules.serviceNixLocalCache
       self.nixosModules.serviceNodeExporter
+      self.nixosModules.serviceHealthChecks
       self.nixosModules.serviceAlloy
       self.nixosModules.serviceLoki
       self.nixosModules.serviceJellyfin

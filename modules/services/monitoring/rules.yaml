@@ -1,0 +1,156 @@
+groups:
+  - name: service-availability
+    rules:
+      - alert: HostUnavailable
+        expr: (max by (host) (up{job="node",host=~"media-server|rpi5"}) == 0) and on(host) (max by(host) (probe_success{job="blackbox",layer="host"} and on(job,instance,host,service,check,layer) (up{job="blackbox"} == 1)) == 0)
+        for: 2m
+        labels: {severity: critical, scope: host, service: host}
+        annotations:
+          summary: '{{ $labels.host }} is unreachable'
+          description: 'Both node metrics and the independent SSH listener probe have failed. Service symptoms on this host are suppressed.'
+      - alert: NodeExporterUnavailable
+        expr: up{job="node",host=~"media-server|rpi5"} == 0
+        for: 3m
+        labels: {severity: warning, scope: monitoring, service: node-exporter}
+        annotations:
+          summary: 'Host metrics unavailable on {{ $labels.host }}'
+          description: 'The node exporter cannot be scraped. This alone does not establish a host outage.'
+      - record: service:core_available
+        expr: min by(host, service) (probe_success{job="blackbox",layer="core"} and on(job,instance,host,service,check,layer) (up{job="blackbox"} == 1))
+      - alert: ServiceUnavailable
+        expr: service:core_available == 0
+        for: 3m
+        labels: {severity: critical, scope: service}
+        annotations:
+          summary: '{{ $labels.service }} is unavailable on {{ $labels.host }}'
+          description: 'The direct core probe is failing. Related endpoint and dependency symptoms are suppressed; consult the service dashboard for details.'
+      - alert: ServiceUnavailable
+        expr: max by(host) (node_systemd_unit_state{job="node",host="rpi5",name="nginx.service",state="active"}) == 0
+        for: 2m
+        labels: {severity: critical, scope: service, service: nginx}
+        annotations:
+          summary: 'Nginx is inactive on {{ $labels.host }}'
+          description: 'Public endpoint symptoms are suppressed while the ingress service is inactive. Direct backend checks remain independent.'
+      - alert: EndpointUnavailable
+        expr: ((probe_success{job="blackbox",layer="edge"} == 0) and on(job,instance,host,service,check,layer) (up{job="blackbox"} == 1)) unless on(job,instance,host,service,check,layer) (probe_http_status_code{job="blackbox",layer="edge"} == 0)
+        for: 5m
+        labels: {severity: warning, scope: endpoint}
+        annotations:
+          summary: '{{ $labels.service }} {{ $labels.check }} endpoint failed'
+          description: '{{ $labels.instance }} failed its status/content or TCP check. The backend may still be available.'
+      - alert: EndpointTransportUnavailable
+        expr: (probe_success{job="blackbox",layer="edge"} == 0) and on(job,instance,host,service,check,layer) (up{job="blackbox"} == 1) and on(job,instance,host,service,check,layer) (probe_http_status_code{job="blackbox",layer="edge"} == 0)
+        for: 5m
+        labels: {severity: warning, scope: transport}
+        annotations:
+          summary: '{{ $labels.service }} public connection failed before HTTP'
+          description: '{{ $labels.instance }} failed DNS, connection or TLS validation. A backend outage alone does not explain this; check the ingress path.'
+      - alert: LocalServiceUnitUnavailable
+        expr: (node_systemd_unit_state{job="node",host="media-server",name="flaresolverr.service",state="active"} == 0 or absent(node_systemd_unit_state{job="node",host="media-server",name="flaresolverr.service",state="active"})) and on(host) (up{job="node",host="media-server"} == 1)
+        for: 5m
+        labels: {severity: warning, scope: component, service: flaresolverr}
+        annotations:
+          summary: 'FlareSolverr is inactive on {{ $labels.host }}'
+          description: 'This service is intentionally private to media-server. Check its unit and consuming application; it is not probed across the firewall.'
+      - alert: EndpointCertificateExpiring
+        expr: (probe_ssl_earliest_cert_expiry{job="blackbox",layer="edge"} - time() < 14 * 86400) and on(instance,service,check) (probe_success{job="blackbox",layer="edge"} == 1)
+        for: 1h
+        labels: {severity: warning, scope: certificate}
+        annotations:
+          summary: 'Certificate renewal needed for {{ $labels.service }}'
+          description: '{{ $labels.instance }} has less than 14 days of certificate validity remaining.'
+      - alert: ServiceCheckFailed
+        expr: (service_check_success{job="node",host="media-server"} == 0) and (time() - service_check_last_run_timestamp_seconds{job="node",host="media-server"} < 600)
+        for: 5m
+        labels: {severity: warning, scope: dependency}
+        annotations:
+          summary: '{{ $labels.service }}: {{ $labels.check }} failed'
+          description: 'Dependency: {{ $labels.dependency }}. The application check failed; inspect its health page and logs. Playback and acquisition are monitored separately.'
+      - alert: ServiceCheckStale
+        expr: time() - service_check_last_run_timestamp_seconds{job="node",host="media-server"} > 600
+        for: 1m
+        labels: {severity: warning, scope: monitoring}
+        annotations:
+          summary: '{{ $labels.service }} monitoring result is stale'
+          description: '{{ $labels.check }} on {{ $labels.host }} has not completed within 10 minutes. Its previous result must not be treated as current.'
+      - alert: ServiceChecksMissing
+        expr: absent(service_check_last_run_timestamp_seconds{job="node",host="media-server"})
+        for: 10m
+        labels: {severity: warning, scope: monitoring, service: service-health-checks, host: media-server}
+        annotations:
+          summary: 'Application dependency checks are missing'
+          description: 'No application check results are being scraped from media-server. Check the timer, credentials and node textfile collector.'
+  - name: monitoring-pipeline
+    rules:
+      - alert: BlackboxExporterUnavailable
+        expr: up{job="blackbox-exporter"} == 0
+        for: 2m
+        labels: {severity: critical, scope: monitoring, host: rpi5, service: blackbox-exporter}
+        annotations:
+          summary: 'Availability probing is unavailable'
+          description: 'The blackbox exporter cannot be scraped; probe results are unknown.'
+      - alert: ProbeCollectionFailed
+        expr: up{job="blackbox"} == 0
+        for: 3m
+        labels: {severity: warning, scope: monitoring}
+        annotations:
+          summary: 'Probe collection failed for {{ $labels.service }}'
+          description: '{{ $labels.instance }} could not be probed. This differs from a probe successfully observing an unhealthy service.'
+      - alert: AlertmanagerUnavailable
+        expr: up{job="alertmanager"} == 0
+        for: 2m
+        labels: {severity: critical, scope: component, host: rpi5, service: alertmanager}
+        annotations:
+          summary: 'Alert delivery is unavailable'
+          description: 'Prometheus cannot scrape Alertmanager. This alert remains visible in Prometheus/Grafana even if Telegram delivery is unavailable.'
+      - alert: AlertNotificationsFailing
+        expr: increase(alertmanager_notifications_failed_total[15m]) > 0
+        for: 2m
+        labels: {severity: warning, scope: monitoring, host: rpi5, service: alertmanager}
+        annotations:
+          summary: 'Alertmanager notification delivery has failed'
+          description: 'Check Telegram connectivity and credentials. This alert cannot guarantee delivery through the failed channel.'
+      - alert: PrometheusRuleEvaluationFailing
+        expr: increase(prometheus_rule_evaluation_failures_total[10m]) > 0
+        for: 2m
+        labels: {severity: warning, scope: monitoring, host: rpi5, service: prometheus}
+        annotations:
+          summary: 'Monitoring rules are failing to evaluate'
+          description: 'Some service alerts may be missing. Inspect Prometheus rules and logs.'
+      - alert: PrometheusConfigurationRejected
+        expr: prometheus_config_last_reload_successful == 0
+        for: 2m
+        labels: {severity: warning, scope: monitoring, host: rpi5, service: prometheus}
+        annotations:
+          summary: 'Prometheus rejected its latest configuration'
+          description: 'The running monitoring configuration may be older than the deployed files.'
+      - alert: NodeTextfileError
+        expr: node_textfile_scrape_error{host=~"media-server|rpi5"} == 1
+        for: 3m
+        labels: {severity: warning, scope: monitoring, service: service-health-checks}
+        annotations:
+          summary: 'Invalid monitoring metrics on {{ $labels.host }}'
+          description: 'The node exporter could not read a textfile. Check its logs and the collector output.'
+  - name: server-resources
+    rules:
+      - alert: FilesystemLowSpace
+        expr: (node_filesystem_avail_bytes{host=~"media-server|rpi5",fstype!~"tmpfs|ramfs|overlay|squashfs",mountpoint!~"/boot.*|/run.*"} / node_filesystem_size_bytes < 0.10) and (node_filesystem_readonly == 0)
+        for: 15m
+        labels: {severity: warning, scope: storage, service: storage}
+        annotations:
+          summary: 'Low disk space on {{ $labels.host }}'
+          description: '{{ $labels.mountpoint }} has less than 10% space available. Downloads, imports and database writes can fail before service uptime checks do.'
+      - alert: FilesystemReadOnly
+        expr: node_filesystem_readonly{host=~"media-server|rpi5",fstype!~"tmpfs|ramfs|overlay|squashfs|iso9660",mountpoint!~"/nix/store|/boot.*|/run.*"} == 1
+        for: 5m
+        labels: {severity: critical, scope: storage, service: storage}
+        annotations:
+          summary: 'Read-only filesystem on {{ $labels.host }}'
+          description: '{{ $labels.mountpoint }} is read-only. Inspect storage before restarting applications.'
+      - alert: HostMemoryPressure
+        expr: node_memory_MemAvailable_bytes{host=~"media-server|rpi5"} / node_memory_MemTotal_bytes < 0.05
+        for: 15m
+        labels: {severity: warning, scope: storage, service: host-resources}
+        annotations:
+          summary: 'Sustained memory pressure on {{ $labels.host }}'
+          description: 'Less than 5% memory is available. Check workload memory, swap and I/O before treating slow applications as independent outages.'

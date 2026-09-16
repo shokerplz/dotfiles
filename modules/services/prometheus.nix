@@ -25,10 +25,16 @@
           ];
           metrics_path = "/metrics";
           scheme = "http";
-          static_configs = [{targets = ["localhost:9090"];}];
+          static_configs = [{targets = ["localhost:9090"]; labels.host = "rpi5";}];
         }
         {
           job_name = "node";
+          relabel_configs = [{
+            source_labels = ["__address__"];
+            regex = "([^.]+)\\.home:.*";
+            target_label = "host";
+            replacement = "$1";
+          }];
           static_configs = [{
             targets = [
               "rpi5.home:9100"
@@ -41,17 +47,17 @@
         }
         {
           job_name = "cert";
-          static_configs = [{targets = ["rpi5.home:9141"];}];
+          static_configs = [{targets = ["rpi5.home:9141"]; labels.host = "rpi5";}];
         }
         {
           job_name = "muse";
-          static_configs = [{targets = ["media-server.home:4535"];}];
+          static_configs = [{targets = ["media-server.home:4535"]; labels.host = "media-server";}];
         }
         {
           job_name = "speedtest";
           scrape_interval = "1h";
           scrape_timeout = "1m";
-          static_configs = [{targets = ["rpi5.home:9798"];}];
+          static_configs = [{targets = ["rpi5.home:9798"]; labels.host = "rpi5";}];
         }
       ];
     };

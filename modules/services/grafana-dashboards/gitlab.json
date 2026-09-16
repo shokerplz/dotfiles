@@ -1,0 +1,2442 @@
+{
+  "uid": "services-gitlab",
+  "title": "Services · GitLab",
+  "description": "Provisioned service health dashboard. Current checks are freshness-gated; missing data is unknown. See panel descriptions for scope and limits.",
+  "tags": [
+    "self-hosted",
+    "gitlab"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "editable": true,
+  "links": [
+    {
+      "title": "Service overview",
+      "url": "/d/services-overview",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
+      "title": "GitLab",
+      "url": "/d/services-gitlab",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Kino",
+      "url": "/d/services-kino",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Monitoring pipeline",
+      "url": "/d/services-monitoring",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "ds",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 0
+      },
+      {
+        "name": "loki",
+        "label": "Logs (optional)",
+        "type": "datasource",
+        "query": "loki",
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "Loki"
+        },
+        "hide": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "How to read this dashboard",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Compare direct access, public routes and GitLab components. Grey means missing or stale evidence. Firing rules may be inhibited by a parent incident."
+      }
+    },
+    {
+      "id": 2,
+      "type": "row",
+      "title": "Reachability and latency",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Public access",
+      "description": "Current external route probe: DNS, TLS, ingress and the configured application path. Results older than 90 seconds or failed exporter scrapes are unknown.",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox\",service=~\"gitlab|registry|gitlab-runner\",layer=\"edge\"} and on (job, instance) (up{job=\"blackbox\"} == 1) and on (job, instance) (time() - timestamp(probe_success{job=\"blackbox\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Direct services",
+      "description": "Current direct backend probe. Compare with the edge panel to distinguish ingress failures from backend failures; this is not a full user transaction.",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox\",service=~\"gitlab|registry|gitlab-runner\",layer=\"core\"} and on (job, instance) (up{job=\"blackbox\"} == 1) and on (job, instance) (time() - timestamp(probe_success{job=\"blackbox\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Probe duration",
+      "description": "End-to-end duration of each configured probe, including failed attempts. Historical data; gaps are not bridged.",
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "probe_duration_seconds{job=\"blackbox\",service=~\"gitlab|registry|gitlab-runner\"}",
+          "legendFormat": "{{service}} / {{layer}} / {{check}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Successful checks · 24h",
+      "description": "Rolling fraction of successful recorded probe samples, not a current status or a wall-clock uptime guarantee. Missing scrapes are not counted as successful samples.",
+      "gridPos": {
+        "x": 12,
+        "y": 10,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "avg_over_time(probe_success{job=\"blackbox\",service=~\"gitlab|registry|gitlab-runner\"}[24h])",
+          "legendFormat": "{{service}} / {{layer}} / {{check}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "Application and unit dependencies",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 17,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "GitLab readiness",
+      "description": "Each exported check retains its service, check and dependency labels. Results expire after 10 minutes and require a current successful node scrape.",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Issue",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "OK",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dependency"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "api": {
+                        "text": "API access"
+                      },
+                      "database": {
+                        "text": "PostgreSQL"
+                      },
+                      "redis": {
+                        "text": "Redis"
+                      },
+                      "gitaly": {
+                        "text": "Gitaly"
+                      },
+                      "application": {
+                        "text": "Application"
+                      },
+                      "configuration": {
+                        "text": "Config"
+                      },
+                      "downloads": {
+                        "text": "Downloads"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "other": {
+                        "text": "Other client"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "service_check_success{service=~\"gitlab|registry|gitlab-runner\"} and on (host, service, check, dependency) (time() - service_check_last_run_timestamp_seconds < 600) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Dependency",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "dependency"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "dependency": 1
+            },
+            "renameByName": {
+              "Value": "Status",
+              "dependency": "Dependency"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "table",
+      "title": "GitLab processes",
+      "description": "Active state of GitLab and its declared dependencies. Inactive is red; an absent unit metric is unknown. Activity does not prove application readiness.",
+      "gridPos": {
+        "x": 12,
+        "y": 18,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Inactive",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Active",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Process"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab.service": {
+                        "text": "GitLab"
+                      },
+                      "gitaly.service": {
+                        "text": "Gitaly"
+                      },
+                      "gitlab-gitaly.service": {
+                        "text": "Gitaly"
+                      },
+                      "redis-gitlab.service": {
+                        "text": "Redis"
+                      },
+                      "gitlab-redis.service": {
+                        "text": "Redis"
+                      },
+                      "gitlab-postgresql.service": {
+                        "text": "PostgreSQL"
+                      },
+                      "gitlab-sidekiq.service": {
+                        "text": "Background jobs"
+                      },
+                      "gitlab-workhorse.service": {
+                        "text": "HTTP proxy"
+                      },
+                      "gitlab-sshd.service": {
+                        "text": "SSH"
+                      },
+                      "gitlab-runner.service": {
+                        "text": "Runner"
+                      },
+                      "jellyfin.service": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr.service": {
+                        "text": "Seerr"
+                      },
+                      "sonarr.service": {
+                        "text": "Sonarr"
+                      },
+                      "radarr.service": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr.service": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr.service": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent.service": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget.service": {
+                        "text": "NZBGet"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "node_systemd_unit_state{host=\"media-server\",state=\"active\",name=~\"(gitlab|gitlab-gitaly|gitaly|redis-gitlab|gitlab-redis|gitlab-postgresql|gitlab-sidekiq|gitlab-workhorse|gitlab-sshd|gitlab-runner)\\\\.service\"} and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Process",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "name"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "name": 1
+            },
+            "renameByName": {
+              "Value": "Status",
+              "name": "Process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "table",
+      "title": "Current failed application checks",
+      "description": "Only failed checks from a successfully scraped host with a check run in the last 10 minutes. No rows does not prove health: inspect check freshness and node scrape status.",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Fail",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pass",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Result"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "(service_check_success{service=~\"gitlab|registry|gitlab-runner\"} and on (host, service, check, dependency) (time() - service_check_last_run_timestamp_seconds < 600) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)) == 0",
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true
+            },
+            "renameByName": {
+              "Value": "Result"
+            },
+            "indexByName": {
+              "service": 0,
+              "check": 1,
+              "dependency": 2,
+              "host": 3,
+              "Value": 4,
+              "instance": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "table",
+      "title": "Alert rules: pending and firing",
+      "description": "Prometheus rule state only. Firing alerts can be inhibited, silenced or grouped by Alertmanager; this panel does not confirm that a notification was delivered. No rows means no matching active rule series.",
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertstate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "pending": {
+                        "text": "Pending",
+                        "color": "yellow"
+                      },
+                      "firing": {
+                        "text": "Firing",
+                        "color": "red"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "critical": {
+                        "color": "red",
+                        "text": "Critical"
+                      },
+                      "warning": {
+                        "color": "yellow",
+                        "text": "Warning"
+                      },
+                      "info": {
+                        "color": "blue",
+                        "text": "Info"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "max by (alertname, alertstate, host, service, scope, severity) (ALERTS{alertstate=~\"pending|firing\",service=~\"gitlab|registry|gitlab-runner\"})",
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "Value": true
+            },
+            "indexByName": {
+              "severity": 0,
+              "alertstate": 1,
+              "alertname": 2,
+              "service": 3,
+              "host": 4,
+              "scope": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "table",
+      "title": "Check age",
+      "description": "Age since each dependency check last ran. Values at or above 10 minutes invalidate current check status.",
+      "gridPos": {
+        "x": 0,
+        "y": 35,
+        "w": 16,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 600
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Age"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "time() - service_check_last_run_timestamp_seconds{service=~\"gitlab|registry|gitlab-runner\"}",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Age",
+            "desc": true
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "service",
+                "check",
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "service": 0,
+              "check": 1,
+              "Value": 2
+            },
+            "renameByName": {
+              "service": "Service",
+              "check": "Check",
+              "Value": "Age"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "table",
+      "title": "Backend metrics scrape",
+      "description": "Current scrape of media-server's node exporter. Host alerts are also available in the service overview.",
+      "gridPos": {
+        "x": 16,
+        "y": 35,
+        "w": 8,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"node\",host=\"media-server\"} and (time() - timestamp(up{job=\"node\",host=\"media-server\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Host",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "host"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "host": 1
+            },
+            "renameByName": {
+              "Value": "Status",
+              "host": "Host"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "Backend capacity and storage",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "CPU busy",
+      "description": "Non-idle CPU time, averaged across cores. Historical series; gaps stay empty.",
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * (1 - avg by (host) (rate(node_cpu_seconds_total{host=~\"media-server\",mode=\"idle\"}[$__rate_interval])))",
+          "legendFormat": "{{host}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Memory in use",
+      "description": "RAM used as a share of total, using MemAvailable to account for reclaimable cache.",
+      "gridPos": {
+        "x": 8,
+        "y": 41,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * (1 - node_memory_MemAvailable_bytes{host=~\"media-server\"} / node_memory_MemTotal_bytes{host=~\"media-server\"})",
+          "legendFormat": "{{host}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "CPU waiting for storage",
+      "description": "Sustained I/O wait helps identify storage pressure while services remain reachable.",
+      "gridPos": {
+        "x": 16,
+        "y": 41,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * avg by (host) (rate(node_cpu_seconds_total{host=~\"media-server\",mode=\"iowait\"}[$__rate_interval]))",
+          "legendFormat": "{{host}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "type": "bargauge",
+      "title": "GitLab filesystems used",
+      "description": "Root, ZFS pool and GitLab dataset usage. Mountpoint labels show which backing filesystem holds the service data.",
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * (1 - node_filesystem_avail_bytes{host=~\"media-server\",fstype!~\"tmpfs|devtmpfs|squashfs|overlay|nsfs|ramfs|autofs\",mountpoint=~\"/|/mnt/zfs-pool0(/gitlab(/.*)?)?\"} / node_filesystem_size_bytes{host=~\"media-server\",fstype!~\"tmpfs|devtmpfs|squashfs|overlay|nsfs|ramfs|autofs\",mountpoint=~\"/|/mnt/zfs-pool0(/gitlab(/.*)?)?\"}) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "legendFormat": "{{mountpoint}}",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "last"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "valueMode": "color"
+      }
+    },
+    {
+      "id": 19,
+      "type": "bargauge",
+      "title": "GitLab filesystem space available",
+      "description": "Bytes available on the backing filesystems for GitLab state and backups. Unknown when host metrics are unavailable.",
+      "gridPos": {
+        "x": 12,
+        "y": 48,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_filesystem_avail_bytes{host=~\"media-server\",fstype!~\"tmpfs|devtmpfs|squashfs|overlay|nsfs|ramfs|autofs\",mountpoint=~\"/|/mnt/zfs-pool0(/gitlab(/.*)?)?\"} and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "legendFormat": "{{mountpoint}}",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "last"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "valueMode": "color"
+      }
+    },
+    {
+      "id": 20,
+      "type": "logs",
+      "title": "GitLab journal diagnostics",
+      "description": "Optional Loki view of journal messages containing error, warning, failure or fatal. Messages are diagnostic context, not a health verdict. Uses the configured Alloy host and unit labels.",
+      "gridPos": {
+        "x": 0,
+        "y": 55,
+        "w": 24,
+        "h": 9
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "{job=\"systemd-journal\",host=\"media-server\",unit=~\"(gitlab|gitlab-gitaly|gitaly|redis-gitlab|gitlab-redis|gitlab-postgresql|gitlab-sidekiq|gitlab-workhorse|gitlab-sshd|gitlab-runner)\\\\.service\"} |~ \"(?i)(error|warn|fail|fatal)\"",
+          "queryType": "range",
+          "maxLines": 200
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: telegram
+  group_by: [host, service]
+  group_wait: 1m
+  group_interval: 5m
+  repeat_interval: 6h
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token_file: /run/credentials/alertmanager.service/telegram-token
+        chat_id: 175628933
+        parse_mode: ''
+        send_resolved: true
+        message: |-
+          {{ .Status | toUpper }}: {{ .CommonLabels.host }} / {{ .CommonLabels.service }}
+          {{ range .Alerts }}
+          {{ .Annotations.summary }}
+          {{ .Annotations.description }}
+          {{ end }}
+          Dashboard: https://mon.ikovalev.nl/d/services-overview
+
+inhibit_rules:
+  # The same host's service symptoms remain visible, but do not notify separately.
+  - source_matchers: ['alertname="HostUnavailable"', 'host!=""']
+    target_matchers: ['scope!~"host|transport|certificate"', 'host!=""']
+    equal: [host]
+  - source_matchers: ['alertname="ServiceUnavailable"', 'host!=""', 'service!=""']
+    target_matchers: ['scope=~"endpoint|dependency|component"', 'host!=""', 'service!=""']
+    equal: [host, service]
+  # The edge lives on rpi5; backend availability is checked separately.
+  - source_matchers: ['alertname="HostUnavailable"', 'host="rpi5"']
+    target_matchers: ['layer="edge"', 'ingress="rpi5"']
+  - source_matchers: ['alertname="ServiceUnavailable"', 'host="rpi5"', 'service="nginx"']
+    target_matchers: ['layer="edge"', 'ingress="rpi5"']
+  - source_matchers: ['alertname="BlackboxExporterUnavailable"']
+    target_matchers: ['alertname="ProbeCollectionFailed"', 'collector="blackbox"']
+  - source_matchers: ['alertname="NodeExporterUnavailable"', 'host!=""']
+    target_matchers: ['alertname=~"ServiceChecksMissing|ServiceCheckStale"', 'host!=""']
+    equal: [host]
+  # A dead client explains its Arr connectivity check, not playback or other clients.
+  - source_matchers: ['alertname="ServiceUnavailable"', 'service="qbittorrent"', 'host!=""']
+    target_matchers: ['scope="dependency"', 'dependency="qbittorrent"', 'host!=""']
+    equal: [host]
+  - source_matchers: ['alertname="ServiceUnavailable"', 'service="nzbget"', 'host!=""']
+    target_matchers: ['scope="dependency"', 'dependency="nzbget"', 'host!=""']
+    equal: [host]
+  - source_matchers: ['alertname="GitLabComponentUnavailable"', 'component="gitlab-postgresql"', 'host!=""']
+    target_matchers: ['scope="dependency"', 'service="gitlab"', 'dependency="database"', 'host!=""']
+    equal: [host]
+  - source_matchers: ['alertname="GitLabComponentUnavailable"', 'component="redis-gitlab"', 'host!=""']
+    target_matchers: ['scope="dependency"', 'service="gitlab"', 'dependency="redis"', 'host!=""']
+    equal: [host]
+  - source_matchers: ['alertname="GitLabComponentUnavailable"', 'component="gitaly"', 'host!=""']
+    target_matchers: ['scope="dependency"', 'service="gitlab"', 'dependency="gitaly"', 'host!=""']
+    equal: [host]

@@ -1,0 +1,46 @@
+modules:
+  tcp:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      preferred_ip_protocol: ip4
+  http_2xx: &http
+    prober: http
+    timeout: 8s
+    http: &http_options
+      preferred_ip_protocol: ip4
+      follow_redirects: false
+      valid_status_codes: [200]
+  arr_ping:
+    <<: *http
+    http:
+      <<: *http_options
+      fail_if_body_not_matches_regexp: ['"status"\s*:\s*"OK"']
+  jellyfin:
+    <<: *http
+    http:
+      <<: *http_options
+      fail_if_body_not_matches_regexp: ['^Healthy\s*$']
+  grafana:
+    <<: *http
+    http:
+      <<: *http_options
+      fail_if_body_not_matches_regexp: ['"database"\s*:\s*"ok"']
+  seerr:
+    <<: *http
+    http:
+      <<: *http_options
+      fail_if_body_not_matches_regexp: ['"version"\s*:\s*"[^"]+"']
+  nextcloud:
+    <<: *http
+    http:
+      <<: *http_options
+      fail_if_body_not_matches_regexp: ['"installed"\s*:\s*true', '"maintenance"\s*:\s*false', '"needsDbUpgrade"\s*:\s*false']
+  registry:
+    <<: *http
+    http:
+      <<: *http_options
+      valid_status_codes: [200, 401]
+      fail_if_header_not_matches:
+        - header: Docker-Distribution-Api-Version
+          regexp: registry/2\.0

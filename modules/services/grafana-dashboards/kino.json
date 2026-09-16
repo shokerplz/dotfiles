@@ -1,0 +1,3420 @@
+{
+  "uid": "services-kino",
+  "title": "Services · Kino",
+  "description": "Provisioned service health dashboard. Current checks are freshness-gated; missing data is unknown. See panel descriptions for scope and limits.",
+  "tags": [
+    "self-hosted",
+    "kino",
+    "media"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "editable": true,
+  "links": [
+    {
+      "title": "Service overview",
+      "url": "/d/services-overview",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
+      "title": "GitLab",
+      "url": "/d/services-gitlab",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Kino",
+      "url": "/d/services-kino",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Monitoring pipeline",
+      "url": "/d/services-monitoring",
+      "type": "link",
+      "keepTime": true,
+      "includeVars": true,
+      "targetBlank": false
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "ds",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 0
+      },
+      {
+        "name": "loki",
+        "label": "Logs (optional)",
+        "type": "datasource",
+        "query": "loki",
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "Loki"
+        },
+        "hide": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "How to read this dashboard",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Playback and acquisition are separate. Grey means missing or stale evidence. A working downloader API does not prove that importing files succeeds."
+      }
+    },
+    {
+      "id": 2,
+      "type": "row",
+      "title": "Playback and requests",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Public access",
+      "description": "Current external route probe: DNS, TLS, ingress and the configured application path. Results older than 90 seconds or failed exporter scrapes are unknown.",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox\",service=~\"jellyfin|seerr\",layer=\"edge\"} and on (job, instance) (up{job=\"blackbox\"} == 1) and on (job, instance) (time() - timestamp(probe_success{job=\"blackbox\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Direct services",
+      "description": "Current direct backend probe. Compare with the edge panel to distinguish ingress failures from backend failures; this is not a full user transaction.",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox\",service=~\"jellyfin|seerr\",layer=\"core\"} and on (job, instance) (up{job=\"blackbox\"} == 1) and on (job, instance) (time() - timestamp(probe_success{job=\"blackbox\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "row",
+      "title": "Acquisition and download clients",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Public access",
+      "description": "Current external route probe: DNS, TLS, ingress and the configured application path. Results older than 90 seconds or failed exporter scrapes are unknown.",
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox\",service=~\"sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget\",layer=\"edge\"} and on (job, instance) (up{job=\"blackbox\"} == 1) and on (job, instance) (time() - timestamp(probe_success{job=\"blackbox\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Direct services",
+      "description": "Current direct backend probe. Compare with the edge panel to distinguish ingress failures from backend failures; this is not a full user transaction.",
+      "gridPos": {
+        "x": 12,
+        "y": 10,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Down",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Up",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox\",service=~\"sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget\",layer=\"core\"} and on (job, instance) (up{job=\"blackbox\"} == 1) and on (job, instance) (time() - timestamp(probe_success{job=\"blackbox\"}) < 90)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Playback and request latency",
+      "description": "Probe duration for Jellyfin and Seerr, separated by direct backend and public route. This does not measure media streaming throughput.",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "probe_duration_seconds{job=\"blackbox\",service=~\"jellyfin|seerr\"}",
+          "legendFormat": "{{service}} / {{layer}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Acquisition endpoint latency",
+      "description": "Probe duration for the Arr applications and download clients. Slow endpoints may remain reachable.",
+      "gridPos": {
+        "x": 12,
+        "y": 18,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "probe_duration_seconds{job=\"blackbox\",service=~\"sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget\"}",
+          "legendFormat": "{{service}} / {{layer}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Arr dependencies, queue and freshness",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 11,
+      "type": "table",
+      "title": "Application checks",
+      "description": "Configured authenticated health and dependency checks. Health is shown only when the collector ran within 10 minutes and node metrics are current.",
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Issue",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "OK",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 108
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dependency"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 116
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "api": {
+                        "text": "API access"
+                      },
+                      "database": {
+                        "text": "PostgreSQL"
+                      },
+                      "redis": {
+                        "text": "Redis"
+                      },
+                      "gitaly": {
+                        "text": "Gitaly"
+                      },
+                      "application": {
+                        "text": "Application"
+                      },
+                      "configuration": {
+                        "text": "Config"
+                      },
+                      "downloads": {
+                        "text": "Downloads"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "other": {
+                        "text": "Other client"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "service_check_success{service=~\"jellyfin|seerr|sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget\"} and on (host, service, check, dependency) (time() - service_check_last_run_timestamp_seconds < 600) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          },
+          {
+            "displayName": "Dependency",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "service",
+                "check",
+                "dependency"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "service": 1,
+              "check": 2,
+              "dependency": 3
+            },
+            "renameByName": {
+              "Value": "Status",
+              "service": "Service",
+              "check": "Check",
+              "dependency": "Dependency"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "table",
+      "title": "Media processes",
+      "description": "Unit activity helps locate local failures. A running process does not prove successful playback, healthy indexers or working downloads.",
+      "gridPos": {
+        "x": 12,
+        "y": 26,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Inactive",
+                        "color": "red"
+                      },
+                      "1": {
+                        "text": "Active",
+                        "color": "green"
+                      }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Process"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab.service": {
+                        "text": "GitLab"
+                      },
+                      "gitaly.service": {
+                        "text": "Gitaly"
+                      },
+                      "gitlab-gitaly.service": {
+                        "text": "Gitaly"
+                      },
+                      "redis-gitlab.service": {
+                        "text": "Redis"
+                      },
+                      "gitlab-redis.service": {
+                        "text": "Redis"
+                      },
+                      "gitlab-postgresql.service": {
+                        "text": "PostgreSQL"
+                      },
+                      "gitlab-sidekiq.service": {
+                        "text": "Background jobs"
+                      },
+                      "gitlab-workhorse.service": {
+                        "text": "HTTP proxy"
+                      },
+                      "gitlab-sshd.service": {
+                        "text": "SSH"
+                      },
+                      "gitlab-runner.service": {
+                        "text": "Runner"
+                      },
+                      "jellyfin.service": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr.service": {
+                        "text": "Seerr"
+                      },
+                      "sonarr.service": {
+                        "text": "Sonarr"
+                      },
+                      "radarr.service": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr.service": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr.service": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent.service": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget.service": {
+                        "text": "NZBGet"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "node_systemd_unit_state{host=\"media-server\",state=\"active\",name=~\"(jellyfin|seerr|sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget)\\\\.service\"} and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Status",
+            "desc": false
+          },
+          {
+            "displayName": "Process",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "name"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Value": 0,
+              "name": 1
+            },
+            "renameByName": {
+              "Value": "Status",
+              "name": "Process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "table",
+      "title": "Arr health issues by severity",
+      "description": "Counts reported by the Arr health API. Zero is healthy only when explicitly exported from a fresh health API check. Missing health data remains unknown.",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Issues"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Severity"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "error": {
+                        "text": "Error"
+                      },
+                      "warning": {
+                        "text": "Warning"
+                      },
+                      "notice": {
+                        "text": "Notice"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "arr_health_issues{service=~\"sonarr|radarr|prowlarr\"} and on (host, service) (max by (host, service) (time() - service_check_last_run_timestamp_seconds{service=~\"sonarr|radarr|prowlarr\",check=\"native_health\"}) < 600) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Issues",
+            "desc": true
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "service",
+                "severity",
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "service": 0,
+              "severity": 1,
+              "Value": 2
+            },
+            "renameByName": {
+              "service": "Service",
+              "severity": "Severity",
+              "Value": "Issues"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "table",
+      "title": "Arr queue items by state",
+      "description": "Queue counts from fresh Arr API checks. Queue size alone is not a failure; use state and dependency checks to interpret stuck work. Missing API data remains unknown.",
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Items"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "State"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "total": {
+                        "text": "Total"
+                      },
+                      "warning": {
+                        "text": "Warning"
+                      },
+                      "error": {
+                        "text": "Error"
+                      },
+                      "blocked": {
+                        "text": "Blocked"
+                      },
+                      "failed": {
+                        "text": "Failed"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "arr_queue_items{service=~\"sonarr|radarr\"} and on (host, service) (max by (host, service) (time() - service_check_last_run_timestamp_seconds{service=~\"sonarr|radarr\",check=\"queue\"}) < 600) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Items",
+            "desc": true
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "service",
+                "state",
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "service": 0,
+              "state": 1,
+              "Value": 2
+            },
+            "renameByName": {
+              "service": "Service",
+              "state": "State",
+              "Value": "Items"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "table",
+      "title": "Application check age",
+      "description": "Age since the last check run. At 10 minutes the current status and associated API measurements are invalidated.",
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 12,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 600
+              }
+            ]
+          },
+          "custom": {
+            "align": "left",
+            "minWidth": 60,
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Age"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "Unknown",
+                        "color": "gray"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Service"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "gitlab": {
+                        "text": "GitLab"
+                      },
+                      "registry": {
+                        "text": "Registry"
+                      },
+                      "jellyfin": {
+                        "text": "Jellyfin"
+                      },
+                      "seerr": {
+                        "text": "Seerr"
+                      },
+                      "sonarr": {
+                        "text": "Sonarr"
+                      },
+                      "radarr": {
+                        "text": "Radarr"
+                      },
+                      "prowlarr": {
+                        "text": "Prowlarr"
+                      },
+                      "bazarr": {
+                        "text": "Bazarr"
+                      },
+                      "qbittorrent": {
+                        "text": "qBittorrent"
+                      },
+                      "nzbget": {
+                        "text": "NZBGet"
+                      },
+                      "muse": {
+                        "text": "Muse"
+                      },
+                      "nextcloud": {
+                        "text": "Nextcloud"
+                      },
+                      "n8n": {
+                        "text": "n8n"
+                      },
+                      "searxng": {
+                        "text": "SearXNG"
+                      },
+                      "jobhunt": {
+                        "text": "Jobhunt"
+                      },
+                      "prometheus": {
+                        "text": "Prometheus"
+                      },
+                      "grafana": {
+                        "text": "Grafana"
+                      },
+                      "alertmanager": {
+                        "text": "Alertmanager"
+                      },
+                      "loki": {
+                        "text": "Loki"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Check"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "web": {
+                        "text": "Web"
+                      },
+                      "ssh": {
+                        "text": "SSH"
+                      },
+                      "api": {
+                        "text": "API"
+                      },
+                      "ping": {
+                        "text": "API ping"
+                      },
+                      "health": {
+                        "text": "Health"
+                      },
+                      "readiness": {
+                        "text": "Readiness"
+                      },
+                      "listener": {
+                        "text": "TCP port"
+                      },
+                      "status": {
+                        "text": "Status"
+                      },
+                      "native_health": {
+                        "text": "App health"
+                      },
+                      "download_clients": {
+                        "text": "Client access"
+                      },
+                      "queue": {
+                        "text": "Queue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "time() - service_check_last_run_timestamp_seconds{service=~\"jellyfin|seerr|sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget\"}",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "sortBy": [
+          {
+            "displayName": "Age",
+            "desc": true
+          },
+          {
+            "displayName": "Service",
+            "desc": false
+          },
+          {
+            "displayName": "Check",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "service",
+                "check",
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "service": 0,
+              "check": 1,
+              "Value": 2
+            },
+            "renameByName": {
+              "service": "Service",
+              "check": "Check",
+              "Value": "Age"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "table",
+      "title": "Alert rules: pending and firing",
+      "description": "Prometheus rule state only. Firing alerts can be inhibited, silenced or grouped by Alertmanager; this panel does not confirm that a notification was delivered. No rows means no matching active rule series.",
+      "gridPos": {
+        "x": 12,
+        "y": 44,
+        "w": 12,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertstate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "pending": {
+                        "text": "Pending",
+                        "color": "yellow"
+                      },
+                      "firing": {
+                        "text": "Firing",
+                        "color": "red"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "critical": {
+                        "color": "red",
+                        "text": "Critical"
+                      },
+                      "warning": {
+                        "color": "yellow",
+                        "text": "Warning"
+                      },
+                      "info": {
+                        "color": "blue",
+                        "text": "Info"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "max by (alertname, alertstate, host, service, scope, severity) (ALERTS{alertstate=~\"pending|firing\",service=~\"jellyfin|seerr|sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget\"})",
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "Value": true
+            },
+            "indexByName": {
+              "severity": 0,
+              "alertstate": 1,
+              "alertname": 2,
+              "service": 3,
+              "host": 4,
+              "scope": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "row",
+      "title": "Storage and backend capacity",
+      "description": "",
+      "gridPos": {
+        "x": 0,
+        "y": 49,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "CPU busy",
+      "description": "Non-idle CPU time, averaged across cores. Historical series; gaps stay empty.",
+      "gridPos": {
+        "x": 0,
+        "y": 50,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * (1 - avg by (host) (rate(node_cpu_seconds_total{host=~\"media-server\",mode=\"idle\"}[$__rate_interval])))",
+          "legendFormat": "{{host}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Memory in use",
+      "description": "RAM used as a share of total, using MemAvailable to account for reclaimable cache.",
+      "gridPos": {
+        "x": 8,
+        "y": 50,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * (1 - node_memory_MemAvailable_bytes{host=~\"media-server\"} / node_memory_MemTotal_bytes{host=~\"media-server\"})",
+          "legendFormat": "{{host}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "CPU waiting for storage",
+      "description": "Sustained I/O wait helps identify storage pressure while services remain reachable.",
+      "gridPos": {
+        "x": 16,
+        "y": 50,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * avg by (host) (rate(node_cpu_seconds_total{host=~\"media-server\",mode=\"iowait\"}[$__rate_interval]))",
+          "legendFormat": "{{host}}",
+          "instant": false,
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "type": "bargauge",
+      "title": "Media and download filesystems used",
+      "description": "Root, Kino media/config datasets and the SSD download staging area. Space pressure can block downloads, imports or metadata writes.",
+      "gridPos": {
+        "x": 0,
+        "y": 57,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "100 * (1 - node_filesystem_avail_bytes{host=~\"media-server\",fstype!~\"tmpfs|devtmpfs|squashfs|overlay|nsfs|ramfs|autofs\",mountpoint=~\"/|/mnt/(zfs-pool0|ssd)(/kino(/.*)?)?\"} / node_filesystem_size_bytes{host=~\"media-server\",fstype!~\"tmpfs|devtmpfs|squashfs|overlay|nsfs|ramfs|autofs\",mountpoint=~\"/|/mnt/(zfs-pool0|ssd)(/kino(/.*)?)?\"}) and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "legendFormat": "{{mountpoint}}",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "last"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "valueMode": "color"
+      }
+    },
+    {
+      "id": 22,
+      "type": "bargauge",
+      "title": "Media and download space available",
+      "description": "Bytes available for media and temporary download data. Mountpoints distinguish the ZFS pool from SSD staging.",
+      "gridPos": {
+        "x": 12,
+        "y": 57,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "noValue": "Unknown",
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Unknown",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_filesystem_avail_bytes{host=~\"media-server\",fstype!~\"tmpfs|devtmpfs|squashfs|overlay|nsfs|ramfs|autofs\",mountpoint=~\"/|/mnt/(zfs-pool0|ssd)(/kino(/.*)?)?\"} and on (host) ((up{job=\"node\"} and (time() - timestamp(up{job=\"node\"}) < 90)) == 1)",
+          "legendFormat": "{{mountpoint}}",
+          "instant": true,
+          "range": false,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          }
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "last"
+          ],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "valueMode": "color"
+      }
+    },
+    {
+      "id": 23,
+      "type": "logs",
+      "title": "Kino journal diagnostics",
+      "description": "Optional Loki view of journal messages containing error, warning, failure or fatal. Messages are diagnostic context, not a health verdict. Uses the configured Alloy host and unit labels.",
+      "gridPos": {
+        "x": 0,
+        "y": 64,
+        "w": 24,
+        "h": 9
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "${loki}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${loki}"
+          },
+          "expr": "{job=\"systemd-journal\",host=\"media-server\",unit=~\"(jellyfin|seerr|sonarr|radarr|prowlarr|bazarr|qbittorrent|nzbget)\\\\.service\"} |~ \"(?i)(error|warn|fail|fatal)\"",
+          "queryType": "range",
+          "maxLines": 200
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    }
+  ]
+}
