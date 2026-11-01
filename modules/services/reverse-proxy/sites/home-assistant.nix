@@ -25,8 +25,11 @@
           proxy_set_header    Connection  "upgrade";
         '';
         locations."/" = {
-          proxyPass = "http://homeassistant.home:8123";
+          proxyPass = "$home_assistant_upstream";
           proxyWebsockets = true;
+          extraConfig = ''
+            set $home_assistant_upstream http://homeassistant.home:8123;
+          '';
         };
       };
     };
