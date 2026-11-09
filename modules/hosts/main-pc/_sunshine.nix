@@ -87,6 +87,21 @@
           cmd = "shadps4 -g /home/ikovalev/ShadPS4/CUSA03173/eboot.bin";
           output = "/dev/null";
         }
+        {
+          name = "Demon's Souls";
+          image-path = "/home/ikovalev/.config/sunshine/covers/demons-souls.png";
+          exclude-global-prep-cmd = "false";
+          auto-detach = "true";
+          prep-cmd = [
+            {
+              do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
+              undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
+            }
+          ];
+          # KytyPS5 launcher (60 FPS lock, GPU_BOOST); quitting the app in Moonlight ends it cleanly (SIGTERM).
+          cmd = "/data/ProjectData/KytyPS5/play-demons-souls";
+          output = "/tmp/demons-souls-sunshine.log";
+        }
       ];
     };
   };
