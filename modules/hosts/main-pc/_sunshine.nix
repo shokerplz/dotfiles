@@ -102,6 +102,21 @@
           cmd = "/data/ProjectData/KytyPS5/play-demons-souls";
           output = "/tmp/demons-souls-sunshine.log";
         }
+        {
+          name = "Ocarina of Time";
+          image-path = "/home/ikovalev/.config/sunshine/covers/ocarina-of-time.png";
+          exclude-global-prep-cmd = "false";
+          auto-detach = "true";
+          prep-cmd = [
+            {
+              do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
+              undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
+            }
+          ];
+          # Lichii launcher (GPU_BOOST, window on DP-2); quitting the app in Moonlight ends it cleanly (SIGTERM).
+          cmd = "/data/ProjectData/Lichii/play-ocarina";
+          output = "/tmp/ocarina-sunshine.log";
+        }
       ];
     };
   };
