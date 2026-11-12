@@ -117,6 +117,36 @@
           cmd = "/data/ProjectData/Lichii/play-ocarina";
           output = "/tmp/ocarina-sunshine.log";
         }
+        {
+          name = "Mario Kart World";
+          image-path = "/home/ikovalev/.config/sunshine/covers/mario-kart-world.png";
+          exclude-global-prep-cmd = "false";
+          auto-detach = "true";
+          prep-cmd = [
+            {
+              do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
+              undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
+            }
+          ];
+          # Lichii launcher (GPU_BOOST, window on DP-2); quitting the app in Moonlight ends it cleanly (SIGTERM).
+          cmd = "/data/ProjectData/Lichii/play-mario-kart-world";
+          output = "/tmp/mario-kart-world-sunshine.log";
+        }
+        {
+          name = "Tears of the Kingdom";
+          image-path = "/home/ikovalev/.config/sunshine/covers/tears-of-the-kingdom.png";
+          exclude-global-prep-cmd = "false";
+          auto-detach = "true";
+          prep-cmd = [
+            {
+              do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
+              undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
+            }
+          ];
+          # Lichii launcher (GPU_BOOST, window on DP-2); quitting the app in Moonlight ends it cleanly (SIGTERM).
+          cmd = "/data/ProjectData/Lichii/play-totk";
+          output = "/tmp/tears-of-the-kingdom-sunshine.log";
+        }
       ];
     };
   };
