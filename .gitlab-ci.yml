@@ -44,10 +44,16 @@ daily-update:
       git remote set-url origin gitlab@git.ikovalev.nl:nix/dotfiles.git
       export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes"
 
-      # Checkout daily branch
+      # Checkout daily branch, bring in everything on main
       echo "Fetching daily branch..."
       git fetch origin
-      git checkout -B daily origin/daily
+      if git show-ref --verify --quiet refs/remotes/origin/daily; then
+        git checkout -B daily origin/daily
+      else
+        git checkout -B daily "origin/$DEFAULT_BRANCH"
+      fi
+      # main wins lock conflicts; the flake update below re-locks anyway.
+      git merge --no-edit -X theirs "origin/$DEFAULT_BRANCH"
 
       # Update Flake
       nix --extra-experimental-features 'nix-command flakes' flake update
@@ -56,56 +62,57 @@ daily-update:
       if [[ -n $(git status --porcelain flake.lock) ]]; then
         git add flake.lock
         git commit -m "Update flake.lock [skip ci]"
-        git push origin daily
-        echo "Changes pushed."
-
-        echo "Triggering build on nix-local-cache..."
-        build_response=$(curl -fsS "$API_URL/build" \
-          -H "Content-Type: application/json" \
-          -d "{\"flake_url\": \"$REPO_URL\", \"flake_branch\": \"daily\", \"timeout_seconds\": 43200}")
-        job_id=$(echo "$build_response" | jq -r '.job_id')
-
-        if [ -z "$job_id" ] || [ "$job_id" = "null" ]; then
-          echo "Build API did not return a job_id: $build_response"
-          exit 1
-        fi
-
-        echo "Build job: $job_id"
-
-        for poll in $(seq 1 "$MAX_POLLS"); do
-          job=$(curl -fsS "$API_URL/jobs/$job_id")
-          status=$(echo "$job" | jq -r '.status')
-          message=$(echo "$job" | jq -r '.status_message // empty')
-          echo "Poll $poll/$MAX_POLLS: $status $message"
-
-          case "$status" in
-            Completed)
-              echo "Build completed. Merging daily into $DEFAULT_BRANCH..."
-              git fetch origin
-              git checkout -B "$DEFAULT_BRANCH" "origin/$DEFAULT_BRANCH"
-              git merge --no-edit origin/daily
-              git push origin "$DEFAULT_BRANCH"
-              exit 0
-              ;;
-            Failed)
-              echo "Build failed. Not merging daily."
-              exit 1
-              ;;
-            Queued|Running)
-              sleep "$POLL_INTERVAL_SECONDS"
-              ;;
-            *)
-              echo "Unknown build status: $status"
-              exit 1
-              ;;
-          esac
-        done
-
-        echo "Build did not finish within 12 hours. Not merging daily."
-        exit 1
       else
-        echo "No changes in flake.lock."
+        echo "No changes in flake.lock. Building main's commits anyway."
       fi
+      git push origin daily
+      build_revision=$(git rev-parse HEAD)
+
+      # Build the exact revision that will become main, so main is always cached.
+      echo "Triggering build on nix-local-cache..."
+      build_response=$(curl -fsS "$API_URL/build" \
+        -H "Content-Type: application/json" \
+        -d "{\"flake_url\": \"$REPO_URL?ref=daily&rev=$build_revision\", \"target_type\": \"Nixos\", \"timeout_seconds\": 43200}")
+      job_id=$(echo "$build_response" | jq -r '.job_id')
+
+      if [ -z "$job_id" ] || [ "$job_id" = "null" ]; then
+        echo "Build API did not return a job_id: $build_response"
+        exit 1
+      fi
+
+      echo "Build job: $job_id ($build_revision)"
+
+      for poll in $(seq 1 "$MAX_POLLS"); do
+        job=$(curl -fsS "$API_URL/jobs/$job_id")
+        status=$(echo "$job" | jq -r '.status')
+        message=$(echo "$job" | jq -r '.status_message // empty')
+        echo "Poll $poll/$MAX_POLLS: $status $message"
+
+        case "$status" in
+          Completed)
+            echo "Build completed. Promoting $build_revision to $DEFAULT_BRANCH..."
+            git fetch origin
+            git checkout -B "$DEFAULT_BRANCH" "origin/$DEFAULT_BRANCH"
+            git merge --ff-only "$build_revision"
+            git push origin "$DEFAULT_BRANCH"
+            exit 0
+            ;;
+          Failed)
+            echo "Build failed. Not merging daily."
+            exit 1
+            ;;
+          Queued|Running)
+            sleep "$POLL_INTERVAL_SECONDS"
+            ;;
+          *)
+            echo "Unknown build status: $status"
+            exit 1
+            ;;
+        esac
+      done
+
+      echo "Build did not finish within 12 hours. Not merging daily."
+      exit 1
       INNEREOF
 
     - nix-shell -p git openssh curl jq --run "bash update-script.sh"
