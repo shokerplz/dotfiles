@@ -18,6 +18,9 @@
 
     services.nginx = {
       enable = true;
+      appendConfig = ''
+        worker_processes auto;
+      '';
       virtualHosts."cache" = {
         listen = [
           {
@@ -27,9 +30,14 @@
         ];
         default = true;
         serverName = "cache nix-cache.ikovalev.nl";
-        root = "/mnt/zfs-pool0/nix-cache/cache";
+        root = "/mnt/ssd/nix-cache/cache";
         extraConfig = ''
           autoindex on;
+          # Disk reads go to a thread pool so one big NAR cannot stall every
+          # other request. sendfile measured 3x slower for parallel NARs.
+          aio threads;
+          sendfile off;
+          output_buffers 2 8m;
         '';
       };
     };
@@ -59,7 +67,7 @@
       package = inputs.nix-local-cache.packages.${pkgs.stdenv.hostPlatform.system}.server;
       port = 21080;
       workerThreads = 2;
-      workingDir = "/mnt/zfs-pool0/nix-cache";
+      workingDir = "/mnt/ssd/nix-cache";
       secretKeyFile = config.sops.secrets.nix_cache_private_key.path;
     };
 
