@@ -9,6 +9,8 @@
         enable = true;
         withUWSM = true;
       };
+      # Noctalia screen recorder plugin; installs gsr-kms-server with the capability it needs.
+      gpu-screen-recorder.enable = true;
     };
     networking.domain = "home";
 
