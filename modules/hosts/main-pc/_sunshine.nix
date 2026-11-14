@@ -1,4 +1,10 @@
-{pkgs-current, ...}: {
+{pkgs-current, ...}: let
+  # VRR on the streamed monitor makes Sunshine's screen capture uneven (stream stutters).
+  noVrr = {
+    do = "hyprctl keyword misc:vrr 0";
+    undo = "hyprctl keyword misc:vrr 2";
+  };
+in {
   environment.systemPackages = [
     (pkgs-current.lib.hiPrio (pkgs-current.makeDesktopItem {
       name = "dev.lizardbyte.app.Sunshine";
@@ -66,6 +72,7 @@
               do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
               undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
             }
+            noVrr
             {
               do = "noctalia-shell ipc call notifications enableDND";
               undo = "noctalia-shell ipc call notifications disableDND";
@@ -83,6 +90,7 @@
               do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
               undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
             }
+            noVrr
           ];
           cmd = "shadps4 -g /home/ikovalev/ShadPS4/CUSA03173/eboot.bin";
           output = "/dev/null";
@@ -97,6 +105,7 @@
               do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
               undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
             }
+            noVrr
           ];
           # KytyPS5 launcher (60 FPS lock, GPU_BOOST); quitting the app in Moonlight ends it cleanly (SIGTERM).
           cmd = "/data/ProjectData/KytyPS5/play-demons-souls";
@@ -112,6 +121,7 @@
               do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
               undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
             }
+            noVrr
           ];
           # Lichii launcher (GPU_BOOST, window on DP-2); quitting the app in Moonlight ends it cleanly (SIGTERM).
           cmd = "/data/ProjectData/Lichii/play-ocarina";
@@ -127,6 +137,7 @@
               do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
               undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
             }
+            noVrr
           ];
           # Lichii launcher (GPU_BOOST, window on DP-2); quitting the app in Moonlight ends it cleanly (SIGTERM).
           cmd = "/data/ProjectData/Lichii/play-mario-kart-world";
@@ -142,6 +153,7 @@
               do = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 1920x1080@120";
               undo = "${pkgs-current.wlr-randr}/bin/wlr-randr --output DP-2 --mode 2560x1440@143.998993Hz";
             }
+            noVrr
           ];
           # Lichii launcher (GPU_BOOST, window on DP-2); quitting the app in Moonlight ends it cleanly (SIGTERM).
           cmd = "/data/ProjectData/Lichii/play-totk";
