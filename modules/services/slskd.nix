@@ -35,6 +35,11 @@
 
       systemd.services.slskd.serviceConfig.UMask = "0002";
 
+      # .NET >= 8.0.33 keeps named-mutex state in <passwd home>/.dotnet (not
+      # $HOME, not /tmp). The default /var/empty is unwritable, so slskd exits 0
+      # at startup ("singleton mutex") and Restart=on-failure never fires.
+      users.users.slskd.home = "/var/lib/slskd";
+
       # listen_port sits inside net.ipv4.ip_local_port_range, so without this an
       # ephemeral outbound socket can steal it before slskd binds.
       boot.kernel.sysctl."net.ipv4.ip_local_reserved_ports" = toString listenPort;
