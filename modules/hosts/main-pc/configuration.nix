@@ -127,6 +127,14 @@
       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x14c3", ATTR{device}=="0x6639", TEST=="link/l1_aspm", ATTR{link/l1_aspm}="0"
     '';
 
+    # Claude desktop keeps its device key in the TPM (cloud Cowork Computer Use).
+    # Must sort before 73-seat-late.rules for uaccess, so not extraRules (99-local).
+    services.udev.packages = [
+      (pkgs.writeTextDir "lib/udev/rules.d/70-claude-desktop-extra-tpm.rules" ''
+        SUBSYSTEM=="tpmrm", KERNEL=="tpmrm[0-9]*", ACTION!="remove", TAG+="uaccess"
+      '')
+    ];
+
     nix = {
       settings = {
         extra-platforms = ["aarch64-linux"];
