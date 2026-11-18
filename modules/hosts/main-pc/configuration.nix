@@ -135,6 +135,9 @@
       '')
     ];
 
+    # Secret Service for Claude desktop so its sign-in survives restarts.
+    services.gnome.gnome-keyring.enable = true;
+
     nix = {
       settings = {
         extra-platforms = ["aarch64-linux"];
