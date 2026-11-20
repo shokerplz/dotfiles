@@ -68,6 +68,7 @@
       port = 21080;
       workerThreads = 2;
       workingDir = "/mnt/ssd/nix-cache";
+      gcRetentionDays = 30;
       secretKeyFile = config.sops.secrets.nix_cache_private_key.path;
     };
 
