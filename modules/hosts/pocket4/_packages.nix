@@ -20,4 +20,10 @@ in {
     lm_sensors
     pkgs-unstable.lmstudio
   ];
+
+  # Claude desktop downloads its own generic-Linux Claude Code binary.
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+  ];
 }
