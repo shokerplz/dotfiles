@@ -92,6 +92,17 @@
     services.resolved.enable = true;
     networking.nameservers = ["127.0.0.53"];
 
+    # Claude desktop keeps its device key in the TPM (cloud Cowork Computer Use).
+    # Must sort before 73-seat-late.rules for uaccess, so not extraRules (99-local).
+    services.udev.packages = [
+      (pkgs.writeTextDir "lib/udev/rules.d/70-claude-desktop-extra-tpm.rules" ''
+        SUBSYSTEM=="tpmrm", KERNEL=="tpmrm[0-9]*", ACTION!="remove", TAG+="uaccess"
+      '')
+    ];
+
+    # Secret Service for Claude desktop so its sign-in survives restarts.
+    services.gnome.gnome-keyring.enable = true;
+
     hardware.gpd-fan.enable = true;
     hardware.amdgpu.opencl.enable = true;
 
