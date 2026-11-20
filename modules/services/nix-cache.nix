@@ -18,6 +18,7 @@
 
     services.nginx = {
       enable = true;
+      package = pkgs.nginxMainline;
       appendConfig = ''
         worker_processes auto;
       '';
@@ -42,8 +43,7 @@
       };
     };
 
-    systemd.services.nix-local-cache-server.environment.GIT_SSH_COMMAND =
-      "ssh -i ${config.sops.secrets.git_key.path} -o IdentitiesOnly=yes";
+    systemd.services.nix-local-cache-server.environment.GIT_SSH_COMMAND = "ssh -i ${config.sops.secrets.git_key.path} -o IdentitiesOnly=yes";
 
     programs.ssh.knownHosts = {
       "github.com" = {

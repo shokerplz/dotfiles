@@ -1,10 +1,8 @@
-{
-  self,
-  ...
-}: {
+{self, ...}: {
   flake.nixosModules.serviceReverseProxy = {
     config,
     lib,
+    pkgs,
     ...
   }: let
     cfg = config.dotfiles.services.reverseProxy;
@@ -49,6 +47,7 @@
 
       services.nginx = {
         enable = true;
+        package = pkgs.nginxMainline;
         resolver = {
           addresses = ["10.0.1.1"];
           ipv6 = false;
