@@ -134,11 +134,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1768339473,
-        "narHash": "sha256-/JIfjTea34jsQoDPQ9uHAjFkQWsk+I8kpyCZnZrpqNc=",
+        "lastModified": 1795113163,
+        "narHash": "sha256-tmw21o64tX6zHkJkmrUKRhrYct+cmQQ1pT9moHBTUOU=",
         "owner": "shokerplz",
         "repo": "ft9362-driver",
-        "rev": "ee948aedf826ff2345cb5756b8c7d2aea4475fc5",
+        "rev": "c313775eecce2dd06624897db6fc71748f250c69",
         "type": "github"
       },
       "original": {
@@ -373,11 +373,11 @@
     },
     "nixpkgs-current": {
       "locked": {
-        "lastModified": 1794872590,
-        "narHash": "sha256-E+XLAfnC7+bdr4qlEgRv6cdGmiqTU5oeFNKCha7epqQ=",
+        "lastModified": 1795031880,
+        "narHash": "sha256-Obi0Kr71SBfU9aaDxSncVRT4wYTjLzjMyCmmuC2XGd0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "f68407657ad294471eb4b2e65d193df26edf729f",
+        "rev": "3457b69ac4aba6d9ea9a743370af160fb502db29",
         "type": "github"
       },
       "original": {
